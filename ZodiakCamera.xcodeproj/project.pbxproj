@@ -1,0 +1,428 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 50;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		424B46A0A7D4A890E9EE5FDA /* Pods_ZodiakCamera.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7068A07341DE977E61A05851 /* Pods_ZodiakCamera.framework */; };
+		BF08A64F2355DD2F00CEADD1 /* SettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF08A64E2355DD2F00CEADD1 /* SettingsViewController.swift */; };
+		BF08A65223577C9800CEADD1 /* JoystickScene.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF08A65123577C9800CEADD1 /* JoystickScene.swift */; };
+		BF08A65423577CE400CEADD1 /* TLAnalogJoystick.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF08A65323577CE400CEADD1 /* TLAnalogJoystick.swift */; };
+		BF763B4223548D3F00D89FAB /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF763B4123548D3F00D89FAB /* AppDelegate.swift */; };
+		BF763B4423548D3F00D89FAB /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF763B4323548D3F00D89FAB /* ViewController.swift */; };
+		BF763B4723548D3F00D89FAB /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = BF763B4523548D3F00D89FAB /* Main.storyboard */; };
+		BF763B4923548D4100D89FAB /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = BF763B4823548D4100D89FAB /* Assets.xcassets */; };
+		BF763B4C23548D4100D89FAB /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = BF763B4A23548D4100D89FAB /* LaunchScreen.storyboard */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		3A05330CAE8D42F326FFA6F4 /* Pods-ZodiakCamera.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ZodiakCamera.release.xcconfig"; path = "Pods/Target Support Files/Pods-ZodiakCamera/Pods-ZodiakCamera.release.xcconfig"; sourceTree = "<group>"; };
+		7068A07341DE977E61A05851 /* Pods_ZodiakCamera.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_ZodiakCamera.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		77D8A1F548E238707E71F5A5 /* Pods-ZodiakCamera.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ZodiakCamera.debug.xcconfig"; path = "Pods/Target Support Files/Pods-ZodiakCamera/Pods-ZodiakCamera.debug.xcconfig"; sourceTree = "<group>"; };
+		BF08A64E2355DD2F00CEADD1 /* SettingsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsViewController.swift; sourceTree = "<group>"; };
+		BF08A65123577C9800CEADD1 /* JoystickScene.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JoystickScene.swift; sourceTree = "<group>"; };
+		BF08A65323577CE400CEADD1 /* TLAnalogJoystick.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TLAnalogJoystick.swift; sourceTree = "<group>"; };
+		BF763B3E23548D3F00D89FAB /* ZodiakCamera.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ZodiakCamera.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		BF763B4123548D3F00D89FAB /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
+		BF763B4323548D3F00D89FAB /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
+		BF763B4623548D3F00D89FAB /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
+		BF763B4823548D4100D89FAB /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		BF763B4B23548D4100D89FAB /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
+		BF763B4D23548D4100D89FAB /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		BF763B3B23548D3F00D89FAB /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				424B46A0A7D4A890E9EE5FDA /* Pods_ZodiakCamera.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		037CC314FD8C0DBD2AB34F83 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				7068A07341DE977E61A05851 /* Pods_ZodiakCamera.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		0E62AEBF8958DC32FA0BD410 /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				77D8A1F548E238707E71F5A5 /* Pods-ZodiakCamera.debug.xcconfig */,
+				3A05330CAE8D42F326FFA6F4 /* Pods-ZodiakCamera.release.xcconfig */,
+			);
+			name = Pods;
+			sourceTree = "<group>";
+		};
+		BF763B3523548D3F00D89FAB = {
+			isa = PBXGroup;
+			children = (
+				BF763B4023548D3F00D89FAB /* ZodiakCamera */,
+				BF763B3F23548D3F00D89FAB /* Products */,
+				0E62AEBF8958DC32FA0BD410 /* Pods */,
+				037CC314FD8C0DBD2AB34F83 /* Frameworks */,
+			);
+			sourceTree = "<group>";
+		};
+		BF763B3F23548D3F00D89FAB /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				BF763B3E23548D3F00D89FAB /* ZodiakCamera.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		BF763B4023548D3F00D89FAB /* ZodiakCamera */ = {
+			isa = PBXGroup;
+			children = (
+				BF08A65323577CE400CEADD1 /* TLAnalogJoystick.swift */,
+				BF08A65123577C9800CEADD1 /* JoystickScene.swift */,
+				BF763B4123548D3F00D89FAB /* AppDelegate.swift */,
+				BF763B4523548D3F00D89FAB /* Main.storyboard */,
+				BF763B4823548D4100D89FAB /* Assets.xcassets */,
+				BF763B4A23548D4100D89FAB /* LaunchScreen.storyboard */,
+				BF763B4D23548D4100D89FAB /* Info.plist */,
+				BF763B4323548D3F00D89FAB /* ViewController.swift */,
+				BF08A64E2355DD2F00CEADD1 /* SettingsViewController.swift */,
+			);
+			path = ZodiakCamera;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		BF763B3D23548D3F00D89FAB /* ZodiakCamera */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = BF763B5023548D4100D89FAB /* Build configuration list for PBXNativeTarget "ZodiakCamera" */;
+			buildPhases = (
+				A1FBAC9435D13EF142612310 /* [CP] Check Pods Manifest.lock */,
+				BF763B3A23548D3F00D89FAB /* Sources */,
+				BF763B3B23548D3F00D89FAB /* Frameworks */,
+				BF763B3C23548D3F00D89FAB /* Resources */,
+				D47D20838794490657E04558 /* [CP] Embed Pods Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = ZodiakCamera;
+			productName = ZodiakCamera;
+			productReference = BF763B3E23548D3F00D89FAB /* ZodiakCamera.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		BF763B3623548D3F00D89FAB /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastSwiftUpdateCheck = 1020;
+				LastUpgradeCheck = 1020;
+				ORGANIZATIONNAME = gulnaz;
+				TargetAttributes = {
+					BF763B3D23548D3F00D89FAB = {
+						CreatedOnToolsVersion = 10.2.1;
+					};
+				};
+			};
+			buildConfigurationList = BF763B3923548D3F00D89FAB /* Build configuration list for PBXProject "ZodiakCamera" */;
+			compatibilityVersion = "Xcode 9.3";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = BF763B3523548D3F00D89FAB;
+			productRefGroup = BF763B3F23548D3F00D89FAB /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				BF763B3D23548D3F00D89FAB /* ZodiakCamera */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		BF763B3C23548D3F00D89FAB /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				BF763B4C23548D4100D89FAB /* LaunchScreen.storyboard in Resources */,
+				BF763B4923548D4100D89FAB /* Assets.xcassets in Resources */,
+				BF763B4723548D3F00D89FAB /* Main.storyboard in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		A1FBAC9435D13EF142612310 /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-ZodiakCamera-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+		D47D20838794490657E04558 /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${SRCROOT}/Pods/Target Support Files/Pods-ZodiakCamera/Pods-ZodiakCamera-frameworks.sh",
+				"${BUILT_PRODUCTS_DIR}/Eureka/Eureka.framework",
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Eureka.framework",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-ZodiakCamera/Pods-ZodiakCamera-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+/* End PBXShellScriptBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		BF763B3A23548D3F00D89FAB /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				BF08A65223577C9800CEADD1 /* JoystickScene.swift in Sources */,
+				BF763B4423548D3F00D89FAB /* ViewController.swift in Sources */,
+				BF763B4223548D3F00D89FAB /* AppDelegate.swift in Sources */,
+				BF08A65423577CE400CEADD1 /* TLAnalogJoystick.swift in Sources */,
+				BF08A64F2355DD2F00CEADD1 /* SettingsViewController.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXVariantGroup section */
+		BF763B4523548D3F00D89FAB /* Main.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				BF763B4623548D3F00D89FAB /* Base */,
+			);
+			name = Main.storyboard;
+			sourceTree = "<group>";
+		};
+		BF763B4A23548D4100D89FAB /* LaunchScreen.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				BF763B4B23548D4100D89FAB /* Base */,
+			);
+			name = LaunchScreen.storyboard;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		BF763B4E23548D4100D89FAB /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.2;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Debug;
+		};
+		BF763B4F23548D4100D89FAB /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.2;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		BF763B5123548D4100D89FAB /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 77D8A1F548E238707E71F5A5 /* Pods-ZodiakCamera.debug.xcconfig */;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = 5BEQK45V59;
+				INFOPLIST_FILE = ZodiakCamera/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = gulnaz.ZodiakCamera;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		BF763B5223548D4100D89FAB /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 3A05330CAE8D42F326FFA6F4 /* Pods-ZodiakCamera.release.xcconfig */;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = 5BEQK45V59;
+				INFOPLIST_FILE = ZodiakCamera/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = gulnaz.ZodiakCamera;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		BF763B3923548D3F00D89FAB /* Build configuration list for PBXProject "ZodiakCamera" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				BF763B4E23548D4100D89FAB /* Debug */,
+				BF763B4F23548D4100D89FAB /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		BF763B5023548D4100D89FAB /* Build configuration list for PBXNativeTarget "ZodiakCamera" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				BF763B5123548D4100D89FAB /* Debug */,
+				BF763B5223548D4100D89FAB /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = BF763B3623548D3F00D89FAB /* Project object */;
+}
