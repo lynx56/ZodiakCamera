@@ -11,6 +11,7 @@
 		BF08A64F2355DD2F00CEADD1 /* SettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF08A64E2355DD2F00CEADD1 /* SettingsViewController.swift */; };
 		BF08A65223577C9800CEADD1 /* JoystickScene.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF08A65123577C9800CEADD1 /* JoystickScene.swift */; };
 		BF08A65423577CE400CEADD1 /* TLAnalogJoystick.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF08A65323577CE400CEADD1 /* TLAnalogJoystick.swift */; };
+		BF08A6562359AFB400CEADD1 /* ArcSlider.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF08A6552359AFB400CEADD1 /* ArcSlider.swift */; };
 		BF763B4223548D3F00D89FAB /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF763B4123548D3F00D89FAB /* AppDelegate.swift */; };
 		BF763B4423548D3F00D89FAB /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF763B4323548D3F00D89FAB /* ViewController.swift */; };
 		BF763B4723548D3F00D89FAB /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = BF763B4523548D3F00D89FAB /* Main.storyboard */; };
@@ -25,6 +26,7 @@
 		BF08A64E2355DD2F00CEADD1 /* SettingsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsViewController.swift; sourceTree = "<group>"; };
 		BF08A65123577C9800CEADD1 /* JoystickScene.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JoystickScene.swift; sourceTree = "<group>"; };
 		BF08A65323577CE400CEADD1 /* TLAnalogJoystick.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TLAnalogJoystick.swift; sourceTree = "<group>"; };
+		BF08A6552359AFB400CEADD1 /* ArcSlider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArcSlider.swift; sourceTree = "<group>"; };
 		BF763B3E23548D3F00D89FAB /* ZodiakCamera.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ZodiakCamera.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		BF763B4123548D3F00D89FAB /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		BF763B4323548D3F00D89FAB /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
@@ -93,6 +95,7 @@
 				BF763B4D23548D4100D89FAB /* Info.plist */,
 				BF763B4323548D3F00D89FAB /* ViewController.swift */,
 				BF08A64E2355DD2F00CEADD1 /* SettingsViewController.swift */,
+				BF08A6552359AFB400CEADD1 /* ArcSlider.swift */,
 			);
 			path = ZodiakCamera;
 			sourceTree = "<group>";
@@ -222,6 +225,7 @@
 				BF763B4223548D3F00D89FAB /* AppDelegate.swift in Sources */,
 				BF08A65423577CE400CEADD1 /* TLAnalogJoystick.swift in Sources */,
 				BF08A64F2355DD2F00CEADD1 /* SettingsViewController.swift in Sources */,
+				BF08A6562359AFB400CEADD1 /* ArcSlider.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

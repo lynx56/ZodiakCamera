@@ -21,8 +21,13 @@ class JoystickView: SKView {
         case upright
     }
     
+    enum Event {
+        case move(MoveDirection)
+        case stop
+    }
+    
     private let joystickScene = JoystickScene()
-    var moveHandler: (MoveDirection) -> Void = { _ in }
+    var moveHandler: (Event) -> Void = { _ in }
     
     override func awakeFromNib() {
         super.awakeFromNib()
@@ -36,22 +41,26 @@ class JoystickView: SKView {
     }
     
     private func handleJoystickSceneEvent(_ event: JoystickScene.Event) {
-        guard case let .move(angle) = event else { return }
-        
-        let pi = CGFloat(Double.pi)
-        let angles = [0, pi/4, pi/2, 3*pi/4, pi]
-        let result = [MoveDirection.up, .upleft, .left, .downleft, .down]
-        let mirrorResult = [MoveDirection.up, .upright, .right, .downright, .down]
-        
-        var min = 0
-        for i in 1..<angles.count {
-            if abs(angles[i]-abs(angle)) < abs(angles[min]-abs(angle)) {
-                min = i
+        switch event {
+        case .begin: break
+        case .end:
+            moveHandler(.stop)
+        case .move(let angle):
+            let pi = CGFloat(Double.pi)
+            let angles = [0, pi/4, pi/2, 3*pi/4, pi]
+            let result = [MoveDirection.up, .upleft, .left, .downleft, .down]
+            let mirrorResult = [MoveDirection.up, .upright, .right, .downright, .down]
+            
+            var min = 0
+            for i in 1..<angles.count {
+                if abs(angles[i]-abs(angle)) < abs(angles[min]-abs(angle)) {
+                    min = i
+                }
             }
+            
+            let moveDirection = angle < 0 ? mirrorResult[min] : result[min]
+            moveHandler(.move(moveDirection))
         }
-        
-        let moveDirection = angle < 0 ? mirrorResult[min] : result[min]
-        moveHandler(moveDirection)
     }
 }
 
@@ -60,7 +69,7 @@ class JoystickScene: SKScene {
     
     override var size: CGSize {
         didSet {
-            joystick?.diameter = min(size.width, size.height)/2
+            joystick?.diameter = min(size.width, size.height)/1.5
         }
     }
     
@@ -76,7 +85,7 @@ class JoystickScene: SKScene {
         joystick = TLAnalogJoystick(withDiameter: 50)
         
         physicsBody = SKPhysicsBody(edgeLoopFrom: frame)
-        backgroundColor = .white
+        backgroundColor = .clear
         joystick?.handleImage = UIImage(named: "stick")!
         joystick?.baseImage = UIImage(named: "substrate")!
         

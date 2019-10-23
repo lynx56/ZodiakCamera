@@ -10,11 +10,6 @@ import UIKit
 import WebKit
 
 class ViewController: UIViewController {
-    @IBOutlet weak var up: ControlButton!
-    @IBOutlet weak var down: ControlButton!
-    @IBOutlet weak var right: ControlButton!
-    @IBOutlet weak var left: ControlButton!
-    @IBOutlet weak var stop: ControlButton!
     private var settings = Dictionary<Settings, Int>()
     
     @IBOutlet weak var joystickView: JoystickView!
@@ -28,11 +23,6 @@ class ViewController: UIViewController {
         let refresh = UIBarButtonItem(barButtonSystemItem: .refresh, target: webView, action: #selector(webView.reload))
         toolbarItems = [refresh]
         navigationController?.isToolbarHidden = false
-        up.handler = userManipulate
-        down.handler = userManipulate
-        right.handler = userManipulate
-        left.handler = userManipulate
-        stop.handler = userManipulate
         
         imagetask = URLSession.shared.dataTask(with: URL(string: "http://188.242.14.235:81/snapshot.cgi?user=admin&pwd=123123")!) { (data, response, error) in
             if let data = data {
@@ -53,7 +43,7 @@ class ViewController: UIViewController {
       //  createDisplayLink()
         
         joystickView.moveHandler = {
-            print($0)
+            self.userManipulate(command: "\(moveToCameraCommandConverter(direction: $0))")
         }
     }
     
@@ -70,7 +60,7 @@ class ViewController: UIViewController {
     @objc func step(displaylink: CADisplayLink) {
         imageView.image = UIImage(data: try! Data(contentsOf: URL(string: "http://188.242.14.235:81/snapshot.cgi?user=admin&pwd=123123")!))
         
-        //imagetask?.resume()
+        imagetask?.resume()
     }
     
     func getUrl(with cgi: String) -> String {
@@ -120,45 +110,6 @@ class ViewController: UIViewController {
         task.resume()
     }
 }
-
-@IBDesignable
-public class ControlButton: UIButton {
-    @IBInspectable var stop: Int = 0
-    @IBInspectable var execute: Int = 0
-    
-    var handler: (String)->Void = { _ in }
-    
-    override public func awakeFromNib() {
-        super.awakeFromNib()
-        addTarget(self, action: #selector(controlDown), for: .touchDown)
-        addTarget(self, action: #selector(controlUp), for: .touchUpInside)
-    }
-    
-    @objc func controlDown(_ sender: UIButton) {
-        handler("\(execute)")
-    }
-    
-    @objc func controlUp(_ sender: UIButton) {
-        handler("\(stop)")
-    }
-}
-
-@IBDesignable
-public class SetupButton: UIButton {
-    @IBInspectable var execute: String = ""
-    
-    var handler: (String)->Void = { _ in }
-    
-    override public func awakeFromNib() {
-        super.awakeFromNib()
-        addTarget(self, action: #selector(controlUp), for: .touchUpInside)
-    }
-    
-    @objc func controlUp(_ sender: UIButton) {
-        handler(execute)
-    }
-}
-
 
 
 extension Date {
@@ -218,4 +169,21 @@ enum Settings: String {
     case Speed = "speed"
     case Framerate = "enc_framerate"
     case Contrast = "vcontrast"
+}
+
+func moveToCameraCommandConverter(direction: JoystickView.Event) -> Int {
+    switch direction {
+    case .stop: return 1
+    case .move(let direction):
+        switch direction {
+        case .down: return 2
+        case .downleft: return 92
+        case .downright: return 93
+        case .left: return 4
+        case .right: return 6
+        case .up: return 0
+        case .upleft: return 90
+        case .upright: return 91
+        }
+    }
 }
