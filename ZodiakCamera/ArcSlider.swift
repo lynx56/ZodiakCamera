@@ -92,12 +92,14 @@ struct Arc {
     private(set) var path: UIBezierPath?
     private(set) var lineStartPoint: CGPoint
     private(set) var lineEndPoint: CGPoint
+    private(set) var movingPoint: CGPoint
     
     init(lineStartPoint: CGPoint,
          lineEndPoint: CGPoint,
          movingPoint: CGPoint) {
         self.lineStartPoint = lineStartPoint
         self.lineEndPoint = lineEndPoint
+        self.movingPoint = movingPoint
         center = centerArc(lineStartPoint: lineStartPoint,
                            lineEndPoint: lineEndPoint,
                            movingPoint: movingPoint)!
@@ -128,7 +130,6 @@ struct Arc {
         if angle < -1.5*CGFloat.pi {
             normalizedAngle = endAngle
         }
-        print(startAngle, endAngle, angle, normalizedAngle)
         
         let x = center.x + radius * cos(normalizedAngle)
         let y = center.y + radius * sin(normalizedAngle)
@@ -140,6 +141,19 @@ struct Arc {
         return radius * teta
     }
     
+    func point(length: CGFloat) -> CGPoint {
+        let angle = length/radius + startAngle
+        var normalizedAngle = min(max(angle, startAngle), endAngle)
+        
+        if angle < -1.5*CGFloat.pi {
+            normalizedAngle = endAngle
+        }
+        
+        let x = center.x + radius * cos(normalizedAngle)
+        let y = center.y + radius * sin(normalizedAngle)
+        return .init(x: x, y: y)
+    }
+    
     func length(angle: CGFloat) -> CGFloat {
         return radius * abs(angle - startAngle)
     }
@@ -147,25 +161,49 @@ struct Arc {
 
 class ArcSlider: UIControl {
     private let circleView = CircleView()
-    private let startLabel = UILabel()
-    private let endLabel = UILabel()
-    private var color = UIColor.gray
-    private let lineWidth: CGFloat = 1
-    private var insets: (CGFloat, CGFloat) = (10, 20)
+    private let startImageView = UIImageView()
+    private let endImageView = UIImageView()
     
+    enum Constants {
+        static let imageSize = CGSize(width: 15, height: 15)
+        static let scaleImageOffset = CGFloat(8)
+        static let lineWidth = CGFloat(1)
+    }
+    
+    struct Settings {
+        let scaleTopOffset: CGFloat
+        let scaleSideOffset: CGFloat
+        let color: UIColor
+        let tintColor: UIColor
+        let startImage: UIImage
+        let endImage: UIImage
+        let minValue: Int
+        let maxValue: Int
+        let currentValue: Int
+        
+        static var initial = Settings(scaleTopOffset: 20,
+                                      scaleSideOffset: 10,
+                                      color: .white,
+                                      tintColor: .black,
+                                      startImage: .empty(sized: .zero),
+                                      endImage: .empty(sized: .zero),
+                                      minValue: 0,
+                                      maxValue: 255,
+                                      currentValue: 128)
+    }
+    
+    
+    private let settings: Settings
     override init(frame: CGRect) {
+        settings = .initial
         super.init(frame: frame)
         setup()
     }
     
     init(frame: CGRect,
-         insets: (CGFloat, CGFloat) = (10, 20),
-         color: UIColor,
-         tintColor: UIColor) {
+         settings: Settings) {
+        self.settings = settings
         super.init(frame: frame)
-        self.insets = insets
-        self.color = color
-        self.tintColor = tintColor
         setup()
     }
     
@@ -174,11 +212,31 @@ class ArcSlider: UIControl {
     }
     
     private var scaleArc: Arc!
-    func setup() {
-        circleView.settings =  .init(color: .black,
-                                     borderWidth: 1,
-                                     font: .systemFont(ofSize: 8))
+    
+    private lazy var mainArcLayer: CAShapeLayer? = {
+        let lineWidth = Constants.lineWidth
+        let start = CGPoint(x: self.bounds.minX + lineWidth,
+                            y: self.bounds.maxY - lineWidth)
+        let end = CGPoint(x: self.bounds.maxX - lineWidth,
+                          y: self.bounds.maxY - lineWidth)
+        let top = CGPoint(x: (self.bounds.maxX - self.bounds.minX - 2*lineWidth)/2,
+                          y: self.bounds.minY + lineWidth)
         
+        let arc = Arc(lineStartPoint: start,
+                      lineEndPoint: end,
+                      movingPoint: top)
+        guard let path = arc.path else { return nil }
+        
+        let shapelayer = CAShapeLayer()
+        shapelayer.fillColor = self.settings.color.cgColor
+        shapelayer.path = path.cgPath
+        shapelayer.lineWidth = lineWidth
+        
+        return shapelayer
+    }()
+    
+    private lazy var scaleArcLayer: CAShapeLayer? = {
+        let lineWidth = Constants.lineWidth
         let start = CGPoint(x: bounds.minX + lineWidth,
                             y: bounds.maxY - lineWidth)
         let end = CGPoint(x: bounds.maxX - lineWidth,
@@ -186,22 +244,27 @@ class ArcSlider: UIControl {
         let top = CGPoint(x: (bounds.maxX - bounds.minX - 2*lineWidth)/2,
                           y: bounds.minY + lineWidth)
         
-        let arc = Arc(lineStartPoint: start,
-                      lineEndPoint: end,
-                      movingPoint: top)
-        guard let path = arc.path else { return }
+        let scaleStartPoint = start.applying(.init(translationX: settings.scaleSideOffset,
+                                                   y: -settings.scaleTopOffset))
+        let scaleEndPoint = end.applying(.init(translationX: -settings.scaleSideOffset,
+                                               y: -settings.scaleTopOffset))
+        let topScalePoint = top.applying(.init(translationX: settings.scaleSideOffset/2,
+                                               y: settings.scaleTopOffset/2))
         
-        let shapelayer = CAShapeLayer()
-        shapelayer.fillColor = color.cgColor
-        shapelayer.path = path.cgPath
-        shapelayer.lineWidth = lineWidth
-        layer.addSublayer(shapelayer)
-        let topScalePoint = top.applying(.init(translationX: insets.0/2, y: insets.1/2))
+        startImageView.frame = .init(origin:  .init(x: scaleStartPoint.x - 15,
+                                                    y: scaleStartPoint.y),
+                                     size: .init(width: 15, height: 15))
+        endImageView.frame = .init(origin: .init(x: scaleEndPoint.x, y: scaleEndPoint.y),
+                                   size: .init(width: 15, height: 15))
         
-        scaleArc = Arc(lineStartPoint: start.applying(.init(translationX: insets.0, y: -insets.1)),
-                       lineEndPoint: end.applying(.init(translationX: -insets.0, y: -insets.1)),
-                       movingPoint: topScalePoint)
-        guard let scalePath = scaleArc.path else { return }
+        scaleArc = Arc(lineStartPoint: .init(x: startImageView.frame.maxX, y: startImageView.frame.minY - 8),
+                       lineEndPoint: .init(x: endImageView.frame.minX, y: endImageView.frame.minY - 8),
+                       movingPoint: .init(x: topScalePoint.x, y: topScalePoint.y - 4))
+        
+        startImageView.transform = .init(rotationAngle: scaleArc.startAngle + CGFloat.pi/2)
+        endImageView.transform = .init(rotationAngle: scaleArc.endAngle + CGFloat.pi/2)
+        
+        guard let scalePath = scaleArc.path else { return nil }
         
         let scalelayer = CAShapeLayer()
         scalelayer.strokeColor = tintColor.cgColor
@@ -210,12 +273,32 @@ class ArcSlider: UIControl {
         scalelayer.lineWidth = lineWidth*2
         scalelayer.lineJoin = .round
         scalelayer.lineDashPattern = [2, 3] as [NSNumber]
-        layer.addSublayer(scalelayer)
+        return scalelayer
+    }()
+    
+    func setup() {
+        self.tintColor = settings.tintColor
+        circleView.settings =  .init(color: .black,
+                                     borderWidth: 1,
+                                     font: .systemFont(ofSize: 8))
+        
+        
+        layer.addSublayer(mainArcLayer!)
+        layer.addSublayer(scaleArcLayer!)
+        
+        startImageView.image = settings.startImage
+        endImageView.image = settings.endImage
+        addSubview(startImageView)
+        addSubview(endImageView)
+        
         self.clipsToBounds = true
         
-        circleView.center = CGPoint(x: topScalePoint.x-10, y: topScalePoint.y-10)
+        let traversedLength = CGFloat(settings.currentValue)/CGFloat(settings.maxValue-settings.minValue) * scaleArc.L
+        
+        let currentPoint = scaleArc.point(length: traversedLength)
+        circleView.center = currentPoint.applying(.init(translationX: -10, y: -10))
         circleView.frame.size = .init(width: 20, height: 20)
-        circleView.text = "125"
+        circleView.text = "\(settings.currentValue)"
         circleView.backgroundColor = .white
         addSubview(circleView)
     }
@@ -230,15 +313,15 @@ class ArcSlider: UIControl {
         }
     }
     
-    private var maxValue = 255
-    private var minValue = 0
     override func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent?) {
         guard circleMoving, let touch = touches.first else { return }
         let point = touch.location(in: self)
         guard let p = scaleArc.point(tapPoint: point) else {
             return
         }
-        let v = Int(scaleArc.length(angle: p.1)/scaleArc.L * CGFloat (maxValue-minValue))
+        let traversedLength = scaleArc.length(angle: p.1)
+        let v = Int(traversedLength/scaleArc.L * CGFloat(settings.maxValue-settings.minValue))
+        
         circleView.text = "\(v)"
         circleView.center = CGPoint(x: p.0.x, y: p.0.y)
         sendActions(for: .valueChanged)
@@ -251,5 +334,16 @@ class ArcSlider: UIControl {
                 self.circleView.transform = .identity
             }
         }
+    }
+}
+
+
+
+extension UIImage {
+    static func empty(sized: CGSize) -> UIImage {
+        UIGraphicsBeginImageContext(sized)
+        let image = UIGraphicsGetImageFromCurrentImageContext()
+        UIGraphicsEndImageContext()
+        return image!
     }
 }
