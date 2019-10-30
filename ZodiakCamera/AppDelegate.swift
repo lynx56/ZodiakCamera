@@ -13,9 +13,15 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     var window: UIWindow?
 
-
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
-        // Override point for customization after application launch.
+        
+   //     let model = Model(authProvider: { return ("admin", "123123") },
+    //                      host: URL(string: "http://188.242.14.235:81")!)
+        let moq = MockModel()
+        let cameraVc = CameraViewController(zodiak: moq, dataProvider: moq)
+        window = UIWindow(frame: UIScreen.main.bounds)
+        window?.rootViewController = cameraVc
+        window?.makeKeyAndVisible()
         return true
     }
 

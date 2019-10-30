@@ -89,7 +89,9 @@ class JoystickScene: SKScene {
         joystick?.handleImage = UIImage(named: "stick")!
         joystick?.baseImage = UIImage(named: "substrate")!
         
-        addChild(joystick!)
+        let joystickHiddenArea = TLAnalogJoystickHiddenArea(rect: frame)
+        joystickHiddenArea.joystick = joystick
+        addChild(joystickHiddenArea)
  
         joystick?.on(.begin) { [weak self] _ in
             self?.handler(.begin)

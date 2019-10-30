@@ -8,6 +8,7 @@
 
 import UIKit
 
+
 class CircleView: UIView {
     struct Settings {
         let color: UIColor
@@ -59,103 +60,118 @@ extension CGVector {
 }
 
 
-func centerArc(lineStartPoint: CGPoint, lineEndPoint: CGPoint, movingPoint: CGPoint) -> CGPoint? {
-    let vector1 = CGVector(point1: movingPoint, point2: lineEndPoint)
-    let vector2 = CGVector(point1: movingPoint, point2: lineStartPoint)
-    let center1 = CGPoint(x: (movingPoint.x+lineEndPoint.x)/2,
-                          y: (movingPoint.y+lineEndPoint.y)/2)
-    
-    let center2 = CGPoint(x: (movingPoint.x+lineStartPoint.x)/2,
-                          y: (movingPoint.y+lineStartPoint.y)/2)
-    
-    
-    let b1 = vector1.dx*center1.x + vector1.dy*center1.y
-    let b2 = vector2.dx*center2.x + vector2.dy*center2.y
-    
-    let det = vector1.dx*vector2.dy - vector1.dy*vector2.dx
-    
-    if (abs(det) < CGFloat(1e-5)) {
-        return nil
+extension Arc.Center {
+    func distance(to point: CGPoint) -> CGFloat {
+        return CGFloat(sqrt((self.x - point.x)*(self.x - point.x) + (self.y - point.y)*(self.y - point.y)))
     }
     
-    let centerX = vector2.dy/det*b1 - vector1.dy/det*b2
-    let centerY = -vector2.dx/det*b1 + vector1.dx/det*b2
+    func angle(to point: CGPoint) -> CGFloat {
+        return CGFloat(atan2f(Float(point.y - self.y), Float(point.x - self.x)))
+    }
     
-    return .init(x: centerX, y: centerY)
+    init(from startPoint: CGPoint, to endPoint: CGPoint, through middlePoint: CGPoint) {
+        let vector1 = CGVector(point1: middlePoint, point2: endPoint)
+        let vector2 = CGVector(point1: middlePoint, point2: startPoint)
+        let center1 = CGPoint(x: (middlePoint.x+endPoint.x)/2,
+                              y: (middlePoint.y+endPoint.y)/2)
+        
+        let center2 = CGPoint(x: (middlePoint.x+startPoint.x)/2,
+                              y: (middlePoint.y+startPoint.y)/2)
+        
+        let b1 = vector1.dx*center1.x + vector1.dy*center1.y
+        let b2 = vector2.dx*center2.x + vector2.dy*center2.y
+        
+        let det = vector1.dx*vector2.dy - vector1.dy*vector2.dx
+        
+        if (abs(det) < CGFloat(1e-5)) {
+            self = startPoint
+        }
+        
+        let centerX = vector2.dy/det*b1 - vector1.dy/det*b2
+        let centerY = -vector2.dx/det*b1 + vector1.dx/det*b2
+        
+        self = .init(x: centerX, y: centerY)
+    }
 }
 
 struct Arc {
-    private(set) var radius: CGFloat
+    typealias Center = CGPoint
     private(set) var startAngle: CGFloat
     private(set) var endAngle: CGFloat
-    private(set) var center: CGPoint
-    private(set) var path: UIBezierPath?
-    private(set) var lineStartPoint: CGPoint
-    private(set) var lineEndPoint: CGPoint
-    private(set) var movingPoint: CGPoint
+    private(set) var path: UIBezierPath
+    private(set) var radius: CGFloat
+    private let center: Center
+    private (set) var isClockwise: Bool
     
-    init(lineStartPoint: CGPoint,
-         lineEndPoint: CGPoint,
-         movingPoint: CGPoint) {
-        self.lineStartPoint = lineStartPoint
-        self.lineEndPoint = lineEndPoint
-        self.movingPoint = movingPoint
-        center = centerArc(lineStartPoint: lineStartPoint,
-                           lineEndPoint: lineEndPoint,
-                           movingPoint: movingPoint)!
+    init(startPoint: CGPoint,
+         endPoint: CGPoint,
+         middlePoint: CGPoint) {
+        self.center = .init(from: startPoint, to: endPoint, through: middlePoint)
+        self.radius = center.distance(to: middlePoint)
+        let startAngle = center.angle(to: startPoint)
+        let middleAngle = center.angle(to: middlePoint)
+        let endAngle = center.angle(to: endPoint)
+        let isClockwise = (endAngle > startAngle && startAngle < middleAngle && middleAngle < endAngle) ||
+            (endAngle < startAngle && !(endAngle < middleAngle && middleAngle < startAngle))
         
-        radius = CGFloat(sqrt((movingPoint.x-center.x)*(movingPoint.x-center.x) + (movingPoint.y-center.y)*(movingPoint.y-center.y)))
-        startAngle = CGFloat(atan2f(Float(lineStartPoint.y-center.y), Float(lineStartPoint.x-center.x)))
-        let movingAngle = CGFloat(atan2f(Float(movingPoint.y-center.y), Float(movingPoint.x-center.x)))
-        endAngle = CGFloat(atan2f(Float(lineEndPoint.y-center.y), Float(lineEndPoint.x-center.x)))
-        
-        
-        let isClockwise =
-            (endAngle>startAngle && startAngle<movingAngle && movingAngle<endAngle) ||
-                (endAngle<startAngle && !(endAngle<movingAngle && movingAngle<startAngle))
-        
-        path = UIBezierPath(arcCenter: center,
-                            radius: radius,
-                            startAngle: startAngle,
-                            endAngle: endAngle,
-                            clockwise: isClockwise)
+        self.path = UIBezierPath(arcCenter: center,
+                                 radius: radius,
+                                 startAngle: startAngle,
+                                 endAngle: endAngle,
+                                 clockwise: isClockwise)
+        self.startAngle = startAngle
+        self.endAngle = endAngle
+        self.isClockwise = isClockwise
     }
     
-    func point(tapPoint: CGPoint) -> (CGPoint, CGFloat)? {
-        let dx = center.x - tapPoint.x
-        let dy = center.y - tapPoint.y
-        let angle = atan2(dy, dx) - CGFloat.pi
+    init(arc: Arc,
+         radius: CGFloat) {
+        self.startAngle = arc.startAngle + 0.3
+        self.endAngle = arc.endAngle - 0.3
+        self.radius = radius
+        self.center = arc.center
+        self.isClockwise = arc.isClockwise
+        self.path = UIBezierPath(arcCenter: center,
+                                 radius: radius,
+                                 startAngle: startAngle,
+                                 endAngle: endAngle,
+                                 clockwise: isClockwise)
+    }
+    
+    func angle(for point: CGPoint) -> CGFloat {
+        var angle = center.angle(to: point)
         
-        var normalizedAngle = min(max(angle, startAngle), endAngle)
-        if angle < -1.5*CGFloat.pi {
-            normalizedAngle = endAngle
+        if startAngle < 0, endAngle < 0, angle > 0 {
+            angle *= -1
         }
+        let normalizedAngle = min(max(angle, startAngle), endAngle)
+        
+        return normalizedAngle
+    }
+    
+    func point(for angle: CGFloat) -> CGPoint {
+        var mutatingAngle = angle
+        if startAngle < 0, endAngle < 0, angle > 0 {
+            mutatingAngle *= -1
+        }
+        
+        let normalizedAngle = min(max(mutatingAngle, startAngle), endAngle)
         
         let x = center.x + radius * cos(normalizedAngle)
         let y = center.y + radius * sin(normalizedAngle)
-        return (CGPoint(x: x, y: y), normalizedAngle)
+        return CGPoint(x: x, y: y)
     }
     
-    var L: CGFloat {
-        let teta = endAngle - startAngle
-        return radius * teta
+    func angle(for traversedLength: CGFloat) -> CGFloat {
+        return traversedLength/radius + startAngle
     }
     
-    func point(length: CGFloat) -> CGPoint {
-        let angle = length/radius + startAngle
-        var normalizedAngle = min(max(angle, startAngle), endAngle)
-        
-        if angle < -1.5*CGFloat.pi {
-            normalizedAngle = endAngle
+    func length(angle: CGFloat? = nil) -> CGFloat {
+        if let angle = angle {
+            return radius * abs(angle - startAngle)
         }
         
-        let x = center.x + radius * cos(normalizedAngle)
-        let y = center.y + radius * sin(normalizedAngle)
-        return .init(x: x, y: y)
-    }
-    
-    func length(angle: CGFloat) -> CGFloat {
-        return radius * abs(angle - startAngle)
+        return radius * (endAngle - startAngle)
     }
 }
 
@@ -166,13 +182,13 @@ class ArcSlider: UIControl {
     
     enum Constants {
         static let imageSize = CGSize(width: 15, height: 15)
-        static let scaleImageOffset = CGFloat(8)
+        static let scaleImageOffset = CGFloat(4)
         static let lineWidth = CGFloat(1)
+        static let circleSize = CGSize(width: 20, height: 20)
     }
     
     struct Settings {
-        let scaleTopOffset: CGFloat
-        let scaleSideOffset: CGFloat
+        let innerRadiusOffset: CGFloat
         let color: UIColor
         let tintColor: UIColor
         let startImage: UIImage
@@ -181,8 +197,7 @@ class ArcSlider: UIControl {
         let maxValue: Int
         let currentValue: Int
         
-        static var initial = Settings(scaleTopOffset: 20,
-                                      scaleSideOffset: 10,
+        static var initial = Settings(innerRadiusOffset: 20,
                                       color: .white,
                                       tintColor: .black,
                                       startImage: .empty(sized: .zero),
@@ -193,7 +208,7 @@ class ArcSlider: UIControl {
     }
     
     
-    private let settings: Settings
+    private(set) var settings: Settings
     override init(frame: CGRect) {
         settings = .initial
         super.init(frame: frame)
@@ -212,65 +227,52 @@ class ArcSlider: UIControl {
     }
     
     private var scaleArc: Arc!
+    private var mainArc: Arc!
     
-    private lazy var mainArcLayer: CAShapeLayer? = {
-        let lineWidth = Constants.lineWidth
-        let start = CGPoint(x: self.bounds.minX + lineWidth,
-                            y: self.bounds.maxY - lineWidth)
-        let end = CGPoint(x: self.bounds.maxX - lineWidth,
-                          y: self.bounds.maxY - lineWidth)
-        let top = CGPoint(x: (self.bounds.maxX - self.bounds.minX - 2*lineWidth)/2,
-                          y: self.bounds.minY + lineWidth)
-        
-        let arc = Arc(lineStartPoint: start,
-                      lineEndPoint: end,
-                      movingPoint: top)
-        guard let path = arc.path else { return nil }
-        
+    private var startPoint: CGPoint {
+        return .init(x: self.bounds.minX + Constants.lineWidth,
+                     y: self.bounds.maxY - Constants.lineWidth)
+    }
+    private var endPoint: CGPoint {
+        return .init(x: self.bounds.maxX - Constants.lineWidth,
+                     y: self.bounds.maxY - Constants.lineWidth)
+    }
+    private var topPoint: CGPoint {
+        return .init(x: (self.bounds.maxX - self.bounds.minX - 2*Constants.lineWidth)/2,
+                     y: self.bounds.minY + Constants.lineWidth)
+    }
+    
+    private lazy var mainArcLayer: CAShapeLayer = {
+        mainArc = Arc(startPoint: startPoint,
+                      endPoint: endPoint,
+                      middlePoint: topPoint)
         let shapelayer = CAShapeLayer()
         shapelayer.fillColor = self.settings.color.cgColor
-        shapelayer.path = path.cgPath
-        shapelayer.lineWidth = lineWidth
-        
+        shapelayer.path = mainArc.path.cgPath
+        shapelayer.lineWidth = Constants.lineWidth
         return shapelayer
     }()
     
-    private lazy var scaleArcLayer: CAShapeLayer? = {
-        let lineWidth = Constants.lineWidth
-        let start = CGPoint(x: bounds.minX + lineWidth,
-                            y: bounds.maxY - lineWidth)
-        let end = CGPoint(x: bounds.maxX - lineWidth,
-                          y: bounds.maxY - lineWidth)
-        let top = CGPoint(x: (bounds.maxX - bounds.minX - 2*lineWidth)/2,
-                          y: bounds.minY + lineWidth)
+    private lazy var scaleArcLayer: CAShapeLayer = {
+        scaleArc = Arc(arc: self.mainArc, radius: self.mainArc.radius - settings.innerRadiusOffset)
         
-        let scaleStartPoint = start.applying(.init(translationX: settings.scaleSideOffset,
-                                                   y: -settings.scaleTopOffset))
-        let scaleEndPoint = end.applying(.init(translationX: -settings.scaleSideOffset,
-                                               y: -settings.scaleTopOffset))
-        let topScalePoint = top.applying(.init(translationX: settings.scaleSideOffset/2,
-                                               y: settings.scaleTopOffset/2))
+        let scaleStartPoint = scaleArc.point(for: scaleArc.startAngle)
+        let scaleEndPoint = scaleArc.point(for: scaleArc.endAngle)
         
-        startImageView.frame = .init(origin:  .init(x: scaleStartPoint.x - 15,
-                                                    y: scaleStartPoint.y),
-                                     size: .init(width: 15, height: 15))
-        endImageView.frame = .init(origin: .init(x: scaleEndPoint.x, y: scaleEndPoint.y),
-                                   size: .init(width: 15, height: 15))
+        startImageView.frame = .init(origin:  .init(x: scaleStartPoint.x - Constants.imageSize.width - Constants.scaleImageOffset,
+                                                    y: scaleStartPoint.y + Constants.scaleImageOffset),
+                                     size: Constants.imageSize)
+        endImageView.frame = .init(origin: .init(x: scaleEndPoint.x + Constants.scaleImageOffset, y: scaleEndPoint.y + Constants.scaleImageOffset),
+                                   size: Constants.imageSize)
         
-        scaleArc = Arc(lineStartPoint: .init(x: startImageView.frame.maxX, y: startImageView.frame.minY - 8),
-                       lineEndPoint: .init(x: endImageView.frame.minX, y: endImageView.frame.minY - 8),
-                       movingPoint: .init(x: topScalePoint.x, y: topScalePoint.y - 4))
-        
-        startImageView.transform = .init(rotationAngle: scaleArc.startAngle + CGFloat.pi/2)
-        endImageView.transform = .init(rotationAngle: scaleArc.endAngle + CGFloat.pi/2)
-        
-        guard let scalePath = scaleArc.path else { return nil }
+        startImageView.transform = .init(rotationAngle: scaleArc.startAngle + .pi/2)
+        endImageView.transform = .init(rotationAngle: scaleArc.endAngle + .pi/2)
         
         let scalelayer = CAShapeLayer()
         scalelayer.strokeColor = tintColor.cgColor
         scalelayer.fillColor = nil
-        scalelayer.path = scalePath.cgPath
-        scalelayer.lineWidth = lineWidth*2
+        scalelayer.path = scaleArc.path.cgPath
+        scalelayer.lineWidth = Constants.lineWidth*2
         scalelayer.lineJoin = .round
         scalelayer.lineDashPattern = [2, 3] as [NSNumber]
         return scalelayer
@@ -282,26 +284,26 @@ class ArcSlider: UIControl {
                                      borderWidth: 1,
                                      font: .systemFont(ofSize: 8))
         
-        
-        layer.addSublayer(mainArcLayer!)
-        layer.addSublayer(scaleArcLayer!)
+        layer.addSublayer(mainArcLayer)
+        layer.addSublayer(scaleArcLayer)
         
         startImageView.image = settings.startImage
         endImageView.image = settings.endImage
+        
         addSubview(startImageView)
         addSubview(endImageView)
         
         self.clipsToBounds = true
-        
-        let traversedLength = CGFloat(settings.currentValue)/CGFloat(settings.maxValue-settings.minValue) * scaleArc.L
-        
-        let currentPoint = scaleArc.point(length: traversedLength)
-        circleView.center = currentPoint.applying(.init(translationX: -10, y: -10))
-        circleView.frame.size = .init(width: 20, height: 20)
+        let traversedLength = CGFloat(settings.currentValue)/CGFloat(settings.maxValue-settings.minValue) * scaleArc.length()
+        let currentPoint = scaleArc.point(for: scaleArc.angle(for: traversedLength))
+        circleView.center = currentPoint.applying(.init(translationX: -Constants.circleSize.width/2,
+                                                        y: -Constants.circleSize.height/2))
+        circleView.frame.size = Constants.circleSize
         circleView.text = "\(settings.currentValue)"
         circleView.backgroundColor = .white
         addSubview(circleView)
     }
+    
     private var circleMoving = false
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
         guard let touch = touches.first else { return }
@@ -316,14 +318,14 @@ class ArcSlider: UIControl {
     override func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent?) {
         guard circleMoving, let touch = touches.first else { return }
         let point = touch.location(in: self)
-        guard let p = scaleArc.point(tapPoint: point) else {
-            return
-        }
-        let traversedLength = scaleArc.length(angle: p.1)
-        let v = Int(traversedLength/scaleArc.L * CGFloat(settings.maxValue-settings.minValue))
+        let angle = scaleArc.angle(for: point)
+        let pointOnArc = scaleArc.point(for: angle)
+        
+        let traversedLength = scaleArc.length(angle: angle)
+        let v = Int(traversedLength/scaleArc.length() * CGFloat(settings.maxValue-settings.minValue))
         
         circleView.text = "\(v)"
-        circleView.center = CGPoint(x: p.0.x, y: p.0.y)
+        circleView.center = pointOnArc
         sendActions(for: .valueChanged)
     }
     
@@ -340,7 +342,7 @@ class ArcSlider: UIControl {
 
 
 extension UIImage {
-    static func empty(sized: CGSize) -> UIImage {
+    static func empty(sized: CGSize = .zero) -> UIImage {
         UIGraphicsBeginImageContext(sized)
         let image = UIGraphicsGetImageFromCurrentImageContext()
         UIGraphicsEndImageContext()
