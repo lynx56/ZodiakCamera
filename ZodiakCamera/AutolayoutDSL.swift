@@ -88,11 +88,18 @@ extension UIView {
         NSLayoutConstraint.activate(constraints.map { $0(child, pairingView ?? self) })
     }
     
+    func insertSubview(_ child: UIView, pairingTo pairingView: UIView? = nil, at position: Int, constraints: [PairedConstraint]) {
+           insertSubview(child, at: position)
+           child.translatesAutoresizingMaskIntoConstraints = false
+           NSLayoutConstraint.activate(constraints.map { $0(child, pairingView ?? self) })
+       }
+    
     func constrainToView(_ pairingView: UIView, constraints: [PairedConstraint]) {
+        self.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate(constraints.map { $0(self, pairingView) })
     }
     
-    func constrain(to constraints: [UnpairedConstraint]) {
+    func constrain(to constraints: UnpairedConstraint...) {
         NSLayoutConstraint.activate(constraints.map { $0(self) })
     }
 }

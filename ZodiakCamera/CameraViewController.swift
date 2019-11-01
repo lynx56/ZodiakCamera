@@ -31,22 +31,28 @@ class CameraViewController: UIViewController {
     
     private func setup() {
         view.backgroundColor = .white
+        imageView.contentMode = .scaleAspectFit
         view.addSubview(imageView, constraints: [
-            constraint(\.leftAnchor),
-            constraint(\.rightAnchor),
+            constraint(\.leadingAnchor),
+            constraint(\.trailingAnchor),
             constraint(\.topAnchor),
-            constraint(\.bottomAnchor, constant: -60)
-            ])
+            constraint(\.bottomAnchor, constant: -100)
+        ])
         
         view.addSubview(panelView, constraints: [
             constraint(\.leftAnchor),
             constraint(\.rightAnchor),
             constraint(\.bottomAnchor)
-            ])
+        ])
         
         panelView.constrainToView(imageView, constraints: [
             constraint(\.topAnchor, \.bottomAnchor),
-            ])
+        ])
+        
+        view.addSubview(joystickView)
+        joystickView.constrainToView(imageView, constraints: .pin)
+        joystickView.backgroundColor = .clear
+        panelView.eventHandler = handlePanelViewEvent
     }
     
     override func viewDidAppear(_ animated: Bool) {
@@ -69,6 +75,47 @@ class CameraViewController: UIViewController {
     @objc func step(displaylink: CADisplayLink) {
         guard let data = zodiak.image() else { return }
         imageView.image = UIImage(data: data)
+    }
+
+    private var showedSlider: ArcSlider?
+    func handlePanelViewEvent(_ event: PanelView.Event) {
+        switch event {
+        case .itemSelected(let item):
+            showedSlider?.removeFromSuperview()
+            switch item {
+                          case .control(let control):
+                              let slider = ArcSlider(frame: .zero,
+                                                     settings: .init(innerRadiusOffset: 30,
+                                                                     color: UIColor.black.withAlphaComponent(0.2),
+                                                                     tintColor: .white,
+                                                                     startImage: control.imageMin ?? UIImage.empty(),
+                                                                     endImage: control.imageMax ?? UIImage.empty(),
+                                                                     minValue: control.minValue,
+                                                                     maxValue: control.maxValue,
+                                                                     currentValue: control.currentValue()))
+                          
+                            slider.valueChanged = control.newValueHandler
+                              slider.alpha = 0
+                              slider.isEnabled = true
+                              view.addSubview(slider, constraints: [
+                                      constraint(\.leftAnchor, constant: -15),
+                                      constraint(\.rightAnchor, constant: 15),
+                                  ])
+                              slider.constrainToView(panelView, constraints: [
+                                constraint(\.bottomAnchor, \.topAnchor)
+                              ])
+                              slider.constrain(to: constraint(\.heightAnchor, constant: 120))
+                              slider.layoutIfNeeded()
+                              
+                              UIView.animate(withDuration: 0.2) {
+                                  slider.alpha = 1
+                              }
+                              self.showedSlider = slider
+                          case .toggle(let toggle):
+                            toggle.newValueHandler(!toggle.currentValue())
+                          }
+        
+        }
     }
 }
 
@@ -149,201 +196,31 @@ func moveToCameraCommandConverter(direction: JoystickView.Event) -> Int {
     }
 }
 
-
-
-
-protocol AuthService {
-    func userAuth() -> (String, String)
-}
-
-
-protocol ZodiakProvider {
-    func image() -> Data?
-    func chageSettings(param: String, value: String)
-    func userManipulate(command: String)
-}
-
-
-class Model: ZodiakProvider {
-    private let authProvider: () -> (String, String)
-    private var settings = Dictionary<Settings, Int>()
-    private let host: URL
-    
-    init(authProvider: @escaping () -> (String, String),
-         host: URL) {
-        self.authProvider = authProvider
-        self.host = host
-        self.readsettings(handler: { (updatedSettings, error) in
-            guard let settings = updatedSettings else { return }
-            self.settings = settings
-        })
+func settingsConverter(settings: Settings, value: String) -> (String, String) {
+    switch settings {
+    case .IRcut:
+        return ("14", value)
+    case .Bright:
+        return ("1", value)
+    case .Contrast:
+        return ("2", value)
+    case .Saturation:
+        return ("8", value)
+    default:
+        return ("", "")
     }
-    
-    enum Target {
-        case image
-        case settings
-        case changeSettings
-        case userManipulate
-    }
-    
-    private func getUrl(with cgi: String) -> String {
-        let (user, password) = authProvider()
-        return "\(host.absoluteString)/\(cgi)?loginuse=\(user)&amp;loginpas=\(password)"
-    }
-    
-    func image() -> Data? {
-        return try? Data(contentsOf: URL(string: "http://188.242.14.235:81/snapshot.cgi?user=admin&pwd=123123")!)
-    }
-    
-    func readsettings(handler: @escaping (Dictionary<Settings, Int>?, Error?) -> Void) {
-        let url = getUrl(with: "get_camera_params.cgi")
-        let task = URLSession.shared.downloadTask(with: URL(string: url)!) { (file, response, error) in
-            if let file = file {
-                do {
-                    handler(try String(contentsOf: file).parseCGI(), nil)
-                } catch {
-                    handler(nil, error)
-                }
-            }
-        }
-        
-        task.resume()
-    }
-    
-    func chageSettings(param: String, value: String) {
-        var cgi =  getUrl(with: "camera_control.cgi")
-        cgi += "&param=\(param)&value=\(value)"
-        cgi += "&\(Date().stamp())"
-        
-        let url = URL(string: cgi)!
-        let task = URLSession.shared.dataTask(with: url) { (data, response, error) in
-            print(error)
-        }
-        
-        task.resume()
-    }
-    
-    func userManipulate(command: String) {
-        var cgi = getUrl(with: "decoder_control.cgi");
-        cgi += "&command=\(command)"
-        cgi += "&onestep=0"
-        cgi += "&\(Date().stamp())"
-        
-        let url = URL(string: cgi)!
-        
-        let task = URLSession.shared.dataTask(with: url) { (data, response, error) in
-            print(error)
-        }
-        
-        task.resume()
-    }
-}
-
-extension Model: PanelDataProvider {
-    var brightness: Int {
-        get {
-            return settings[.Bright] ?? 0
-        }
-        set {
-            chageSettings(param: Settings.Bright.rawValue, value: "\(newValue)")
-        }
-    }
-    
-    var saturation: Int {
-        get {
-            return settings[.Saturation] ?? 0
-        }
-        set {
-            chageSettings(param: Settings.Saturation.rawValue, value: "\(newValue)")
-        }
-    }
-    
-    var contract: Int {
-        get {
-            return settings[.Contrast] ?? 0
-        }
-        set {
-            chageSettings(param: Settings.Contrast.rawValue, value: "\(newValue)")
-        }
-    }
-    
-    var ir: Bool {
-        get {
-            return settings[.IRcut] == 1
-        }
-        set {
-            chageSettings(param: Settings.IRcut.rawValue, value: "\(newValue == true ? 1 : 0)")
-        }
-    }
-}
-
-class MockModel: ZodiakProvider {
-    private var settings = Dictionary<Settings, Int>()
-    
-    func image() -> Data? {
-        return nil
-    }
-    func chageSettings(param: String, value: String) {
-        print("chageSettings(param: \(param), value: \(value)")
-    }
-    
-    func userManipulate(command: String) {
-         print("userManipulate(command: \(command)")
-    }
-}
-
-extension MockModel: PanelDataProvider {
-    var brightness: Int {
-        get {
-            return settings[.Bright] ?? 0
-        }
-        set {
-            settings[.Bright] = newValue
-            chageSettings(param: Settings.Bright.rawValue, value: "\(newValue)")
-        }
-    }
-    
-    var saturation: Int {
-        get {
-            return settings[.Saturation] ?? 0
-        }
-        set {
-            settings[.Saturation] = newValue
-            chageSettings(param: Settings.Saturation.rawValue, value: "\(newValue)")
-        }
-    }
-    
-    var contract: Int {
-        get {
-            return settings[.Contrast] ?? 0
-        }
-        set {
-            settings[.Contrast] = newValue
-            chageSettings(param: Settings.Contrast.rawValue, value: "\(newValue)")
-        }
-    }
-    
-    var ir: Bool {
-        get {
-            return settings[.IRcut] == 1
-        }
-        set {
-            settings[.IRcut] = newValue == true ? 1 : 0
-            chageSettings(param: Settings.IRcut.rawValue, value: "\(newValue == true ? 1 : 0)")
-        }
-    }
-}
-
-protocol PanelDataProvider {
-    var brightness: Int { get set }
-    var saturation: Int { get set }
-    var contract: Int { get set }
-    var ir: Bool { get set }
 }
 
 class PanelView: UIView {
+
     private var dataProvider: PanelDataProvider
     private var items: [Item] = []
+    
+    enum Event {
+        case itemSelected(Item)
+    }
+    
+    var eventHandler: (Event) -> Void = { _ in }
     
     init(frame: CGRect, provider: PanelDataProvider) {
         dataProvider = provider
@@ -354,35 +231,27 @@ class PanelView: UIView {
                                      imageMax: #imageLiteral(resourceName: "brightnessMax"),
                                      maxValue: 255,
                                      minValue: 0,
-                                     currentValue: dataProvider.brightness,
+                                     currentValue: { self.dataProvider.brightness },
                                      newValueHandler: { self.dataProvider.brightness = $0 })
         let contrast = ControlItem(image: #imageLiteral(resourceName: "contrastMax"),
                                    imageMin: #imageLiteral(resourceName: "contrastMin"),
                                    imageMax: #imageLiteral(resourceName: "contrastMax"),
                                    maxValue: 255,
                                    minValue: 0,
-                                   currentValue: dataProvider.contract,
+                                   currentValue: { self.dataProvider.contract },
                                    newValueHandler: { self.dataProvider.contract = $0 })
         let saturation = ControlItem(image: #imageLiteral(resourceName: "saturationMin"),
                                      imageMin: #imageLiteral(resourceName: "saturationMin"),
                                      imageMax: #imageLiteral(resourceName: "saturationMax"),
                                      maxValue: 255,
                                      minValue: 0,
-                                     currentValue: dataProvider.saturation,
+                                     currentValue: { self.dataProvider.saturation },
                                      newValueHandler: { self.dataProvider.saturation = $0 })
         let ir = ToggleItem(image: UIImage(named: "ir"),
-                            currentValue: self.dataProvider.ir,
+                            currentValue: { self.dataProvider.ir },
                             newValueHandler: { self.dataProvider.ir = $0 })
         items = [.control(brightness), .control(contrast), .control(saturation), .toggle(ir)]
         setup()
-    }
-    
-    override func hitTest(_ point: CGPoint, with event: UIEvent?) -> UIView? {
-        if slider?.frame.contains(point) == true {
-            return slider
-        } else {
-            return stackView.hitTest(point, with: event)
-        }
     }
     
     required init?(coder aDecoder: NSCoder) {
@@ -395,62 +264,34 @@ class PanelView: UIView {
             let view = PanelIconView(image: item.image())
             view.tag = index
             view.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(tap)))
+            view.constrain(to:
+                constraint(\.widthAnchor, constant: 44),
+                constraint(\.heightAnchor, constant: 44))
             stackView.addArrangedSubview(view)
         }
      
         stackView.axis = .horizontal
-        stackView.distribution = .fillEqually
+        stackView.distribution = .equalSpacing
         stackView.alignment = .center
         
         addSubview(stackView, constraints: [
             constraint(\.leftAnchor, constant: 16),
             constraint(\.rightAnchor, constant: -17),
             constraint(\.topAnchor, constant: 8),
-            constraint(\.bottomAnchor, constant: -8),
+            constraint(\.bottomAnchor, constraintRelation: .lessThanOrEqual, constant: -36),
             ])
+        
+        let blurView = UIVisualEffectView(effect: UIBlurEffect(style: .dark))
+        insertSubview(blurView, at: 0, constraints: .pin)
+        
+        tintColor = UIColor.white.withAlphaComponent(0.7)
+        //backgroundColor = UIColor.black
 
     }
     var slider: ArcSlider?
     @objc func tap(_ gesture: UITapGestureRecognizer) {
         guard let view = gesture.view else { return }
-        switch items[view.tag] {
-        case .control(let control):
-            let frame = CGRect.zero
-            let slider = ArcSlider(frame: frame,
-                                   settings: .init(innerRadiusOffset: 30,
-                                                   color: UIColor.black.withAlphaComponent(0.2),
-                                                   tintColor: tintColor,
-                                                   startImage: control.imageMin ?? UIImage.empty(),
-                                                   endImage: control.imageMax ?? UIImage.empty(),
-                                                   minValue: control.minValue,
-                                                   maxValue: control.maxValue,
-                                                   currentValue: control.currentValue))
-        
-            slider.addTarget(self, action: #selector(changeItemValue), for: .valueChanged)
-            slider.alpha = 0
-            slider.isEnabled = true
-            self.addSubview(slider, constraints: [
-                    constraint(\.leftAnchor, constant: -15),
-                    constraint(\.rightAnchor, constant: 15),
-                    constraint(\.heightAnchor, constant: 120)
-                ])
-            slider.constrainToView(stackView, constraints: [
-                constraint(\.bottomAnchor, \.topAnchor)
-                ])
-            UIView.animate(withDuration: 0.2) {
-                slider.alpha = 1
-                slider.layoutIfNeeded()
-            }
-            self.slider = slider
-            
-        case .toggle(let toggle):
-            toggle.newValueHandler(!toggle.currentValue)
-        }
-    }
-    
-    @objc func changeItemValue(_ slider: ArcSlider) {
-        guard let tag = slider.superview?.tag, case let .control(control) = items[tag] else { fatalError() }
-        control.newValueHandler(slider.settings.currentValue)
+        eventHandler(.itemSelected(items[view.tag]))
     }
     
     struct ControlItem {
@@ -459,13 +300,13 @@ class PanelView: UIView {
         var imageMax: UIImage?
         var maxValue: Int
         var minValue: Int
-        var currentValue: Int
+        var currentValue: ()->Int
         var newValueHandler: (Int)->Void
     }
     
     struct ToggleItem {
         var image: UIImage?
-        var currentValue: Bool
+        var currentValue: ()->Bool
         var newValueHandler: (Bool)->Void
     }
     

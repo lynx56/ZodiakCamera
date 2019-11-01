@@ -29,8 +29,17 @@ class JoystickView: SKView {
     private let joystickScene = JoystickScene()
     var moveHandler: (Event) -> Void = { _ in }
     
-    override func awakeFromNib() {
-        super.awakeFromNib()
+    override init(frame: CGRect) {
+        super.init(frame: frame)
+        setup()
+        backgroundColor = .white
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+
+    func setup() {
         joystickScene.anchorPoint = CGPoint(x: 0.5, y: 0.5)
         joystickScene.handler = handleJoystickSceneEvent
         self.presentScene(joystickScene)
@@ -64,14 +73,10 @@ class JoystickView: SKView {
     }
 }
 
+
 class JoystickScene: SKScene {
     private var joystick: TLAnalogJoystick?
-    
-    override var size: CGSize {
-        didSet {
-            joystick?.diameter = min(size.width, size.height)/1.5
-        }
-    }
+    private var joystickHiddenArea = TLAnalogJoystickHiddenArea(rect: .zero)
     
     enum Event {
         case begin
@@ -81,18 +86,27 @@ class JoystickScene: SKScene {
     
     var handler: (Event) -> Void = { _ in }
     
+    override func didChangeSize(_ oldSize: CGSize) {
+        guard size != oldSize else {
+            return
+        }
+        joystickHiddenArea.removeFromParent()
+        joystickHiddenArea = TLAnalogJoystickHiddenArea(rect: frame)
+        joystickHiddenArea.joystick = joystick
+        addChild(joystickHiddenArea)
+    }
+    
     override func didMove(to view: SKView) {
-        joystick = TLAnalogJoystick(withDiameter: 50)
+        joystick = TLAnalogJoystick(withDiameter: 100)
         
         physicsBody = SKPhysicsBody(edgeLoopFrom: frame)
         backgroundColor = .clear
         joystick?.handleImage = UIImage(named: "stick")!
         joystick?.baseImage = UIImage(named: "substrate")!
         
-        let joystickHiddenArea = TLAnalogJoystickHiddenArea(rect: frame)
         joystickHiddenArea.joystick = joystick
         addChild(joystickHiddenArea)
- 
+
         joystick?.on(.begin) { [weak self] _ in
             self?.handler(.begin)
          }

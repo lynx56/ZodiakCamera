@@ -12,13 +12,13 @@
 		BF08A65223577C9800CEADD1 /* JoystickScene.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF08A65123577C9800CEADD1 /* JoystickScene.swift */; };
 		BF08A65423577CE400CEADD1 /* TLAnalogJoystick.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF08A65323577CE400CEADD1 /* TLAnalogJoystick.swift */; };
 		BF08A6562359AFB400CEADD1 /* ArcSlider.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF08A6552359AFB400CEADD1 /* ArcSlider.swift */; };
+		BF534AF8236C4025007B5F2F /* Model.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF534AF7236C4025007B5F2F /* Model.swift */; };
 		BF57E73523686F2700F6D43B /* AutolayoutDSL.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF57E73423686F2700F6D43B /* AutolayoutDSL.swift */; };
 		BF763B4223548D3F00D89FAB /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF763B4123548D3F00D89FAB /* AppDelegate.swift */; };
 		BF763B4423548D3F00D89FAB /* CameraViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF763B4323548D3F00D89FAB /* CameraViewController.swift */; };
 		BF763B4723548D3F00D89FAB /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = BF763B4523548D3F00D89FAB /* Main.storyboard */; };
 		BF763B4923548D4100D89FAB /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = BF763B4823548D4100D89FAB /* Assets.xcassets */; };
 		BF763B4C23548D4100D89FAB /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = BF763B4A23548D4100D89FAB /* LaunchScreen.storyboard */; };
-		BF8CF6BA23698F2F00F13371 /* SelfSizedCollectionViewLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF8CF6B923698F2F00F13371 /* SelfSizedCollectionViewLayout.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -29,6 +29,7 @@
 		BF08A65123577C9800CEADD1 /* JoystickScene.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JoystickScene.swift; sourceTree = "<group>"; };
 		BF08A65323577CE400CEADD1 /* TLAnalogJoystick.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TLAnalogJoystick.swift; sourceTree = "<group>"; };
 		BF08A6552359AFB400CEADD1 /* ArcSlider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArcSlider.swift; sourceTree = "<group>"; };
+		BF534AF7236C4025007B5F2F /* Model.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Model.swift; sourceTree = "<group>"; };
 		BF57E73423686F2700F6D43B /* AutolayoutDSL.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AutolayoutDSL.swift; sourceTree = "<group>"; };
 		BF763B3E23548D3F00D89FAB /* ZodiakCamera.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ZodiakCamera.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		BF763B4123548D3F00D89FAB /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -37,7 +38,6 @@
 		BF763B4823548D4100D89FAB /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		BF763B4B23548D4100D89FAB /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		BF763B4D23548D4100D89FAB /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		BF8CF6B923698F2F00F13371 /* SelfSizedCollectionViewLayout.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SelfSizedCollectionViewLayout.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -101,7 +101,7 @@
 				BF08A65323577CE400CEADD1 /* TLAnalogJoystick.swift */,
 				BF08A6552359AFB400CEADD1 /* ArcSlider.swift */,
 				BF57E73423686F2700F6D43B /* AutolayoutDSL.swift */,
-				BF8CF6B923698F2F00F13371 /* SelfSizedCollectionViewLayout.swift */,
+				BF534AF7236C4025007B5F2F /* Model.swift */,
 			);
 			path = ZodiakCamera;
 			sourceTree = "<group>";
@@ -226,11 +226,11 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				BF534AF8236C4025007B5F2F /* Model.swift in Sources */,
 				BF08A65223577C9800CEADD1 /* JoystickScene.swift in Sources */,
 				BF763B4423548D3F00D89FAB /* CameraViewController.swift in Sources */,
 				BF763B4223548D3F00D89FAB /* AppDelegate.swift in Sources */,
 				BF57E73523686F2700F6D43B /* AutolayoutDSL.swift in Sources */,
-				BF8CF6BA23698F2F00F13371 /* SelfSizedCollectionViewLayout.swift in Sources */,
 				BF08A65423577CE400CEADD1 /* TLAnalogJoystick.swift in Sources */,
 				BF08A64F2355DD2F00CEADD1 /* SettingsViewController.swift in Sources */,
 				BF08A6562359AFB400CEADD1 /* ArcSlider.swift in Sources */,
