@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import KeychainSwift
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
@@ -15,12 +16,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         
-        let model = Model(authProvider: { return ("admin", "123123") },
-                          host: URL(string: "http://188.242.14.235:81")!)
-    //    let model = MockModel()
-        let cameraVc = CameraViewController(zodiak: model, dataProvider: model)
+        let cameraFlow = CameraFlowViewController()
         window = UIWindow(frame: UIScreen.main.bounds)
-        window?.rootViewController = cameraVc
+        window?.rootViewController = cameraFlow
         window?.makeKeyAndVisible()
         return true
     }
@@ -50,3 +48,23 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
 }
 
+class CameraFlowViewController: UIViewController, CameraViewControllerRouter {
+    private let keychain = KeychainSwift()
+    override var preferredStatusBarStyle: UIStatusBarStyle {
+        return .lightContent
+    }
+    
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        
+        let model = Model(cameraSettings: keychain)
+        //let model = MockModel()
+        let cameraVc = CameraViewController(zodiak: model, dataProvider: model, router: self)
+        add(cameraVc)
+    }
+    
+    func openSettings() {
+        let settingsController = SettingsViewController(settingsProvider: keychain)
+        show(settingsController, sender: self)
+    }
+}

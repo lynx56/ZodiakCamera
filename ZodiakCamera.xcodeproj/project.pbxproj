@@ -9,9 +9,9 @@
 /* Begin PBXBuildFile section */
 		424B46A0A7D4A890E9EE5FDA /* Pods_ZodiakCamera.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7068A07341DE977E61A05851 /* Pods_ZodiakCamera.framework */; };
 		BF08A64F2355DD2F00CEADD1 /* SettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF08A64E2355DD2F00CEADD1 /* SettingsViewController.swift */; };
-		BF08A65223577C9800CEADD1 /* JoystickScene.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF08A65123577C9800CEADD1 /* JoystickScene.swift */; };
-		BF08A65423577CE400CEADD1 /* TLAnalogJoystick.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF08A65323577CE400CEADD1 /* TLAnalogJoystick.swift */; };
-		BF08A6562359AFB400CEADD1 /* ArcSlider.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF08A6552359AFB400CEADD1 /* ArcSlider.swift */; };
+		BF08A65223577C9800CEADD1 /* JoystickView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF08A65123577C9800CEADD1 /* JoystickView.swift */; };
+		BF08A65423577CE400CEADD1 /* TLAnalogJoystickComponent.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF08A65323577CE400CEADD1 /* TLAnalogJoystickComponent.swift */; };
+		BF08A6562359AFB400CEADD1 /* CircleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF08A6552359AFB400CEADD1 /* CircleView.swift */; };
 		BF534AF8236C4025007B5F2F /* Model.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF534AF7236C4025007B5F2F /* Model.swift */; };
 		BF57E73523686F2700F6D43B /* AutolayoutDSL.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF57E73423686F2700F6D43B /* AutolayoutDSL.swift */; };
 		BF763B4223548D3F00D89FAB /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF763B4123548D3F00D89FAB /* AppDelegate.swift */; };
@@ -19,6 +19,22 @@
 		BF763B4723548D3F00D89FAB /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = BF763B4523548D3F00D89FAB /* Main.storyboard */; };
 		BF763B4923548D4100D89FAB /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = BF763B4823548D4100D89FAB /* Assets.xcassets */; };
 		BF763B4C23548D4100D89FAB /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = BF763B4A23548D4100D89FAB /* LaunchScreen.storyboard */; };
+		BF998EA22372EE4B00325BD9 /* MockModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF998EA12372EE4B00325BD9 /* MockModel.swift */; };
+		BF998EA52372EEDD00325BD9 /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF998EA42372EEDD00325BD9 /* Extensions.swift */; };
+		BF998EA72372EEE700325BD9 /* Arc.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF998EA62372EEE700325BD9 /* Arc.swift */; };
+		BF998EA92372EEEE00325BD9 /* ArcSlider.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF998EA82372EEEE00325BD9 /* ArcSlider.swift */; };
+		BF998EAB2372EF7A00325BD9 /* ArcLayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF998EAA2372EF7A00325BD9 /* ArcLayer.swift */; };
+		BF998EAF2372F07E00325BD9 /* TLAnalogJoystickHiddenArea.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF998EAE2372F07E00325BD9 /* TLAnalogJoystickHiddenArea.swift */; };
+		BF998EB12372F08700325BD9 /* TLAnalogJoystick.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF998EB02372F08700325BD9 /* TLAnalogJoystick.swift */; };
+		BF998EB52372F19800325BD9 /* JoystickScene.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF998EB42372F19800325BD9 /* JoystickScene.swift */; };
+		BF998EB92372F4A400325BD9 /* PanelView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF998EB82372F4A400325BD9 /* PanelView.swift */; };
+		BF998EBB2372F4E700325BD9 /* Settings.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF998EBA2372F4E700325BD9 /* Settings.swift */; };
+		BF998EBD2372F51200325BD9 /* Settings+Model.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF998EBC2372F51200325BD9 /* Settings+Model.swift */; };
+		BF998EBF2372F5D900325BD9 /* Date+stamp.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF998EBE2372F5D900325BD9 /* Date+stamp.swift */; };
+		BF998EC12372F5F900325BD9 /* String+removing.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF998EC02372F5F900325BD9 /* String+removing.swift */; };
+		BF998EC32372F61A00325BD9 /* LimitValue.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF998EC22372F61A00325BD9 /* LimitValue.swift */; };
+		BFFBB347237303ED008C1D47 /* NetworkListener.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFFBB346237303ED008C1D47 /* NetworkListener.swift */; };
+		BFFBB34923730B6B008C1D47 /* UiViewController+child.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFFBB34823730B6B008C1D47 /* UiViewController+child.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -26,9 +42,9 @@
 		7068A07341DE977E61A05851 /* Pods_ZodiakCamera.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_ZodiakCamera.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		77D8A1F548E238707E71F5A5 /* Pods-ZodiakCamera.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ZodiakCamera.debug.xcconfig"; path = "Pods/Target Support Files/Pods-ZodiakCamera/Pods-ZodiakCamera.debug.xcconfig"; sourceTree = "<group>"; };
 		BF08A64E2355DD2F00CEADD1 /* SettingsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsViewController.swift; sourceTree = "<group>"; };
-		BF08A65123577C9800CEADD1 /* JoystickScene.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JoystickScene.swift; sourceTree = "<group>"; };
-		BF08A65323577CE400CEADD1 /* TLAnalogJoystick.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TLAnalogJoystick.swift; sourceTree = "<group>"; };
-		BF08A6552359AFB400CEADD1 /* ArcSlider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArcSlider.swift; sourceTree = "<group>"; };
+		BF08A65123577C9800CEADD1 /* JoystickView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JoystickView.swift; sourceTree = "<group>"; };
+		BF08A65323577CE400CEADD1 /* TLAnalogJoystickComponent.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TLAnalogJoystickComponent.swift; sourceTree = "<group>"; };
+		BF08A6552359AFB400CEADD1 /* CircleView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CircleView.swift; sourceTree = "<group>"; };
 		BF534AF7236C4025007B5F2F /* Model.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Model.swift; sourceTree = "<group>"; };
 		BF57E73423686F2700F6D43B /* AutolayoutDSL.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AutolayoutDSL.swift; sourceTree = "<group>"; };
 		BF763B3E23548D3F00D89FAB /* ZodiakCamera.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ZodiakCamera.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -38,6 +54,22 @@
 		BF763B4823548D4100D89FAB /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		BF763B4B23548D4100D89FAB /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		BF763B4D23548D4100D89FAB /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		BF998EA12372EE4B00325BD9 /* MockModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockModel.swift; sourceTree = "<group>"; };
+		BF998EA42372EEDD00325BD9 /* Extensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Extensions.swift; sourceTree = "<group>"; };
+		BF998EA62372EEE700325BD9 /* Arc.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Arc.swift; sourceTree = "<group>"; };
+		BF998EA82372EEEE00325BD9 /* ArcSlider.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ArcSlider.swift; sourceTree = "<group>"; };
+		BF998EAA2372EF7A00325BD9 /* ArcLayer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ArcLayer.swift; sourceTree = "<group>"; };
+		BF998EAE2372F07E00325BD9 /* TLAnalogJoystickHiddenArea.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TLAnalogJoystickHiddenArea.swift; sourceTree = "<group>"; };
+		BF998EB02372F08700325BD9 /* TLAnalogJoystick.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TLAnalogJoystick.swift; sourceTree = "<group>"; };
+		BF998EB42372F19800325BD9 /* JoystickScene.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = JoystickScene.swift; sourceTree = "<group>"; };
+		BF998EB82372F4A400325BD9 /* PanelView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PanelView.swift; sourceTree = "<group>"; };
+		BF998EBA2372F4E700325BD9 /* Settings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Settings.swift; sourceTree = "<group>"; };
+		BF998EBC2372F51200325BD9 /* Settings+Model.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Settings+Model.swift"; sourceTree = "<group>"; };
+		BF998EBE2372F5D900325BD9 /* Date+stamp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Date+stamp.swift"; sourceTree = "<group>"; };
+		BF998EC02372F5F900325BD9 /* String+removing.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "String+removing.swift"; sourceTree = "<group>"; };
+		BF998EC22372F61A00325BD9 /* LimitValue.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LimitValue.swift; sourceTree = "<group>"; };
+		BFFBB346237303ED008C1D47 /* NetworkListener.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NetworkListener.swift; sourceTree = "<group>"; };
+		BFFBB34823730B6B008C1D47 /* UiViewController+child.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UiViewController+child.swift"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -90,20 +122,84 @@
 		BF763B4023548D3F00D89FAB /* ZodiakCamera */ = {
 			isa = PBXGroup;
 			children = (
+				BF998EB72372F26200325BD9 /* CameraScene */,
+				BF998EB62372F1ED00325BD9 /* SettingsScene */,
 				BF763B4123548D3F00D89FAB /* AppDelegate.swift */,
+				BFFBB34823730B6B008C1D47 /* UiViewController+child.swift */,
+				BFFBB346237303ED008C1D47 /* NetworkListener.swift */,
 				BF763B4523548D3F00D89FAB /* Main.storyboard */,
 				BF763B4823548D4100D89FAB /* Assets.xcassets */,
 				BF763B4A23548D4100D89FAB /* LaunchScreen.storyboard */,
 				BF763B4D23548D4100D89FAB /* Info.plist */,
-				BF763B4323548D3F00D89FAB /* CameraViewController.swift */,
-				BF08A64E2355DD2F00CEADD1 /* SettingsViewController.swift */,
-				BF08A65123577C9800CEADD1 /* JoystickScene.swift */,
-				BF08A65323577CE400CEADD1 /* TLAnalogJoystick.swift */,
-				BF08A6552359AFB400CEADD1 /* ArcSlider.swift */,
 				BF57E73423686F2700F6D43B /* AutolayoutDSL.swift */,
-				BF534AF7236C4025007B5F2F /* Model.swift */,
 			);
 			path = ZodiakCamera;
+			sourceTree = "<group>";
+		};
+		BF998EA02372EE2500325BD9 /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				BF534AF7236C4025007B5F2F /* Model.swift */,
+				BF998EA12372EE4B00325BD9 /* MockModel.swift */,
+				BF998EBC2372F51200325BD9 /* Settings+Model.swift */,
+				BF998EBA2372F4E700325BD9 /* Settings.swift */,
+				BF998EC22372F61A00325BD9 /* LimitValue.swift */,
+			);
+			path = Models;
+			sourceTree = "<group>";
+		};
+		BF998EA32372EEC500325BD9 /* ArcSlider */ = {
+			isa = PBXGroup;
+			children = (
+				BF08A6552359AFB400CEADD1 /* CircleView.swift */,
+				BF998EA42372EEDD00325BD9 /* Extensions.swift */,
+				BF998EA62372EEE700325BD9 /* Arc.swift */,
+				BF998EA82372EEEE00325BD9 /* ArcSlider.swift */,
+				BF998EAA2372EF7A00325BD9 /* ArcLayer.swift */,
+			);
+			path = ArcSlider;
+			sourceTree = "<group>";
+		};
+		BF998EAC2372F04300325BD9 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				BF998EAD2372F06E00325BD9 /* Joystick */,
+				BF998EA32372EEC500325BD9 /* ArcSlider */,
+				BF998EB82372F4A400325BD9 /* PanelView.swift */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
+		BF998EAD2372F06E00325BD9 /* Joystick */ = {
+			isa = PBXGroup;
+			children = (
+				BF08A65123577C9800CEADD1 /* JoystickView.swift */,
+				BF998EB42372F19800325BD9 /* JoystickScene.swift */,
+				BF08A65323577CE400CEADD1 /* TLAnalogJoystickComponent.swift */,
+				BF998EAE2372F07E00325BD9 /* TLAnalogJoystickHiddenArea.swift */,
+				BF998EB02372F08700325BD9 /* TLAnalogJoystick.swift */,
+			);
+			path = Joystick;
+			sourceTree = "<group>";
+		};
+		BF998EB62372F1ED00325BD9 /* SettingsScene */ = {
+			isa = PBXGroup;
+			children = (
+				BF08A64E2355DD2F00CEADD1 /* SettingsViewController.swift */,
+			);
+			path = SettingsScene;
+			sourceTree = "<group>";
+		};
+		BF998EB72372F26200325BD9 /* CameraScene */ = {
+			isa = PBXGroup;
+			children = (
+				BF998EA02372EE2500325BD9 /* Models */,
+				BF998EAC2372F04300325BD9 /* Views */,
+				BF763B4323548D3F00D89FAB /* CameraViewController.swift */,
+				BF998EBE2372F5D900325BD9 /* Date+stamp.swift */,
+				BF998EC02372F5F900325BD9 /* String+removing.swift */,
+			);
+			path = CameraScene;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -206,13 +302,17 @@
 			);
 			inputPaths = (
 				"${SRCROOT}/Pods/Target Support Files/Pods-ZodiakCamera/Pods-ZodiakCamera-frameworks.sh",
+				"${BUILT_PRODUCTS_DIR}/CocoaAsyncSocket/CocoaAsyncSocket.framework",
 				"${BUILT_PRODUCTS_DIR}/Eureka/Eureka.framework",
+				"${BUILT_PRODUCTS_DIR}/KeychainSwift/KeychainSwift.framework",
 			);
 			name = "[CP] Embed Pods Frameworks";
 			outputFileListPaths = (
 			);
 			outputPaths = (
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/CocoaAsyncSocket.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Eureka.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/KeychainSwift.framework",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -226,14 +326,30 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				BF998EC12372F5F900325BD9 /* String+removing.swift in Sources */,
+				BF998EAB2372EF7A00325BD9 /* ArcLayer.swift in Sources */,
+				BF998EA22372EE4B00325BD9 /* MockModel.swift in Sources */,
+				BFFBB34923730B6B008C1D47 /* UiViewController+child.swift in Sources */,
+				BF998EB92372F4A400325BD9 /* PanelView.swift in Sources */,
 				BF534AF8236C4025007B5F2F /* Model.swift in Sources */,
-				BF08A65223577C9800CEADD1 /* JoystickScene.swift in Sources */,
+				BF998EBF2372F5D900325BD9 /* Date+stamp.swift in Sources */,
+				BF998EB52372F19800325BD9 /* JoystickScene.swift in Sources */,
+				BF08A65223577C9800CEADD1 /* JoystickView.swift in Sources */,
+				BF998EBB2372F4E700325BD9 /* Settings.swift in Sources */,
 				BF763B4423548D3F00D89FAB /* CameraViewController.swift in Sources */,
 				BF763B4223548D3F00D89FAB /* AppDelegate.swift in Sources */,
 				BF57E73523686F2700F6D43B /* AutolayoutDSL.swift in Sources */,
-				BF08A65423577CE400CEADD1 /* TLAnalogJoystick.swift in Sources */,
+				BF998EA92372EEEE00325BD9 /* ArcSlider.swift in Sources */,
+				BF998EBD2372F51200325BD9 /* Settings+Model.swift in Sources */,
+				BF998EA52372EEDD00325BD9 /* Extensions.swift in Sources */,
+				BF08A65423577CE400CEADD1 /* TLAnalogJoystickComponent.swift in Sources */,
+				BF998EAF2372F07E00325BD9 /* TLAnalogJoystickHiddenArea.swift in Sources */,
+				BF998EA72372EEE700325BD9 /* Arc.swift in Sources */,
+				BF998EB12372F08700325BD9 /* TLAnalogJoystick.swift in Sources */,
 				BF08A64F2355DD2F00CEADD1 /* SettingsViewController.swift in Sources */,
-				BF08A6562359AFB400CEADD1 /* ArcSlider.swift in Sources */,
+				BF08A6562359AFB400CEADD1 /* CircleView.swift in Sources */,
+				BFFBB347237303ED008C1D47 /* NetworkListener.swift in Sources */,
+				BF998EC32372F61A00325BD9 /* LimitValue.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

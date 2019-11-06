@@ -1,16 +1,24 @@
 PODS:
+  - CocoaAsyncSocket (7.6.3)
   - Eureka (4.3.1)
+  - KeychainSwift (13.0.0)
 
 DEPENDENCIES:
+  - CocoaAsyncSocket
   - Eureka
+  - KeychainSwift
 
 SPEC REPOS:
   https://github.com/cocoapods/specs.git:
+    - CocoaAsyncSocket
     - Eureka
+    - KeychainSwift
 
 SPEC CHECKSUMS:
+  CocoaAsyncSocket: eafaa68a7e0ec99ead0a7b35015e0bf25d2c8987
   Eureka: 28ea296f06710f6745266b71f17862048941a32d
+  KeychainSwift: 23d6c16cbc33f20fafa30c3d783241b4b87d998c
 
-PODFILE CHECKSUM: 679a1132e26b906fed1d1c3291c4cadcdd8138a8
+PODFILE CHECKSUM: d9f11e82264bd30a8e5e97b5b2e3a290be70b62d
 
 COCOAPODS: 1.5.3

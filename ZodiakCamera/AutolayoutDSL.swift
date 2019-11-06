@@ -100,6 +100,7 @@ extension UIView {
     }
     
     func constrain(to constraints: UnpairedConstraint...) {
+        self.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate(constraints.map { $0(self) })
     }
 }
