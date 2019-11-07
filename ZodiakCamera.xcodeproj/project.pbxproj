@@ -35,6 +35,7 @@
 		BF998EC32372F61A00325BD9 /* LimitValue.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF998EC22372F61A00325BD9 /* LimitValue.swift */; };
 		BFFBB347237303ED008C1D47 /* NetworkListener.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFFBB346237303ED008C1D47 /* NetworkListener.swift */; };
 		BFFBB34923730B6B008C1D47 /* UiViewController+child.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFFBB34823730B6B008C1D47 /* UiViewController+child.swift */; };
+		BFFBB34B23749DD1008C1D47 /* UIImage+resize.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFFBB34A23749DD1008C1D47 /* UIImage+resize.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -70,6 +71,7 @@
 		BF998EC22372F61A00325BD9 /* LimitValue.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LimitValue.swift; sourceTree = "<group>"; };
 		BFFBB346237303ED008C1D47 /* NetworkListener.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NetworkListener.swift; sourceTree = "<group>"; };
 		BFFBB34823730B6B008C1D47 /* UiViewController+child.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UiViewController+child.swift"; sourceTree = "<group>"; };
+		BFFBB34A23749DD1008C1D47 /* UIImage+resize.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIImage+resize.swift"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -198,6 +200,7 @@
 				BF763B4323548D3F00D89FAB /* CameraViewController.swift */,
 				BF998EBE2372F5D900325BD9 /* Date+stamp.swift */,
 				BF998EC02372F5F900325BD9 /* String+removing.swift */,
+				BFFBB34A23749DD1008C1D47 /* UIImage+resize.swift */,
 			);
 			path = CameraScene;
 			sourceTree = "<group>";
@@ -340,6 +343,7 @@
 				BF763B4223548D3F00D89FAB /* AppDelegate.swift in Sources */,
 				BF57E73523686F2700F6D43B /* AutolayoutDSL.swift in Sources */,
 				BF998EA92372EEEE00325BD9 /* ArcSlider.swift in Sources */,
+				BFFBB34B23749DD1008C1D47 /* UIImage+resize.swift in Sources */,
 				BF998EBD2372F51200325BD9 /* Settings+Model.swift in Sources */,
 				BF998EA52372EEDD00325BD9 /* Extensions.swift in Sources */,
 				BF08A65423577CE400CEADD1 /* TLAnalogJoystickComponent.swift in Sources */,

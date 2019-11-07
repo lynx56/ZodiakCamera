@@ -32,7 +32,7 @@ class Model: ZodiakProvider {
     }
     
     func image() -> Data? {
-        return try? Data(contentsOf: URL(string: "http://188.242.14.235:81/snapshot.cgi?user=admin&pwd=123123")!)
+        return try? Data(contentsOf: URL(string: "http://\(cameraSettings.host.absoluteString):\(cameraSettings.port)/snapshot.cgi?user=\(cameraSettings.login)&pwd=\(cameraSettings.password)")!)
     }
     
     func readsettings(handler: @escaping (Settings?, Error?) -> Void) {

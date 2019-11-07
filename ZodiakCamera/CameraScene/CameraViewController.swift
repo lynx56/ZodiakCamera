@@ -38,12 +38,12 @@ class CameraViewController: UIViewController {
     
     private func setup() {
         view.backgroundColor = .white
-        imageView.contentMode = .scaleAspectFit
+        imageView.contentMode = .redraw
         view.addSubview(imageView, constraints: [
             constraint(\.leadingAnchor),
             constraint(\.trailingAnchor),
             constraint(\.topAnchor),
-            constraint(\.bottomAnchor, constant: -100)
+            constraint(\.bottomAnchor)
         ])
         
         view.addSubview(panelView, constraints: [
@@ -53,24 +53,34 @@ class CameraViewController: UIViewController {
         ])
         
         panelView.constrainToView(imageView, constraints: [
-            constraint(\.topAnchor, \.bottomAnchor),
+            constraint(\.topAnchor, \.bottomAnchor, constant: -84),
         ])
         
         view.addSubview(joystickView)
-        joystickView.constrainToView(imageView, constraints: .pin)
+        joystickView.constrainToView(imageView, constraints: [
+            constraint(\.leadingAnchor),
+            constraint(\.trailingAnchor),
+            constraint(\.topAnchor)
+        ])
+        joystickView.constrainToView(panelView, constraints: [
+            constraint(\.bottomAnchor, \.topAnchor)
+        ])
         joystickView.backgroundColor = .clear
         panelView.eventHandler = handlePanelViewEvent
         
         let settings = UIButton(type: .custom)
         settings.setImage(UIImage(named: "settings"), for: .normal)
+        settings.tintColor = .white
         view.addSubview(settings, pairingTo: imageView, constraints: [
             constraint(\.trailingAnchor, constant: -17),
-            constraint(\.topAnchor, constant: 44),
+            constraint(\.topAnchor, constant: 34),
         ])
         settings.constrain(to:
-            constraint(\.widthAnchor, constant: 40),
-            constraint(\.heightAnchor, constant: 40))
+            constraint(\.widthAnchor, constant: 34),
+            constraint(\.heightAnchor, constant: 34))
         settings.addTarget(self, action: #selector(openSettings), for: .touchUpInside)
+        
+        view.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(tap)))
     }
     
     override func viewDidAppear(_ animated: Bool) {
@@ -80,6 +90,10 @@ class CameraViewController: UIViewController {
         joystickView.moveHandler = {[weak self] in
             self?.zodiak.userManipulate(CameraViewController.converter($0))
         }
+    }
+    
+    @objc func tap(_ sender: UITapGestureRecognizer) {
+        showedSlider?.removeFromSuperview()
     }
     
     @objc func openSettings(_ sender: Any) {
@@ -116,7 +130,7 @@ class CameraViewController: UIViewController {
     
     @objc private func update(displaylink: CADisplayLink) {
         guard let data = zodiak.image() else { return }
-        imageView.image = UIImage(data: data)
+        imageView.image = UIImage(data: data)?.resizeWithScaleAspectFitMode(to: imageView.bounds.size)
     }
 
     private var showedSlider: ArcSlider?
