@@ -15,7 +15,7 @@ extension UIImage {
         let widthRatio  = newSize.width  / size.width
         let heightRatio = newSize.height / size.height
         let newSize = widthRatio > heightRatio ?  CGSize(width: size.width * heightRatio, height: size.height * heightRatio) : CGSize(width: size.width * widthRatio,  height: size.height * widthRatio)
-    
+        
         return resizeWithAccelerate(to: newSize)
     }
     

@@ -61,12 +61,12 @@ class PanelView: UIView {
             let view = PanelIconView(image: item.image())
             view.tag = index
             view.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(tap)))
-            view.constrain(to:
-                constraint(\.widthAnchor, constant: 44),
-                constraint(\.heightAnchor, constant: 44))
+            view.constrainToView(view, constraints: [
+                constraint(\.widthAnchor, \.heightAnchor)
+            ])
             stackView.addArrangedSubview(view)
         }
-     
+        
         stackView.axis = .horizontal
         stackView.distribution = .equalSpacing
         stackView.alignment = .center

@@ -79,17 +79,26 @@ class CameraViewController: UIViewController {
             constraint(\.widthAnchor, constant: 34),
             constraint(\.heightAnchor, constant: 34))
         settings.addTarget(self, action: #selector(openSettings), for: .touchUpInside)
-        
+        imageView.isHidden = true
         view.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(tap)))
     }
-    
+    var ipCameraView: IPCameraView!
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-        createDisplayLink()
+        //createDisplayLink()
+        
+        ipCameraView = IPCameraView(frame: self.view.bounds)
+        view.addSubview(ipCameraView)
+        ipCameraView.startWithURL(url: URL(string: "http://188.242.14.235:81/videostream.cgi?loginuse=admin&loginpas=123123123")!)
         
         joystickView.moveHandler = {[weak self] in
             self?.zodiak.userManipulate(CameraViewController.converter($0))
         }
+    }
+    
+    override func viewDidDisappear(_ animated: Bool) {
+        super.viewDidDisappear(animated)
+        ipCameraView.stop()
     }
     
     @objc func tap(_ sender: UITapGestureRecognizer) {
@@ -130,7 +139,7 @@ class CameraViewController: UIViewController {
     
     @objc private func update(displaylink: CADisplayLink) {
         guard let data = zodiak.image() else { return }
-        imageView.image = UIImage(data: data)?.resizeWithScaleAspectFitMode(to: imageView.bounds.size)
+        imageView.image = UIImage(data: data)?.resizeWithScaleAspectFitMode(to: UIScreen.main.bounds.size) //imageView.bounds.size)
     }
 
     private var showedSlider: ArcSlider?

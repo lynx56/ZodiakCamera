@@ -23,7 +23,7 @@ class ArcSlider: UIControl {
         static let imageSize = CGSize(width: 15, height: 15)
         static let scaleImageOffset = CGFloat(4)
         static let lineWidth = CGFloat(1)
-        static let circleSize = CGSize(width: 20, height: 20)
+        static let circleSize = CGSize(width: 24, height: 24)
     }
     
     struct Settings {
@@ -85,9 +85,7 @@ class ArcSlider: UIControl {
     func setup() {
         self.tintColor = settings.tintColor
         self.currentValue = settings.currentValue
-        circleView.settings =  .init(color: .black,
-                                     borderWidth: 1,
-                                     font: .systemFont(ofSize: 8))
+        circleView.settings =  .init(color: .black, font: .systemFont(ofSize: 8))
         mainArc = Arc(startPoint: startPoint,
                       endPoint: endPoint,
                       middlePoint: topPoint)
@@ -161,7 +159,7 @@ class ArcSlider: UIControl {
         if circleView.bounds.contains(touch.location(in: circleView)) {
             circleMoving = true
             UIView.animate(withDuration: 0.1) {
-                self.circleView.transform = .init(scaleX: 1.4, y: 1.4)
+                self.circleView.transform = .init(scaleX: 1.8, y: 1.8)
             }
         }
     }

@@ -7,6 +7,8 @@
 //
 
 import Foundation
+import UIKit
+import AVKit
 
 class Model: ZodiakProvider {
     private let cameraSettings: CameraSettingsProvider
@@ -183,4 +185,81 @@ enum UserManipulation {
     case move(Move)
     case stop
     case start
+}
+
+
+class IPCameraView: UIView, URLSessionDataDelegate {
+
+    var imageView:UIImageView
+    var endMarkerData: Data
+    var receivedData: Data
+    var dataTask: URLSessionDataTask
+    
+    override init(frame: CGRect) {
+        self.endMarkerData = Data(bytes: [0xFF, 0xD9] as [UInt8], count: 2)
+        self.receivedData = Data()
+        self.imageView = UIImageView()
+        self.dataTask = URLSessionDataTask()
+        super.init(frame: frame)
+        self.addSubview(self.imageView)
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
+    deinit{
+        self.dataTask.cancel()
+    }
+    
+    func startWithURL(url: URL){
+        let session = URLSession(configuration: .default, delegate: self, delegateQueue: nil)
+        let request = URLRequest(url: url)
+        self.dataTask = session.dataTask(with: request as URLRequest)
+        self.dataTask.resume()
+        
+        var bounds = self.bounds
+        self.imageView.frame = bounds
+        self.imageView.contentMode = UIView.ContentMode.scaleAspectFit
+    }
+    
+    override func layoutSubviews() {
+        super.layoutSubviews()
+    }
+    
+    func pause() {
+        self.dataTask.cancel()
+    }
+    
+    func stop(){
+        self.pause()
+    }
+    
+    func urlSession(_ session: URLSession, dataTask: URLSessionDataTask, didReceive data: Data) {
+        self.receivedData.append(data)
+        
+        guard let endRange = self.receivedData.range(of: self.endMarkerData,
+                                                     options: [],
+                                                     in: 0..<self.receivedData.count)
+            else { return }
+        let endLocation = endRange.startIndex + endRange.count
+        
+        if self.receivedData.count > endLocation {
+            let imageData = self.receivedData.subdata(in: 0..<endLocation)
+            let receivedImage = UIImage(data: imageData)
+            
+            DispatchQueue.main.async {
+                self.imageView.image = receivedImage
+            }
+            
+            self.receivedData = self.receivedData.subdata(in: endLocation..<self.receivedData.count)
+            
+        }
+   
+        /*
+         In rare cases, for example in the case of an HTTP load where the content type of the load data is multipart/x-mixed-replace, the delegate will receive more than one connection:didReceiveResponse: message. When this happens, discard (or process) all data previously delivered by connection:didReceiveData:, and prepare to handle the next part (which could potentially have a different MIME type).
+         The only case where this message is not sent to the delegate is when the protocol implementation encounters an error before a response could be create
+         */
+        
+    }
 }

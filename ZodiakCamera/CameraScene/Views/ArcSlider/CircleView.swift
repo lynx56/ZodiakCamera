@@ -11,10 +11,9 @@ import UIKit
 class CircleView: UIView {
     struct Settings {
         let color: UIColor
-        let borderWidth: CGFloat
         let font: UIFont
         
-        static let initial = Settings(color: .white, borderWidth: 0.5, font: .systemFont(ofSize: 12))
+        static let initial = Settings(color: .white, font: .systemFont(ofSize: 12))
     }
     
     private lazy var label: UILabel = {
@@ -33,8 +32,6 @@ class CircleView: UIView {
     var settings: Settings = .initial {
         didSet {
             clipsToBounds = true
-            layer.borderColor = settings.color.cgColor
-            layer.borderWidth = settings.borderWidth
             label.textColor = settings.color
             label.font = settings.font
             setNeedsDisplay()
