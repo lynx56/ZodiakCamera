@@ -33,6 +33,8 @@
 		BF998EBF2372F5D900325BD9 /* Date+stamp.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF998EBE2372F5D900325BD9 /* Date+stamp.swift */; };
 		BF998EC12372F5F900325BD9 /* String+removing.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF998EC02372F5F900325BD9 /* String+removing.swift */; };
 		BF998EC32372F61A00325BD9 /* LimitValue.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF998EC22372F61A00325BD9 /* LimitValue.swift */; };
+		BFA6A88B2394E6D700CBB011 /* IPCameraView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFA6A88A2394E6D700CBB011 /* IPCameraView.swift */; };
+		BFA6A88D2394EC8F00CBB011 /* IPCameraViewBySnapshots.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFA6A88C2394EC8F00CBB011 /* IPCameraViewBySnapshots.swift */; };
 		BFFBB347237303ED008C1D47 /* NetworkListener.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFFBB346237303ED008C1D47 /* NetworkListener.swift */; };
 		BFFBB34923730B6B008C1D47 /* UiViewController+child.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFFBB34823730B6B008C1D47 /* UiViewController+child.swift */; };
 		BFFBB34B23749DD1008C1D47 /* UIImage+resize.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFFBB34A23749DD1008C1D47 /* UIImage+resize.swift */; };
@@ -69,6 +71,8 @@
 		BF998EBE2372F5D900325BD9 /* Date+stamp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Date+stamp.swift"; sourceTree = "<group>"; };
 		BF998EC02372F5F900325BD9 /* String+removing.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "String+removing.swift"; sourceTree = "<group>"; };
 		BF998EC22372F61A00325BD9 /* LimitValue.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LimitValue.swift; sourceTree = "<group>"; };
+		BFA6A88A2394E6D700CBB011 /* IPCameraView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IPCameraView.swift; sourceTree = "<group>"; };
+		BFA6A88C2394EC8F00CBB011 /* IPCameraViewBySnapshots.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IPCameraViewBySnapshots.swift; sourceTree = "<group>"; };
 		BFFBB346237303ED008C1D47 /* NetworkListener.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NetworkListener.swift; sourceTree = "<group>"; };
 		BFFBB34823730B6B008C1D47 /* UiViewController+child.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UiViewController+child.swift"; sourceTree = "<group>"; };
 		BFFBB34A23749DD1008C1D47 /* UIImage+resize.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIImage+resize.swift"; sourceTree = "<group>"; };
@@ -168,6 +172,8 @@
 				BF998EAD2372F06E00325BD9 /* Joystick */,
 				BF998EA32372EEC500325BD9 /* ArcSlider */,
 				BF998EB82372F4A400325BD9 /* PanelView.swift */,
+				BFA6A88A2394E6D700CBB011 /* IPCameraView.swift */,
+				BFA6A88C2394EC8F00CBB011 /* IPCameraViewBySnapshots.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -333,6 +339,7 @@
 				BF998EAB2372EF7A00325BD9 /* ArcLayer.swift in Sources */,
 				BF998EA22372EE4B00325BD9 /* MockModel.swift in Sources */,
 				BFFBB34923730B6B008C1D47 /* UiViewController+child.swift in Sources */,
+				BFA6A88B2394E6D700CBB011 /* IPCameraView.swift in Sources */,
 				BF998EB92372F4A400325BD9 /* PanelView.swift in Sources */,
 				BF534AF8236C4025007B5F2F /* Model.swift in Sources */,
 				BF998EBF2372F5D900325BD9 /* Date+stamp.swift in Sources */,
@@ -344,6 +351,7 @@
 				BF57E73523686F2700F6D43B /* AutolayoutDSL.swift in Sources */,
 				BF998EA92372EEEE00325BD9 /* ArcSlider.swift in Sources */,
 				BFFBB34B23749DD1008C1D47 /* UIImage+resize.swift in Sources */,
+				BFA6A88D2394EC8F00CBB011 /* IPCameraViewBySnapshots.swift in Sources */,
 				BF998EBD2372F51200325BD9 /* Settings+Model.swift in Sources */,
 				BF998EA52372EEDD00325BD9 /* Extensions.swift in Sources */,
 				BF08A65423577CE400CEADD1 /* TLAnalogJoystickComponent.swift in Sources */,

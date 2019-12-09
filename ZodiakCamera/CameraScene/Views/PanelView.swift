@@ -44,9 +44,13 @@ class PanelView: UIView {
                                      minValue: self.dataProvider.brightness.minValue,
                                      currentValue: { self.dataProvider.saturation.currentValue },
                                      newValueHandler: { self.dataProvider.saturation.currentValue = $0 })
-        let ir = ToggleItem(image: UIImage(named: "ir"),
+        let ir = ToggleItem(image: #imageLiteral(resourceName: "irOff"),
+                            imageSelected: #imageLiteral(resourceName: "irOn"),
                             currentValue: { self.dataProvider.ir },
-                            newValueHandler: { self.dataProvider.ir = $0 })
+                            newValueHandler: {
+                                self.dataProvider.ir = $0
+                                self.setNeedsLayout()
+        })
         items = [.control(brightness), .control(contrast), .control(saturation), .toggle(ir)]
         setup()
     }
@@ -91,6 +95,15 @@ class PanelView: UIView {
         eventHandler(.itemSelected(items[view.tag]))
     }
     
+    override func layoutSubviews() {
+        super.layoutSubviews()
+        stackView.subviews.forEach {
+            if let panelIconView = $0 as? PanelIconView {
+                panelIconView.image = items[panelIconView.tag].image()
+            }
+        }
+    }
+    
     struct ControlItem {
         var image: UIImage?
         var imageMin: UIImage?
@@ -103,6 +116,7 @@ class PanelView: UIView {
     
     struct ToggleItem {
         var image: UIImage?
+        var imageSelected: UIImage?
         var currentValue: ()->Bool
         var newValueHandler: (Bool)->Void
     }
@@ -115,7 +129,7 @@ class PanelView: UIView {
             case .control(let control):
                 return control.image
             case .toggle(let toggle):
-                return toggle.image
+                return toggle.currentValue() == false ? toggle.image : toggle.imageSelected
             }
         }
     }

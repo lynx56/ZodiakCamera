@@ -56,10 +56,11 @@ class CameraFlowViewController: UIViewController, CameraViewControllerRouter {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+   
+        let factory = DefaultCameraViewFactory(cameraSettings: keychain, mode: .stream)
         
-        let model = Model(cameraSettings: keychain)
-        //let model = MockModel()
-        let cameraVc = CameraViewController(zodiak: model, dataProvider: model, router: self)
+        //let mockFactory = MockFactory()
+        let cameraVc = CameraViewController(factory: factory, router: self)
         add(cameraVc)
     }
     

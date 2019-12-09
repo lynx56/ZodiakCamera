@@ -15,14 +15,17 @@ protocol CameraViewControllerRouter {
 class CameraViewController: UIViewController {
     private let joystickView = JoystickView()
     private let panelView: PanelView
-    private let imageView = UIImageView()
-    private let zodiak: ZodiakProvider
     private let router: CameraViewControllerRouter
+    private let zodiak: ZodiakProvider
+    private let ipCameraView: UIView
       
-    init(zodiak: ZodiakProvider, dataProvider: PanelDataProvider, router: CameraViewControllerRouter) {
-        self.zodiak = zodiak
-        self.panelView = PanelView(frame: .zero, provider: dataProvider)
+    init(factory: CameraViewControllerFactory,
+         router: CameraViewControllerRouter) {
         self.router = router
+        zodiak = factory.createCameraProvider()
+        ipCameraView = factory.createCameraView()
+        panelView = PanelView(frame: .zero, provider: factory.createPanelDataProvider())
+              
         super.init(nibName: nil, bundle: nil)
     }
     
@@ -33,13 +36,12 @@ class CameraViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         setup()
-        imageView.image = UIImage(named: "mock")
+        
     }
     
     private func setup() {
         view.backgroundColor = .white
-        imageView.contentMode = .redraw
-        view.addSubview(imageView, constraints: [
+        view.addSubview(ipCameraView, constraints: [
             constraint(\.leadingAnchor),
             constraint(\.trailingAnchor),
             constraint(\.topAnchor),
@@ -52,12 +54,12 @@ class CameraViewController: UIViewController {
             constraint(\.bottomAnchor)
         ])
         
-        panelView.constrainToView(imageView, constraints: [
+        panelView.constrainToView(ipCameraView, constraints: [
             constraint(\.topAnchor, \.bottomAnchor, constant: -84),
         ])
         
         view.addSubview(joystickView)
-        joystickView.constrainToView(imageView, constraints: [
+        joystickView.constrainToView(ipCameraView, constraints: [
             constraint(\.leadingAnchor),
             constraint(\.trailingAnchor),
             constraint(\.topAnchor)
@@ -71,7 +73,7 @@ class CameraViewController: UIViewController {
         let settings = UIButton(type: .custom)
         settings.setImage(UIImage(named: "settings"), for: .normal)
         settings.tintColor = .white
-        view.addSubview(settings, pairingTo: imageView, constraints: [
+        view.addSubview(settings, pairingTo: ipCameraView, constraints: [
             constraint(\.trailingAnchor, constant: -17),
             constraint(\.topAnchor, constant: 34),
         ])
@@ -79,26 +81,16 @@ class CameraViewController: UIViewController {
             constraint(\.widthAnchor, constant: 34),
             constraint(\.heightAnchor, constant: 34))
         settings.addTarget(self, action: #selector(openSettings), for: .touchUpInside)
-        imageView.isHidden = true
+
         view.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(tap)))
     }
-    var ipCameraView: IPCameraView!
+   
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-        //createDisplayLink()
-        
-        ipCameraView = IPCameraView(frame: self.view.bounds)
-        view.addSubview(ipCameraView)
-        ipCameraView.startWithURL(url: URL(string: "http://188.242.14.235:81/videostream.cgi?loginuse=admin&loginpas=123123123")!)
-        
+    
         joystickView.moveHandler = {[weak self] in
             self?.zodiak.userManipulate(CameraViewController.converter($0))
         }
-    }
-    
-    override func viewDidDisappear(_ animated: Bool) {
-        super.viewDidDisappear(animated)
-        ipCameraView.stop()
     }
     
     @objc func tap(_ sender: UITapGestureRecognizer) {
@@ -129,19 +121,6 @@ class CameraViewController: UIViewController {
         }
     }
     
-    private func createDisplayLink() {
-        let displaylink = CADisplayLink(target: self,
-                                        selector: #selector(update))
-        
-        displaylink.add(to: .current,
-                        forMode: .default)
-    }
-    
-    @objc private func update(displaylink: CADisplayLink) {
-        guard let data = zodiak.image() else { return }
-        imageView.image = UIImage(data: data)?.resizeWithScaleAspectFitMode(to: UIScreen.main.bounds.size) //imageView.bounds.size)
-    }
-
     private var showedSlider: ArcSlider?
     func handlePanelViewEvent(_ event: PanelView.Event) {
         switch event {
@@ -181,5 +160,71 @@ class CameraViewController: UIViewController {
                           }
         
         }
+    }
+}
+
+
+protocol CameraViewControllerFactory {
+    func createCameraView() -> UIView
+    func createCameraProvider() -> ZodiakProvider
+    func createPanelDataProvider() -> PanelDataProvider
+}
+
+
+class DefaultCameraViewFactory: CameraViewControllerFactory {
+    private let cameraSettings: CameraSettingsProvider
+    private let mode: Mode
+    private let zodiak: Model
+    
+    enum Mode {
+        case snapshot
+        case stream
+    }
+    
+    func createCameraView() -> UIView {
+        switch mode {
+        case .snapshot:
+            let zodiak = Model(cameraSettings: cameraSettings)
+            return IPCameraViewBySnapshots(frame: .zero,
+                                           imageProvider: zodiak.image)
+        case .stream:
+            return IPCameraView(frame: .zero, urlProvider: { URL(string: "http://\(self.cameraSettings.host):\(self.cameraSettings.port)/videostream.cgi?loginuse=\(self.cameraSettings.login)&loginpas=\(self.cameraSettings.password)")!
+            })
+        }
+    }
+    
+    func createCameraProvider() -> ZodiakProvider {
+        return zodiak
+    }
+    
+    func createPanelDataProvider() -> PanelDataProvider {
+        return zodiak
+    }
+    
+    init(cameraSettings: CameraSettingsProvider, mode: Mode) {
+        self.cameraSettings = cameraSettings
+        self.mode = mode
+        self.zodiak = Model(cameraSettings: cameraSettings)
+    }
+}
+
+
+struct MockFactory: CameraViewControllerFactory {
+    private let model: MockModel
+    
+    init() {
+        model = MockModel()
+    }
+    
+    func createPanelDataProvider() -> PanelDataProvider {
+        return model
+    }
+    
+    func createCameraView() -> UIView {
+        return UIView()
+    }
+    
+    func createCameraProvider() -> ZodiakProvider {
+        return model
     }
 }
