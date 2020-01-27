@@ -18,7 +18,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         
         let cameraFlow = CameraFlowViewController()
         window = UIWindow(frame: UIScreen.main.bounds)
-        window?.rootViewController = cameraFlow
+        window?.rootViewController = cameraFlow.start()
         window?.makeKeyAndVisible()
         return true
     }
@@ -48,24 +48,21 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
 }
 
-class CameraFlowViewController: UIViewController, CameraViewControllerRouter {
+class CameraFlowViewController: CameraViewControllerRouter {
     private let keychain = KeychainSwift()
-    override var preferredStatusBarStyle: UIStatusBarStyle {
-        return .lightContent
-    }
-    
-    override func viewDidLoad() {
-        super.viewDidLoad()
-   
-        let factory = DefaultCameraViewFactory(cameraSettings: keychain, mode: .stream)
-        
-        //let mockFactory = MockFactory()
+      
+    func start() -> UIViewController {
+        //let factory = DefaultCameraViewFactory(cameraSettings: keychain, mode: .stream)
+          
+        let factory = MockFactory()
         let cameraVc = CameraViewController(factory: factory, router: self)
-        add(cameraVc)
+        popup = PostScriptimContainer(root: cameraVc)
+        return popup!
     }
     
+    var popup: PostScriptimContainer?
     func openSettings() {
         let settingsController = SettingsViewController(settingsProvider: keychain)
-        show(settingsController, sender: self)
+        popup?.present(settingsController, animated: true, completion: nil)
     }
 }

@@ -41,20 +41,21 @@ func constraint<Anchor, AnchorType>(_ keyPath: KeyPath<UIView, Anchor>,
 }
 
 func constraint<Anchor>(_ keyPath: KeyPath<UIView, Anchor>,
+                        _ otherKeyPath: KeyPath<UIView, Anchor>? = nil,
                         constraintRelation: ConstraintRelation = .equal,
                         multiplier: CGFloat? = nil,
                         constant: CGFloat = 0,
                         priority: UILayoutPriority = .required) -> UnpairedConstraint where Anchor: NSLayoutDimension {
     return { view in
         var partialConstraint: NSLayoutConstraint
-        
+        let otherKeyPath: KeyPath<UIView, Anchor> = otherKeyPath ?? keyPath
         switch constraintRelation {
         case .equal:
-            partialConstraint = view[keyPath: keyPath].constraint(equalToConstant: constant)
+            partialConstraint = view[keyPath: keyPath].constraint(equalTo: view[keyPath: otherKeyPath], multiplier: multiplier ?? 1, constant: constant)
         case .greaterThanOrEqual:
-            partialConstraint = view[keyPath: keyPath].constraint(greaterThanOrEqualToConstant: constant)
+            partialConstraint = view[keyPath: keyPath].constraint(greaterThanOrEqualTo: view[keyPath: otherKeyPath], multiplier: multiplier ?? 1, constant: constant)
         case .lessThanOrEqual:
-            partialConstraint = view[keyPath: keyPath].constraint(lessThanOrEqualToConstant: constant)
+            partialConstraint = view[keyPath: keyPath].constraint(lessThanOrEqualTo: view[keyPath: otherKeyPath], multiplier: multiplier ?? 1, constant: constant)
         }
         
         return constraint(from: partialConstraint,

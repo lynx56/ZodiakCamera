@@ -35,6 +35,7 @@
 		BF998EC32372F61A00325BD9 /* LimitValue.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF998EC22372F61A00325BD9 /* LimitValue.swift */; };
 		BFA6A88B2394E6D700CBB011 /* IPCameraView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFA6A88A2394E6D700CBB011 /* IPCameraView.swift */; };
 		BFA6A88D2394EC8F00CBB011 /* IPCameraViewBySnapshots.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFA6A88C2394EC8F00CBB011 /* IPCameraViewBySnapshots.swift */; };
+		BFCEECD223CF0EEC007EE8FF /* PostScriptumPresentationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFCEECD123CF0EEC007EE8FF /* PostScriptumPresentationController.swift */; };
 		BFFBB347237303ED008C1D47 /* NetworkListener.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFFBB346237303ED008C1D47 /* NetworkListener.swift */; };
 		BFFBB34923730B6B008C1D47 /* UiViewController+child.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFFBB34823730B6B008C1D47 /* UiViewController+child.swift */; };
 		BFFBB34B23749DD1008C1D47 /* UIImage+resize.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFFBB34A23749DD1008C1D47 /* UIImage+resize.swift */; };
@@ -73,6 +74,7 @@
 		BF998EC22372F61A00325BD9 /* LimitValue.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LimitValue.swift; sourceTree = "<group>"; };
 		BFA6A88A2394E6D700CBB011 /* IPCameraView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IPCameraView.swift; sourceTree = "<group>"; };
 		BFA6A88C2394EC8F00CBB011 /* IPCameraViewBySnapshots.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IPCameraViewBySnapshots.swift; sourceTree = "<group>"; };
+		BFCEECD123CF0EEC007EE8FF /* PostScriptumPresentationController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostScriptumPresentationController.swift; sourceTree = "<group>"; };
 		BFFBB346237303ED008C1D47 /* NetworkListener.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NetworkListener.swift; sourceTree = "<group>"; };
 		BFFBB34823730B6B008C1D47 /* UiViewController+child.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UiViewController+child.swift"; sourceTree = "<group>"; };
 		BFFBB34A23749DD1008C1D47 /* UIImage+resize.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIImage+resize.swift"; sourceTree = "<group>"; };
@@ -138,6 +140,7 @@
 				BF763B4A23548D4100D89FAB /* LaunchScreen.storyboard */,
 				BF763B4D23548D4100D89FAB /* Info.plist */,
 				BF57E73423686F2700F6D43B /* AutolayoutDSL.swift */,
+				BFCEECD123CF0EEC007EE8FF /* PostScriptumPresentationController.swift */,
 			);
 			path = ZodiakCamera;
 			sourceTree = "<group>";
@@ -343,6 +346,7 @@
 				BF998EB92372F4A400325BD9 /* PanelView.swift in Sources */,
 				BF534AF8236C4025007B5F2F /* Model.swift in Sources */,
 				BF998EBF2372F5D900325BD9 /* Date+stamp.swift in Sources */,
+				BFCEECD223CF0EEC007EE8FF /* PostScriptumPresentationController.swift in Sources */,
 				BF998EB52372F19800325BD9 /* JoystickScene.swift in Sources */,
 				BF08A65223577C9800CEADD1 /* JoystickView.swift in Sources */,
 				BF998EBB2372F4E700325BD9 /* Settings.swift in Sources */,

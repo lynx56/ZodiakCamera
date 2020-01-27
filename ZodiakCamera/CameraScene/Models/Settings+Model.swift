@@ -44,11 +44,11 @@ extension Settings {
     
     func convert(for keyPath: KeyPath<Settings, LimitValue>) -> (parameter: String, value: String) {
           switch  keyPath{
-          case \Settings.brightness:
+          case \.brightness:
               return ("1", String(self[keyPath: keyPath].currentValue))
-          case \Settings.contrast:
+          case \.contrast:
               return ("2", String(self[keyPath: keyPath].currentValue))
-          case \Settings.saturation:
+          case \.saturation:
               return ("8", String(self[keyPath: keyPath].currentValue))
           default:
               return ("", "")
@@ -57,7 +57,7 @@ extension Settings {
     
     func convert(for keyPath: KeyPath<Settings, Bool>) -> (parameter: String, value: String) {
         switch  keyPath{
-        case \Settings.ir:
+        case \.ir:
             return ("14", String(self[keyPath: keyPath] == true ? 1 : 0))
         default:
             return ("", "")
