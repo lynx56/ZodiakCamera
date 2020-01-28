@@ -56,11 +56,11 @@ class CameraFlowViewController: CameraViewControllerRouter {
           
         let factory = MockFactory()
         let cameraVc = CameraViewController(factory: factory, router: self)
-        popup = PostScriptimContainer(root: cameraVc)
+        popup = PopupContainer(root: cameraVc)
         return popup!
     }
     
-    var popup: PostScriptimContainer?
+    var popup: PopupContainer?
     func openSettings() {
         let settingsController = SettingsViewController(settingsProvider: keychain)
         popup?.present(settingsController, animated: true, completion: nil)

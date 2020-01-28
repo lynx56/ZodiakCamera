@@ -76,8 +76,7 @@ class SettingsViewController: FormViewController {
                 self.settingsProvider.password = password!
                 self.settingsProvider.host = host!
                 self.settingsProvider.port = port!
-                self.showSuccessPopup(self, withTitle: "Добавлено")
-                //self.dismiss(animated: true, completion: nil)
+                self.showSuccessPopup(self, withTitle: "Сохранено")
             }
         })
     }
