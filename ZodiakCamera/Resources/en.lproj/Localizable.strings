@@ -1,0 +1,17 @@
+/* 
+  Localization.strings
+  ZodiakCamera
+
+  Created by lynx on 30/01/2020.
+  Copyright © 2020 gulnaz. All rights reserved.
+*/
+
+"Settings.Access" = "Access settings";
+"Settings.Login" = "Login";
+"Settings.Password" = "Password";
+"Settings.Host" = "Host";
+"Settings.Address" = "Address";
+"Settings.Port" = "Port";
+"Settings.Save" = "Save";
+"Settings.Saved" = "Saved";
+

@@ -29,9 +29,9 @@ class SettingsViewController: FormViewController {
         var host: URL? = settingsProvider.host
         var port: Int? = settingsProvider.port
         
-        form +++ Section("Настройки доступа")
+        form +++ Section(L10n.Settings.access)
             <<< TextRow() { row in
-                row.title = "Логин"
+                row.title = L10n.Settings.login
                 row.placeholder = "admin"
                 row.value = settingsProvider.login
                 row.add(rule: RuleRequired())
@@ -40,7 +40,7 @@ class SettingsViewController: FormViewController {
                 login = $0.value
             }
             <<< PasswordRow() { row in
-                row.title = "Пароль"
+                row.title = L10n.Settings.password
                 row.placeholder = "123123"
                 row.value = settingsProvider.password
                 row.add(rule: RuleRequired())
@@ -48,9 +48,9 @@ class SettingsViewController: FormViewController {
             }.onChange{ [unowned self] in
                 password = $0.value
             }
-            +++ Section("Адрес")
+            +++ Section(L10n.Settings.address)
             <<< URLRow() { row in
-                row.title = "Хост"
+                row.title = L10n.Settings.host
                 row.placeholder = "192.168.1.1"
                 row.value = settingsProvider.host
                 row.add(rule: RuleRequired())
@@ -59,7 +59,7 @@ class SettingsViewController: FormViewController {
                 host = $0.value
             }
             <<< IntRow() { row in
-                row.title = "Порт"
+                row.title = L10n.Settings.port
                 row.placeholder = "81"
                 row.value = settingsProvider.port
                 row.add(rule: RuleRequired())
@@ -69,14 +69,14 @@ class SettingsViewController: FormViewController {
         }
         
         form +++ ButtonRow() {
-            $0.title = "Сохранить"
+            $0.title = L10n.Settings.save
         }.onCellSelection({ [unowned self](cell, row) in
             if self.form.validate().isEmpty {
                 self.settingsProvider.login = login!
                 self.settingsProvider.password = password!
                 self.settingsProvider.host = host!
                 self.settingsProvider.port = port!
-                self.showSuccessPopup(self, withTitle: "Сохранено")
+                self.showSuccessPopup(self, withTitle: L10n.Settings.saved)
             }
         })
     }

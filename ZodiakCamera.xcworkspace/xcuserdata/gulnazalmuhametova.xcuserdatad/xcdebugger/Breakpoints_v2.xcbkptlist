@@ -452,8 +452,8 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "85"
             endingLineNumber = "85"
-            landmarkName = "addSubview(_:pairingTo:constraints:)"
-            landmarkType = "7">
+            landmarkName = "UIView"
+            landmarkType = "21">
             <Locations>
                <Location
                   uuid = "B54D03F4-6D73-4063-BE85-E6FF4F9D0022 - 48500ca80ac8ff5c"

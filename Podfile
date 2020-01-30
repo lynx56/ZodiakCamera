@@ -7,6 +7,5 @@ target 'ZodiakCamera' do
 pod 'Eureka'
 pod 'CocoaAsyncSocket'
 pod 'KeychainSwift'
-  # Pods for ZodiakCamera
-
+pod 'SwiftGen', '~> 6.0'
 end
