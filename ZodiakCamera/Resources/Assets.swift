@@ -25,9 +25,11 @@ internal enum Images {
   internal static let irOff = ImageAsset(name: "irOff")
   internal static let irOn = ImageAsset(name: "irOn")
   internal static let mock = ImageAsset(name: "mock")
+  internal static let restart = ImageAsset(name: "restart")
   internal static let saturationMax = ImageAsset(name: "saturationMax")
   internal static let saturationMin = ImageAsset(name: "saturationMin")
   internal static let settings = ImageAsset(name: "settings")
+  internal static let sky = ImageAsset(name: "sky")
   internal static let stick = ImageAsset(name: "stick")
   internal static let substrate = ImageAsset(name: "substrate")
 }

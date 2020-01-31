@@ -36,18 +36,14 @@ class SettingsViewController: FormViewController {
                 row.value = settingsProvider.login
                 row.add(rule: RuleRequired())
                 row.cellUpdate({if !$1.isValid { $0.titleLabel?.textColor = .systemRed }})
-            }.onChange{ [unowned self] in
-                login = $0.value
-            }
+            }.onChange { login = $0.value }
             <<< PasswordRow() { row in
                 row.title = L10n.Settings.password
                 row.placeholder = "123123"
                 row.value = settingsProvider.password
                 row.add(rule: RuleRequired())
                 row.cellUpdate({if !$1.isValid { $0.titleLabel?.textColor = .systemRed }})
-            }.onChange{ [unowned self] in
-                password = $0.value
-            }
+            }.onChange { password = $0.value }
             +++ Section(L10n.Settings.address)
             <<< URLRow() { row in
                 row.title = L10n.Settings.host
@@ -64,13 +60,11 @@ class SettingsViewController: FormViewController {
                 row.value = settingsProvider.port
                 row.add(rule: RuleRequired())
                 row.cellUpdate({if !$1.isValid { $0.titleLabel?.textColor = .systemRed }})
-            }.onChange{ [unowned self] in
-                port = $0.value
-        }
+            }.onChange { port = $0.value }
         
         form +++ ButtonRow() {
             $0.title = L10n.Settings.save
-        }.onCellSelection({ [unowned self](cell, row) in
+        }.onCellSelection({ [unowned self] (cell, row) in
             if self.form.validate().isEmpty {
                 self.settingsProvider.login = login!
                 self.settingsProvider.password = password!

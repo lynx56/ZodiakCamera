@@ -114,8 +114,8 @@
             filePath = "ZodiakCamera/CameraScene/CameraViewController.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "152"
-            endingLineNumber = "152"
+            startingLineNumber = "148"
+            endingLineNumber = "148"
             landmarkName = "handlePanelViewEvent(_:)"
             landmarkType = "7">
          </BreakpointContent>
@@ -274,8 +274,8 @@
             filePath = "ZodiakCamera/CameraScene/CameraViewController.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "191"
-            endingLineNumber = "191"
+            startingLineNumber = "187"
+            endingLineNumber = "187"
             landmarkName = "createCameraView()"
             landmarkType = "7">
             <Locations>
@@ -340,8 +340,8 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "37"
             endingLineNumber = "37"
-            landmarkName = "didMoveToSuperview()"
-            landmarkType = "7">
+            landmarkName = "IPCameraView"
+            landmarkType = "3">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -356,8 +356,8 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "71"
             endingLineNumber = "71"
-            landmarkName = "urlSession(_:dataTask:didReceive:)"
-            landmarkType = "7">
+            landmarkName = "IPCameraView"
+            landmarkType = "3">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -372,8 +372,8 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "48"
             endingLineNumber = "48"
-            landmarkName = "startWithURL(url:)"
-            landmarkType = "7">
+            landmarkName = "IPCameraView"
+            landmarkType = "3">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -434,8 +434,8 @@
             filePath = "ZodiakCamera/AutolayoutDSL.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "87"
-            endingLineNumber = "87"
+            startingLineNumber = "113"
+            endingLineNumber = "113"
             landmarkName = "addSubview(_:pairingTo:constraints:)"
             landmarkType = "7">
          </BreakpointContent>
@@ -450,8 +450,8 @@
             filePath = "ZodiakCamera/AutolayoutDSL.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "85"
-            endingLineNumber = "85"
+            startingLineNumber = "111"
+            endingLineNumber = "111"
             landmarkName = "UIView"
             landmarkType = "21">
             <Locations>

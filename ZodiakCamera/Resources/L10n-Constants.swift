@@ -12,6 +12,11 @@ import Foundation
 // swiftlint:disable nesting type_body_length type_name
 internal enum L10n {
 
+  internal enum NoConnection {
+    /// No connection...
+    internal static let text = L10n.tr("Localizable", "NoConnection.Text")
+  }
+
   internal enum Settings {
     /// Access settings
     internal static let access = L10n.tr("Localizable", "Settings.Access")

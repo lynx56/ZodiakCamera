@@ -23,6 +23,8 @@ class IPCameraView: UIView, URLSessionDataDelegate {
         self.urlProvider = urlProvider
         super.init(frame: frame)
         self.addSubview(self.imageView)
+        self.imageView.image = Images.sky.image
+        self.imageView.contentMode = .scaleAspectFill
     }
     
     required init?(coder: NSCoder) {

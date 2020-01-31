@@ -49,6 +49,7 @@ class PopupContainer: UIViewController {
         animationGroup.delegate = self
         popup.layer.add(animationGroup, forKey: nil)
         popup.transform = .identity
+        popup.alpha = 0
         return popup
     }
     
@@ -69,7 +70,7 @@ class PopupContainer: UIViewController {
             constraint(\.widthAnchor, multiplier: 0.5),
             constraint(\.centerXAnchor, constant: -8),
             constraint(\.centerYAnchor, constant: -11)])
-        checkmarkView.constrain(to: constraint(\.heightAnchor, \.widthAnchor, multiplier: 0.45))
+        checkmarkView.constrain(to: uconstraint(\.heightAnchor, \.widthAnchor, multiplier: 0.45))
         
         popup.addSubview(titleLabel, constraints: [
             constraint(\.centerXAnchor),
@@ -138,19 +139,19 @@ extension PopupContainer {
         
         override init(frame: CGRect) {
             super.init(frame: frame)
-            configure()
+            setup()
         }
         
         required init?(coder: NSCoder) {
             super.init(coder: coder)
-            configure()
+            setup()
         }
         
         override func layoutSubviews() {
             shapelayer.path = path
         }
         
-        func configure(lineWidth: CGFloat = 11, color: UIColor = .gray) {
+        func setup(lineWidth: CGFloat = 11, color: UIColor = .gray) {
             shapelayer.path = path
             shapelayer.strokeColor = color.cgColor
             shapelayer.fillColor = nil
@@ -168,15 +169,15 @@ extension PopupContainer {
     class PopupView: UIView {
         override init(frame: CGRect) {
             super.init(frame: frame)
-            configure()
+            setup()
         }
         
         required init?(coder: NSCoder) {
             super.init(coder: coder)
-            configure()
+            setup()
         }
         
-        func configure(color: UIColor = .darkGray, cornerRadius: CGFloat = 11) {
+        func setup(color: UIColor = .darkGray, cornerRadius: CGFloat = 11) {
             backgroundColor = color
             let blur = UIBlurEffect(style: .extraLight)
             let effectView = UIVisualEffectView(effect: blur)
@@ -200,7 +201,7 @@ extension CAAnimation {
         let fade = CABasicAnimation(keyPath: "opacity")
         fade.fromValue = NSNumber(0)
         fade.toValue = NSNumber(1)
-        fade.duration = duration/2
+        fade.duration = duration/2.0
         fade.autoreverses = true
         return fade
     }

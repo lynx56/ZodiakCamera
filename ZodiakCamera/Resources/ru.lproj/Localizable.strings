@@ -14,3 +14,4 @@
 "Settings.Port" = "Порт";
 "Settings.Save" = "Сохранить";
 "Settings.Saved" = "Сохранено";
+"NoConnection.Text" = "Нет подключения...";

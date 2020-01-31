@@ -40,15 +40,18 @@ func constraint<Anchor, AnchorType>(_ keyPath: KeyPath<UIView, Anchor>,
     }
 }
 
-func constraint<Anchor>(_ keyPath: KeyPath<UIView, Anchor>,
-                        _ otherKeyPath: KeyPath<UIView, Anchor>? = nil,
-                        constraintRelation: ConstraintRelation = .equal,
-                        multiplier: CGFloat? = nil,
-                        constant: CGFloat = 0,
-                        priority: UILayoutPriority = .required) -> UnpairedConstraint where Anchor: NSLayoutDimension {
+func uconstraint<Anchor>(_ keyPath: KeyPath<UIView, Anchor>,
+                         _ otherKeyPath: KeyPath<UIView, Anchor>,
+                         constraintRelation: ConstraintRelation = .equal,
+                         multiplier: CGFloat? = nil,
+                         constant: CGFloat = 0,
+                         priority: UILayoutPriority = .required) -> UnpairedConstraint where Anchor: NSLayoutDimension {
+    guard keyPath != otherKeyPath else {
+        return uconstraint(keyPath, constraintRelation: constraintRelation, multiplier: multiplier, constant: constant, priority: priority)
+    }
+    
     return { view in
         var partialConstraint: NSLayoutConstraint
-        let otherKeyPath: KeyPath<UIView, Anchor> = otherKeyPath ?? keyPath
         switch constraintRelation {
         case .equal:
             partialConstraint = view[keyPath: keyPath].constraint(equalTo: view[keyPath: otherKeyPath], multiplier: multiplier ?? 1, constant: constant)
@@ -56,6 +59,29 @@ func constraint<Anchor>(_ keyPath: KeyPath<UIView, Anchor>,
             partialConstraint = view[keyPath: keyPath].constraint(greaterThanOrEqualTo: view[keyPath: otherKeyPath], multiplier: multiplier ?? 1, constant: constant)
         case .lessThanOrEqual:
             partialConstraint = view[keyPath: keyPath].constraint(lessThanOrEqualTo: view[keyPath: otherKeyPath], multiplier: multiplier ?? 1, constant: constant)
+        }
+        
+        return constraint(from: partialConstraint,
+                          withMultiplier:multiplier,
+                          priority: priority)
+    }
+}
+
+func uconstraint<Anchor>(_ keyPath: KeyPath<UIView, Anchor>,
+                         constraintRelation: ConstraintRelation = .equal,
+                         multiplier: CGFloat? = nil,
+                         constant: CGFloat = 0,
+                         priority: UILayoutPriority = .required) -> UnpairedConstraint where Anchor: NSLayoutDimension {
+    return { view in
+        var partialConstraint: NSLayoutConstraint
+        
+        switch constraintRelation {
+        case .equal:
+            partialConstraint = view[keyPath: keyPath].constraint(equalToConstant: constant)
+        case .greaterThanOrEqual:
+            partialConstraint = view[keyPath: keyPath].constraint(greaterThanOrEqualToConstant: constant)
+        case .lessThanOrEqual:
+            partialConstraint = view[keyPath: keyPath].constraint(lessThanOrEqualToConstant: constant)
         }
         
         return constraint(from: partialConstraint,
@@ -108,9 +134,16 @@ extension UIView {
 
 extension Array where Element == PairedConstraint {
     static var pin: [PairedConstraint] {
-        return [constraint(\.topAnchor, \.topAnchor),
-                constraint(\.bottomAnchor, \.bottomAnchor),
-                constraint(\.leadingAnchor, \.leadingAnchor),
-                constraint(\.trailingAnchor, \.trailingAnchor)]
+        return [constraint(\.topAnchor),
+                constraint(\.bottomAnchor),
+                constraint(\.leadingAnchor),
+                constraint(\.trailingAnchor)]
+    }
+    
+    static var pinWithoutPaddings: [PairedConstraint] {
+        return [constraint(\.topAnchor, constant: -1),
+                constraint(\.bottomAnchor, constant: 1),
+                constraint(\.leadingAnchor, constant: -1),
+                constraint(\.trailingAnchor, constant: 1)]
     }
 }

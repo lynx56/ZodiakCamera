@@ -18,14 +18,14 @@ class CameraViewController: UIViewController {
     private let router: CameraViewControllerRouter
     private let zodiak: ZodiakProvider
     private let ipCameraView: UIView
-      
+    
     init(factory: CameraViewControllerFactory,
          router: CameraViewControllerRouter) {
         self.router = router
         zodiak = factory.createCameraProvider()
         ipCameraView = factory.createCameraView()
         panelView = PanelView(frame: .zero, provider: factory.createPanelDataProvider())
-              
+        
         super.init(nibName: nil, bundle: nil)
     }
     
@@ -41,12 +41,7 @@ class CameraViewController: UIViewController {
     
     private func setup() {
         view.backgroundColor = .white
-        view.addSubview(ipCameraView, constraints: [
-            constraint(\.leadingAnchor),
-            constraint(\.trailingAnchor),
-            constraint(\.topAnchor),
-            constraint(\.bottomAnchor)
-        ])
+        view.addSubview(ipCameraView, constraints: .pinWithoutPaddings)
         
         view.addSubview(panelView, constraints: [
             constraint(\.leftAnchor),
@@ -71,23 +66,24 @@ class CameraViewController: UIViewController {
         panelView.eventHandler = handlePanelViewEvent
         
         let settings = UIButton(type: .custom)
-        settings.setImage(UIImage(named: "settings"), for: .normal)
+        settings.setImage(Images.settings.image, for: .normal)
         settings.tintColor = .white
         view.addSubview(settings, pairingTo: ipCameraView, constraints: [
             constraint(\.trailingAnchor, constant: -17),
-            constraint(\.topAnchor, constant: 34),
+            constraint(\.topAnchor, \.safeAreaLayoutGuide.topAnchor),
         ])
         settings.constrain(to:
-            constraint(\.widthAnchor, constant: 34),
-            constraint(\.heightAnchor, constant: 34))
+            uconstraint(\.widthAnchor, constant: 34),
+                           uconstraint(\.heightAnchor, constant: 34))
         settings.addTarget(self, action: #selector(openSettings), for: .touchUpInside)
-
+        
         view.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(tap)))
+        joystickView.isHidden = true
     }
-   
+    
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-    
+        
         joystickView.moveHandler = {[weak self] in
             self?.zodiak.userManipulate(CameraViewController.converter($0))
         }
@@ -127,38 +123,38 @@ class CameraViewController: UIViewController {
         case .itemSelected(let item):
             showedSlider?.removeFromSuperview()
             switch item {
-                          case .control(let control):
-                              let slider = ArcSlider(frame: .zero,
-                                                     settings: .init(innerRadiusOffset: 30,
-                                                                     color: UIColor.black.withAlphaComponent(0.2),
-                                                                     tintColor: .white,
-                                                                     startImage: control.imageMin ?? UIImage.empty(),
-                                                                     endImage: control.imageMax ?? UIImage.empty(),
-                                                                     minValue: control.minValue,
-                                                                     //TODO:
-                                                                     maxValue: control.maxValue != 0 ? control.maxValue : 255,
-                                                                     currentValue: control.currentValue()))
-                          
-                            slider.valueChanged = control.newValueHandler
-                              slider.isEnabled = true
-                              view.addSubview(slider, constraints: [
-                                      constraint(\.leftAnchor, constant: -15),
-                                      constraint(\.rightAnchor, constant: 15),
-                                  ])
-                              slider.constrainToView(panelView, constraints: [
-                                constraint(\.bottomAnchor, \.topAnchor)
-                              ])
-                              slider.constrain(to: constraint(\.heightAnchor, constant: 120))
-                              slider.layoutIfNeeded()
-                              
-                              UIView.animate(withDuration: 0.2) {
-                                  slider.alpha = 1
-                              }
-                              self.showedSlider = slider
-                          case .toggle(let toggle):
-                            toggle.newValueHandler(!toggle.currentValue())
-                          }
-        
+            case .control(let control):
+                let slider = ArcSlider(frame: .zero,
+                                       settings: .init(innerRadiusOffset: 30,
+                                                       color: UIColor.black.withAlphaComponent(0.2),
+                                                       tintColor: .white,
+                                                       startImage: control.imageMin ?? UIImage.empty(),
+                                                       endImage: control.imageMax ?? UIImage.empty(),
+                                                       minValue: control.minValue,
+                                                       //TODO:
+                                        maxValue: control.maxValue != 0 ? control.maxValue : 255,
+                                        currentValue: control.currentValue()))
+                
+                slider.valueChanged = control.newValueHandler
+                slider.isEnabled = true
+                view.addSubview(slider, constraints: [
+                    constraint(\.leftAnchor, constant: -15),
+                    constraint(\.rightAnchor, constant: 15),
+                ])
+                slider.constrainToView(panelView, constraints: [
+                    constraint(\.bottomAnchor, \.topAnchor)
+                ])
+                slider.constrain(to: uconstraint(\.heightAnchor, constant: 120))
+                slider.layoutIfNeeded()
+                
+                UIView.animate(withDuration: 0.2) {
+                    slider.alpha = 1
+                }
+                self.showedSlider = slider
+            case .toggle(let toggle):
+                toggle.newValueHandler(!toggle.currentValue())
+            }
+            
         }
     }
 }
@@ -221,10 +217,45 @@ struct MockFactory: CameraViewControllerFactory {
     }
     
     func createCameraView() -> UIView {
-        return UIView()
+        return NoConnectionView()
     }
     
     func createCameraProvider() -> ZodiakProvider {
         return model
     }
 }
+
+
+extension UIMotionEffect {
+    static func parallax(withMinDistance min: CGFloat = -30, andMaxDistance max: CGFloat = 30) -> UIMotionEffect {
+        let xMotion = UIInterpolatingMotionEffect(keyPath: "layer.transform.translation.x",
+                                                  type: .tiltAlongHorizontalAxis)
+        xMotion.minimumRelativeValue = min
+        xMotion.maximumRelativeValue = max
+        
+        let yMotion = UIInterpolatingMotionEffect(keyPath: "layer.transform.translation.y",
+                                                  type: .tiltAlongVerticalAxis)
+        yMotion.minimumRelativeValue = min
+        yMotion.maximumRelativeValue = max
+        
+        let motionEffectsGroup = UIMotionEffectGroup()
+        motionEffectsGroup.motionEffects = [xMotion, yMotion]
+        return motionEffectsGroup
+    }
+    
+    static func verticalRotation(minAngle min: CGFloat = 315, maxAngle max: CGFloat = 45) -> UIMotionEffect {
+        var identity = CATransform3DIdentity
+        identity.m34 = -1/500
+        
+        let minimum = CATransform3DRotate(identity, min * .pi / 180, 1, 0, 0)
+        let maximum = CATransform3DRotate(identity, max * .pi / 180, 1, 0, 0)
+        
+        let effect = UIInterpolatingMotionEffect(keyPath: "layer.transform", type: .tiltAlongVerticalAxis)
+        effect.minimumRelativeValue = minimum
+        effect.maximumRelativeValue = maximum
+        
+        return effect
+    }
+}
+
+
