@@ -110,20 +110,29 @@ func constraint(from constraint: NSLayoutConstraint,
 
 extension UIView {
     func addSubview(_ child: UIView, pairingTo pairingView: UIView? = nil, constraints: [PairedConstraint]) {
-        addSubview(child)
-        child.translatesAutoresizingMaskIntoConstraints = false
-        NSLayoutConstraint.activate(constraints.map { $0(child, pairingView ?? self) })
+        print(self.bounds)
+            self.addSubview(child)
+            child.translatesAutoresizingMaskIntoConstraints = false
+            NSLayoutConstraint.activate(constraints.map { $0(child, pairingView ?? self) })
     }
     
     func insertSubview(_ child: UIView, pairingTo pairingView: UIView? = nil, at position: Int, constraints: [PairedConstraint]) {
-           insertSubview(child, at: position)
+        DispatchQueue.main.async {
+            self.insertSubview(child, at: position)
            child.translatesAutoresizingMaskIntoConstraints = false
            NSLayoutConstraint.activate(constraints.map { $0(child, pairingView ?? self) })
+        }
        }
     
+    func insertSubview(_ view: UIView, aboveSubview siblingSubview: UIView, constraints: [PairedConstraint]) {
+            self.insertSubview(view, aboveSubview: siblingSubview)
+        view.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate(constraints.map { $0(view, siblingSubview) })
+    }
+    
     func constrainToView(_ pairingView: UIView, constraints: [PairedConstraint]) {
-        self.translatesAutoresizingMaskIntoConstraints = false
-        NSLayoutConstraint.activate(constraints.map { $0(self, pairingView) })
+            self.translatesAutoresizingMaskIntoConstraints = false
+            NSLayoutConstraint.activate(constraints.map { $0(self, pairingView) })
     }
     
     func constrain(to constraints: UnpairedConstraint...) {

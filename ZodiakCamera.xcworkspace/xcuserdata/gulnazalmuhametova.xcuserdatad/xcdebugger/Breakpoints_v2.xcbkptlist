@@ -114,8 +114,8 @@
             filePath = "ZodiakCamera/CameraScene/CameraViewController.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "148"
-            endingLineNumber = "148"
+            startingLineNumber = "146"
+            endingLineNumber = "146"
             landmarkName = "handlePanelViewEvent(_:)"
             landmarkType = "7">
          </BreakpointContent>
@@ -242,8 +242,8 @@
             filePath = "ZodiakCamera/CameraScene/Models/Model.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "238"
-            endingLineNumber = "238"
+            startingLineNumber = "181"
+            endingLineNumber = "181"
             landmarkName = "unknown"
             landmarkType = "0">
          </BreakpointContent>
@@ -258,58 +258,10 @@
             filePath = "ZodiakCamera/CameraScene/Models/Model.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "251"
-            endingLineNumber = "251"
+            startingLineNumber = "194"
+            endingLineNumber = "194"
             landmarkName = "unknown"
             landmarkType = "0">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            uuid = "AC9FD304-8C58-4ED9-AC25-611909D4B3F0"
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "ZodiakCamera/CameraScene/CameraViewController.swift"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "187"
-            endingLineNumber = "187"
-            landmarkName = "createCameraView()"
-            landmarkType = "7">
-            <Locations>
-               <Location
-                  uuid = "AC9FD304-8C58-4ED9-AC25-611909D4B3F0 - da8c2024ef68ecb6"
-                  shouldBeEnabled = "No"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "ZodiakCamera.DefaultCameraViewFactory.createCameraView() -&gt; __C.UIView"
-                  moduleName = "ZodiakCamera"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Developer/ZodiakCamera/ZodiakCamera/CameraScene/CameraViewController.swift"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "191"
-                  endingLineNumber = "191"
-                  offsetFromSymbolStart = "228">
-               </Location>
-               <Location
-                  uuid = "AC9FD304-8C58-4ED9-AC25-611909D4B3F0 - 142a9780243fea80"
-                  shouldBeEnabled = "No"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "closure #1 () -&gt; Foundation.URL in ZodiakCamera.DefaultCameraViewFactory.createCameraView() -&gt; __C.UIView"
-                  moduleName = "ZodiakCamera"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Developer/ZodiakCamera/ZodiakCamera/CameraScene/CameraViewController.swift"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "191"
-                  endingLineNumber = "191"
-                  offsetFromSymbolStart = "196">
-               </Location>
-            </Locations>
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -338,26 +290,10 @@
             filePath = "ZodiakCamera/CameraScene/Views/IPCameraView.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "37"
-            endingLineNumber = "37"
-            landmarkName = "IPCameraView"
-            landmarkType = "3">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            uuid = "D2FF030D-506C-4F82-AD5C-7EEBE1724055"
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "ZodiakCamera/CameraScene/Views/IPCameraView.swift"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "71"
-            endingLineNumber = "71"
-            landmarkName = "IPCameraView"
-            landmarkType = "3">
+            startingLineNumber = "35"
+            endingLineNumber = "35"
+            landmarkName = "deinit"
+            landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -370,10 +306,10 @@
             filePath = "ZodiakCamera/CameraScene/Views/IPCameraView.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "48"
-            endingLineNumber = "48"
-            landmarkName = "IPCameraView"
-            landmarkType = "3">
+            startingLineNumber = "46"
+            endingLineNumber = "46"
+            landmarkName = "removeFromSuperview()"
+            landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -386,25 +322,9 @@
             filePath = "ZodiakCamera/CameraScene/Views/IPCameraView.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "49"
-            endingLineNumber = "49"
-            landmarkName = "startWithURL(url:)"
-            landmarkType = "7">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            uuid = "AD76EE11-18D3-4AB6-BDBB-E65B409C9543"
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "ZodiakCamera/CameraScene/CameraViewController.swift"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "44"
-            endingLineNumber = "44"
-            landmarkName = "setup()"
+            startingLineNumber = "47"
+            endingLineNumber = "47"
+            landmarkName = "removeFromSuperview()"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
@@ -418,10 +338,8 @@
             filePath = "ZodiakCamera/AppDelegate.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "68"
-            endingLineNumber = "68"
-            landmarkName = "CameraFlowViewController"
-            landmarkType = "3">
+            startingLineNumber = "44"
+            endingLineNumber = "44">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -434,8 +352,8 @@
             filePath = "ZodiakCamera/AutolayoutDSL.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "113"
-            endingLineNumber = "113"
+            startingLineNumber = "114"
+            endingLineNumber = "114"
             landmarkName = "addSubview(_:pairingTo:constraints:)"
             landmarkType = "7">
          </BreakpointContent>
@@ -518,6 +436,134 @@
             endingLineNumber = "94"
             landmarkName = "animationDidStop(_:finished:)"
             landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "B6A42263-3D18-473D-A5B7-17BD54B379A2"
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "ZodiakCamera/CameraScene/CameraViewController.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "276"
+            endingLineNumber = "276"
+            landmarkName = "init()"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "729C9377-EB04-49AD-BE83-5AE2BAF2482E"
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "ZodiakCamera/CameraScene/CameraViewController.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "52"
+            endingLineNumber = "52"
+            landmarkName = "setupLayout()"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "EB8D54BF-79AC-4BB9-9CA4-4C4F33793085"
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "ZodiakCamera/CameraScene/CameraViewController.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "59"
+            endingLineNumber = "59"
+            landmarkName = "setupLayout()"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "0374BB42-CA7C-4E65-8FCF-0879B079B309"
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "ZodiakCamera/CameraScene/CameraViewController.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "63"
+            endingLineNumber = "63"
+            landmarkName = "setupLayout()"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "1AABFC2C-EFB2-455A-B432-3F91CB0F2518"
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "ZodiakCamera/PopupContainer.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "57"
+            endingLineNumber = "57"
+            landmarkName = "showSuccessView(withTitle:)"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "A46D1862-422A-4FD6-B2E7-DE452BEBC87E"
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "ZodiakCamera/PopupContainer.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "84"
+            endingLineNumber = "84"
+            landmarkName = "showSuccessPopup(_:withTitle:)"
+            landmarkType = "7">
+            <Locations>
+               <Location
+                  uuid = "A46D1862-422A-4FD6-B2E7-DE452BEBC87E - d699b6361fc4bf5a"
+                  shouldBeEnabled = "No"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "ZodiakCamera.PopupContainer.showSuccessPopup(_: __C.UIViewController, withTitle: Swift.String) -&gt; ()"
+                  moduleName = "ZodiakCamera"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Developer/ZodiakCamera/ZodiakCamera/PopupContainer.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "84"
+                  endingLineNumber = "84"
+                  offsetFromSymbolStart = "270">
+               </Location>
+               <Location
+                  uuid = "A46D1862-422A-4FD6-B2E7-DE452BEBC87E - 5d7b6b76487b4a84"
+                  shouldBeEnabled = "No"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "closure #1 () -&gt; () in ZodiakCamera.PopupContainer.showSuccessPopup(_: __C.UIViewController, withTitle: Swift.String) -&gt; ()"
+                  moduleName = "ZodiakCamera"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Developer/ZodiakCamera/ZodiakCamera/PopupContainer.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "84"
+                  endingLineNumber = "84"
+                  offsetFromSymbolStart = "25">
+               </Location>
+            </Locations>
          </BreakpointContent>
       </BreakpointProxy>
    </Breakpoints>

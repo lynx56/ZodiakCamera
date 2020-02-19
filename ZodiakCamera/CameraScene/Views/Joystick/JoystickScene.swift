@@ -26,6 +26,7 @@ class JoystickScene: SKScene {
         }
         joystickHiddenArea.removeFromParent()
         joystickHiddenArea = TLAnalogJoystickHiddenArea(rect: frame)
+        joystickHiddenArea.strokeColor = .clear
         joystickHiddenArea.joystick = joystick
         addChild(joystickHiddenArea)
     }

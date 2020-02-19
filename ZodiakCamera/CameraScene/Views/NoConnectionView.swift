@@ -28,7 +28,7 @@ class NoConnectionView: UIView {
         setup()
     }
     
-    func setup(parallaxOffset: CGFloat = 350,
+    func setup(parallaxOffset: CGFloat = 50,
                font: UIFont = .systemFont(ofSize: 27, weight: .thin)) {
         backgroundView.contentMode = .scaleAspectFill
         addSubview(backgroundView, constraints: [
@@ -69,7 +69,7 @@ class NoConnectionView: UIView {
         ])
         
         backgroundView.addMotionEffect(UIMotionEffect.parallax(withMinDistance: -parallaxOffset,
-                                                          andMaxDistance: parallaxOffset))
+                                                               andMaxDistance: parallaxOffset))
         
         label.addMotionEffect(UIMotionEffect.verticalRotation())
     }
@@ -85,5 +85,37 @@ class NoConnectionView: UIView {
     
     func reset() {
         reloadButton.render(model: .normal(icon: Images.restart.image))
+    }
+}
+
+extension UIMotionEffect {
+    static func parallax(withMinDistance min: CGFloat = -50, andMaxDistance max: CGFloat = 50) -> UIMotionEffect {
+        let xMotion = UIInterpolatingMotionEffect(keyPath: "layer.transform.translation.x",
+                                                  type: .tiltAlongHorizontalAxis)
+        xMotion.minimumRelativeValue = min
+        xMotion.maximumRelativeValue = max
+        
+        let yMotion = UIInterpolatingMotionEffect(keyPath: "layer.transform.translation.y",
+                                                  type: .tiltAlongVerticalAxis)
+        yMotion.minimumRelativeValue = min
+        yMotion.maximumRelativeValue = max
+        
+        let motionEffectsGroup = UIMotionEffectGroup()
+        motionEffectsGroup.motionEffects = [xMotion, yMotion]
+        return motionEffectsGroup
+    }
+    
+    static func verticalRotation(minAngle min: CGFloat = 315, maxAngle max: CGFloat = 45) -> UIMotionEffect {
+        var identity = CATransform3DIdentity
+        identity.m34 = -1/500
+        
+        let minimum = CATransform3DRotate(identity, min * .pi / 180, 1, 0, 0)
+        let maximum = CATransform3DRotate(identity, max * .pi / 180, 1, 0, 0)
+        
+        let effect = UIInterpolatingMotionEffect(keyPath: "layer.transform", type: .tiltAlongVerticalAxis)
+        effect.minimumRelativeValue = minimum
+        effect.maximumRelativeValue = maximum
+        
+        return effect
     }
 }

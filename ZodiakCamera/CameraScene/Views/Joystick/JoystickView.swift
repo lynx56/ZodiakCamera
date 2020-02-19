@@ -33,7 +33,6 @@ public class JoystickView: SKView {
     override init(frame: CGRect) {
         super.init(frame: frame)
         setup()
-        backgroundColor = .white
     }
     
     required init?(coder: NSCoder) {
@@ -41,13 +40,14 @@ public class JoystickView: SKView {
     }
 
     func setup() {
-        joystickScene.anchorPoint = CGPoint(x: 0.5, y: 0.5)
-        joystickScene.handler = handleJoystickSceneEvent
-        self.presentScene(joystickScene)
+        self.joystickScene.anchorPoint = CGPoint(x: 0.5, y: 0.5)
+        self.joystickScene.handler = self.handleJoystickSceneEvent
+        self.presentScene(self.joystickScene)
     }
     
     override public func layoutSubviews() {
-        joystickScene.size = self.bounds.size
+        joystickScene.size = //CGSize(width: 50, height: 50)
+            self.frame.size
     }
     
     private func handleJoystickSceneEvent(_ event: JoystickScene.Event) {

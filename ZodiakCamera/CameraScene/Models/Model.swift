@@ -13,39 +13,24 @@ import Photos
 
 class Model: ZodiakProvider {
     private let cameraSettings: CameraSettingsProvider
-    private var settings = Settings()
     
     init(cameraSettings: CameraSettingsProvider) {
         self.cameraSettings = cameraSettings
-        self.readsettings(handler: { (updatedSettings, error) in
-            guard let settings = updatedSettings else { return }
-            self.settings = settings
-        })
-    }
-    
-    enum Target {
-        case image
-        case settings
-        case changeSettings
-        case userManipulate
     }
     
     private func getUrl(with cgi: String) -> String {
         return "http://\(cameraSettings.host.absoluteString):\(cameraSettings.port)/\(cgi)?loginuse=\(cameraSettings.login)&amp;loginpas=\(cameraSettings.password)"
     }
     
-    func image() -> Data? {
-        return try? Data(contentsOf: URL(string: "http://\(cameraSettings.host.absoluteString):\(cameraSettings.port)/snapshot.cgi?user=\(cameraSettings.login)&pwd=\(cameraSettings.password)")!)
-    }
-    
-    func readsettings(handler: @escaping (Settings?, Error?) -> Void) {
+    func readsettings(handler: @escaping (Result<Settings, Error>) -> Void) {
         let url = getUrl(with: "get_camera_params.cgi")
         let task = URLSession.shared.downloadTask(with: URL(string: url)!) { (file, response, error) in
             if let file = file {
                 do {
-                    handler(try? Settings(json: String(contentsOf: file)), nil)
+                    let settings = try Settings(json: String(contentsOf: file))!
+                    handler(.success(settings))
                 } catch {
-                    handler(nil, error)
+                    handler(.failure(error))
                 }
             }
         }
@@ -53,20 +38,24 @@ class Model: ZodiakProvider {
         task.resume()
     }
     
-    func chageSettings(param: String, value: String) {
+    func chageSettings(param: String, value: String, handler: @escaping (Result<Settings, Error>) -> Void) {
         var cgi =  getUrl(with: "camera_control.cgi")
         cgi += "&param=\(param)&value=\(value)"
         cgi += "&\(Date().stamp()!)"
         print(cgi)
         let url = URL(string: cgi)!
         let task = URLSession.shared.dataTask(with: url) { (data, response, error) in
-            print(response)
+            if let error = error {
+                handler(.failure(error))
+                return
+            }
+            self.readsettings(handler: handler)
         }
         
         task.resume()
     }
     
-    func userManipulate(_ command: UserManipulation) {
+    func userManipulate(_ command: UserManipulation, handler: @escaping (Result<Void, Error>) -> Void) {
         let convertedCommand: Int?
         switch command {
         case .stop: convertedCommand = 1
@@ -86,11 +75,11 @@ class Model: ZodiakProvider {
         
         guard let cameraManipulate = convertedCommand else { return }
         
-        userControl("\(cameraManipulate)")
+        userControl("\(cameraManipulate)", handler: handler)
     }
 
     
-    private func userControl(_ command: String) {
+    private func userControl(_ command: String, handler: @escaping (Result<Void, Error>) -> Void) {
         var cgi = getUrl(with: "decoder_control.cgi");
         cgi += "&command=\(command)"
         cgi += "&onestep=0"
@@ -99,75 +88,17 @@ class Model: ZodiakProvider {
         let url = URL(string: cgi)!
         
         let task = URLSession.shared.dataTask(with: url) { (data, response, error) in
-            print(error)
+            guard let error = error else { return }
+            handler(.failure(error))
         }
         
         task.resume()
     }
 }
 
-extension Model: PanelDataProvider {
-    private func updateSettings(for keyPath: KeyPath<Settings, LimitValue>) {
-        let convertedValue = settings.convert(for: keyPath)
-        chageSettings(param: convertedValue.parameter, value: convertedValue.value)
-    }
-    
-    var brightness: LimitValue {
-        get {
-            return settings.brightness
-        }
-        set {
-            settings.brightness = newValue
-            updateSettings(for: \.brightness)
-        }
-    }
-    
-    var saturation: LimitValue {
-        get {
-            return settings.saturation
-        }
-        set {
-            updateSettings(for: \.saturation)
-        }
-    }
-    
-    var contrast: LimitValue {
-        get {
-            return settings.contrast
-        }
-        set {
-            updateSettings(for: \.contrast)
-        }
-    }
-    
-    var ir: Bool {
-        get {
-            return settings.ir
-        }
-        set {
-            settings.ir = newValue
-            let convertedCommand = settings.convert(for: \.ir)
-            chageSettings(param: convertedCommand.parameter, value: convertedCommand.value)
-        }
-    }
-}
-
-protocol PanelDataProvider {
-    var brightness: LimitValue { get set }
-    var saturation: LimitValue { get set }
-    var contrast: LimitValue { get set }
-    var ir: Bool { get set }
-}
-
-protocol AuthService {
-    func userAuth() -> (String, String)
-}
-
-
 protocol ZodiakProvider {
-    func image() -> Data?
-    func chageSettings(param: String, value: String)
-    func userManipulate(_ command: UserManipulation)
+    func chageSettings(param: String, value: String, handler: @escaping (Result<Settings, Error>) -> Void)
+    func userManipulate(_ command: UserManipulation, handler: @escaping (Result<Void, Error>) -> Void)
 }
 
 enum UserManipulation {

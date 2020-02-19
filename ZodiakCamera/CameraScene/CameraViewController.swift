@@ -14,18 +14,19 @@ protocol CameraViewControllerRouter {
 
 class CameraViewController: UIViewController {
     private let joystickView = JoystickView()
-    private let panelView: PanelView
+    private var panelView: PanelView!
+    private let settings = UIButton(type: .custom)
     private let router: CameraViewControllerRouter
     private let zodiak: ZodiakProvider
-    private let ipCameraView: UIView
+    private var imageProvider: LiveImageProvider
+    private let ipCameraView = UIImageView()
+    private var panelData: PanelData = PanelData(brightness: .initial, saturation: .initial, contrast: .initial, ir: false)
     
     init(factory: CameraViewControllerFactory,
          router: CameraViewControllerRouter) {
         self.router = router
         zodiak = factory.createCameraProvider()
-        ipCameraView = factory.createCameraView()
-        panelView = PanelView(frame: .zero, provider: factory.createPanelDataProvider())
-        
+        imageProvider = factory.createImageProvider()
         super.init(nibName: nil, bundle: nil)
     }
     
@@ -35,14 +36,20 @@ class CameraViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        setup()
-        
+        self.panelView = PanelView(frame: .zero) { self.panelData }
+        self.view.backgroundColor = .white
+        self.setupLayout()
+        self.panelView.eventHandler = self.handlePanelViewEvent
+        self.joystickView.moveHandler = self.handleJoystickEvent
+        self.imageProvider.stateHandler = self.handleLiveImageEvent
+        self.settings.addTarget(self, action: #selector(self.openSettings), for: .touchUpInside)
+        self.view.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(self.tap)))
     }
     
-    private func setup() {
-        view.backgroundColor = .white
-        view.addSubview(ipCameraView, constraints: .pinWithoutPaddings)
-        
+    
+    private func setupLayout() {
+        self.imageProvider.configure(for: ipCameraView)
+        view.addSubview(ipCameraView, constraints: .pin)
         view.addSubview(panelView, constraints: [
             constraint(\.leftAnchor),
             constraint(\.rightAnchor),
@@ -59,13 +66,11 @@ class CameraViewController: UIViewController {
             constraint(\.trailingAnchor),
             constraint(\.topAnchor)
         ])
+        
         joystickView.constrainToView(panelView, constraints: [
             constraint(\.bottomAnchor, \.topAnchor)
         ])
         joystickView.backgroundColor = .clear
-        panelView.eventHandler = handlePanelViewEvent
-        
-        let settings = UIButton(type: .custom)
         settings.setImage(Images.settings.image, for: .normal)
         settings.tintColor = .white
         view.addSubview(settings, pairingTo: ipCameraView, constraints: [
@@ -75,18 +80,6 @@ class CameraViewController: UIViewController {
         settings.constrain(to:
             uconstraint(\.widthAnchor, constant: 34),
                            uconstraint(\.heightAnchor, constant: 34))
-        settings.addTarget(self, action: #selector(openSettings), for: .touchUpInside)
-        
-        view.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(tap)))
-        joystickView.isHidden = true
-    }
-    
-    override func viewDidAppear(_ animated: Bool) {
-        super.viewDidAppear(animated)
-        
-        joystickView.moveHandler = {[weak self] in
-            self?.zodiak.userManipulate(CameraViewController.converter($0))
-        }
     }
     
     @objc func tap(_ sender: UITapGestureRecognizer) {
@@ -97,22 +90,27 @@ class CameraViewController: UIViewController {
         router.openSettings()
     }
     
-    private static var converter:(JoystickView.Event) -> UserManipulation {
-        return {
-            switch $0 {
-            case .move(let moveDirection):
-                switch moveDirection {
-                case .down: return .move(.down)
-                case .up: return .move(.up)
-                case .left: return .move(.left)
-                case .right: return .move(.right)
-                case .downleft: return .move(.downleft)
-                case .downright: return .move(.downright)
-                case .upleft: return .move(.upleft)
-                case .upright: return .move(.upright)
-                }
-            case .stop: return .stop
-            case .start: return .start
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        imageProvider.start()
+    }
+    
+    override func viewDidDisappear(_ animated: Bool) {
+        super.viewDidDisappear(animated)
+        imageProvider.stop()
+    }
+    
+    private lazy var noConnection = NoConnectionView()
+    func handleLiveImageEvent(_ event: LiveImageProviderState) {
+        switch event {
+        case .active(let image):
+            DispatchQueue.main.async {
+                self.noConnection.removeFromSuperview()
+                self.ipCameraView.image = image
+            }
+        case .error(let error):
+            DispatchQueue.main.async {
+                self.view.insertSubview(self.noConnection, aboveSubview: self.ipCameraView, constraints: .pin)
             }
         }
     }
@@ -154,16 +152,80 @@ class CameraViewController: UIViewController {
             case .toggle(let toggle):
                 toggle.newValueHandler(!toggle.currentValue())
             }
+        case .changePanelData(let changes):
+            let (param, val) = CameraViewController.convertPanelChanges(changes)
             
+            zodiak.chageSettings(param:  param, value: val, handler: { result in
+                switch result {
+                case .failure(let error): print(error)
+                case .success(let settings): self.panelData = .init(brightness: settings.brightness,
+                                                                    saturation: settings.saturation,
+                                                                    contrast: settings.contrast,
+                                                                    ir: settings.ir)
+                }
+            })
+        }
+    }
+    
+    static func convertPanelChanges(_ change: PanelView.Event.PanelDataChanges) -> (String, String) {
+        switch  change{
+        case .brightness(let value):
+            return ("1", String(value))
+        case .contrast(let value):
+            return ("2", String(value))
+        case .saturation(let value):
+            return ("8", String(value))
+        case .ir(let value):
+            return ("14", value == true ? "1" : "0")
+        }
+    }
+    
+    func handleJoystickEvent(_ event: JoystickView.Event) {
+        zodiak.userManipulate(CameraViewController.converter(event)) { result in
+            switch result {
+            case .success:
+                return
+            case .failure(let error):
+                print(error)
+            }
+        }
+    }
+    
+    private static var converter:(JoystickView.Event) -> UserManipulation {
+        return {
+            switch $0 {
+            case .move(let moveDirection):
+                switch moveDirection {
+                case .down: return .move(.down)
+                case .up: return .move(.up)
+                case .left: return .move(.left)
+                case .right: return .move(.right)
+                case .downleft: return .move(.downleft)
+                case .downright: return .move(.downright)
+                case .upleft: return .move(.upleft)
+                case .upright: return .move(.upright)
+                }
+            case .stop: return .stop
+            case .start: return .start
+            }
         }
     }
 }
 
+struct PanelData {
+    var brightness: LimitValue
+    var saturation: LimitValue
+    var contrast: LimitValue
+    var ir: Bool
+}
+
+
+protocol ActiveView: UIView&Observable { }
+
 
 protocol CameraViewControllerFactory {
-    func createCameraView() -> UIView
+    func createImageProvider() -> LiveImageProvider
     func createCameraProvider() -> ZodiakProvider
-    func createPanelDataProvider() -> PanelDataProvider
 }
 
 
@@ -177,23 +239,20 @@ class DefaultCameraViewFactory: CameraViewControllerFactory {
         case stream
     }
     
-    func createCameraView() -> UIView {
+    func createImageProvider() -> LiveImageProvider {
         switch mode {
         case .snapshot:
-            let zodiak = Model(cameraSettings: cameraSettings)
-            return IPCameraViewBySnapshots(frame: .zero,
-                                           imageProvider: zodiak.image)
+            return DisplayLinkImageUpdater() {
+                URL(string: "http://\(self.cameraSettings.host.absoluteString):\(self.cameraSettings.port)/snapshot.cgi?user=\(self.cameraSettings.login)&pwd=\(self.cameraSettings.password)")!
+            }
         case .stream:
-            return IPCameraView(frame: .zero, urlProvider: { URL(string: "http://\(self.cameraSettings.host):\(self.cameraSettings.port)/videostream.cgi?loginuse=\(self.cameraSettings.login)&loginpas=\(self.cameraSettings.password)")!
-            })
+            return OnlineImageProvider() {
+                URL(string: "http://\(self.cameraSettings.host):\(self.cameraSettings.port)/videostream.cgi?loginuse=\(self.cameraSettings.login)&loginpas=\(self.cameraSettings.password)")!}
+            //            return IPCameraView(frame: .zero, urlProvider: urlProvider) as! T
         }
     }
     
     func createCameraProvider() -> ZodiakProvider {
-        return zodiak
-    }
-    
-    func createPanelDataProvider() -> PanelDataProvider {
         return zodiak
     }
     
@@ -206,55 +265,30 @@ class DefaultCameraViewFactory: CameraViewControllerFactory {
 
 
 struct MockFactory: CameraViewControllerFactory {
+    func createImageProvider() -> LiveImageProvider {
+        return MoqLiveImageProvider()
+    }
+    
     private let model: MockModel
     
     init() {
         model = MockModel()
     }
     
-    func createPanelDataProvider() -> PanelDataProvider {
-        return model
-    }
-    
-    func createCameraView() -> UIView {
-        return NoConnectionView()
-    }
-    
     func createCameraProvider() -> ZodiakProvider {
         return model
     }
-}
-
-
-extension UIMotionEffect {
-    static func parallax(withMinDistance min: CGFloat = -30, andMaxDistance max: CGFloat = 30) -> UIMotionEffect {
-        let xMotion = UIInterpolatingMotionEffect(keyPath: "layer.transform.translation.x",
-                                                  type: .tiltAlongHorizontalAxis)
-        xMotion.minimumRelativeValue = min
-        xMotion.maximumRelativeValue = max
-        
-        let yMotion = UIInterpolatingMotionEffect(keyPath: "layer.transform.translation.y",
-                                                  type: .tiltAlongVerticalAxis)
-        yMotion.minimumRelativeValue = min
-        yMotion.maximumRelativeValue = max
-        
-        let motionEffectsGroup = UIMotionEffectGroup()
-        motionEffectsGroup.motionEffects = [xMotion, yMotion]
-        return motionEffectsGroup
-    }
     
-    static func verticalRotation(minAngle min: CGFloat = 315, maxAngle max: CGFloat = 45) -> UIMotionEffect {
-        var identity = CATransform3DIdentity
-        identity.m34 = -1/500
+    struct MoqLiveImageProvider: LiveImageProvider {
+        var stateHandler: (LiveImageProviderState) -> Void = { _ in }
         
-        let minimum = CATransform3DRotate(identity, min * .pi / 180, 1, 0, 0)
-        let maximum = CATransform3DRotate(identity, max * .pi / 180, 1, 0, 0)
+        func start() {
+            stateHandler(.active(Images.mock.image))
+        }
         
-        let effect = UIInterpolatingMotionEffect(keyPath: "layer.transform", type: .tiltAlongVerticalAxis)
-        effect.minimumRelativeValue = minimum
-        effect.maximumRelativeValue = maximum
+        func stop() {}
         
-        return effect
+        func configure(for: UIImageView) {}
     }
 }
 

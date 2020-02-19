@@ -9,46 +9,54 @@
 import UIKit
 
 class PanelView: UIView {
-
-    private var dataProvider: PanelDataProvider
     private var items: [Item] = []
     
     enum Event {
         case itemSelected(Item)
+        case changePanelData(PanelDataChanges)
+        
+        enum PanelDataChanges {
+            case brightness(Int)
+            case contrast(Int)
+            case saturation(Int)
+            case ir(Bool)
+        }
     }
     
     var eventHandler: (Event) -> Void = { _ in }
     
-    init(frame: CGRect, provider: PanelDataProvider) {
-        dataProvider = provider
+    init(frame: CGRect, provider: @escaping ()->PanelData) {
         super.init(frame: frame)
         self.isUserInteractionEnabled = true
         let brightness = ControlItem(image: #imageLiteral(resourceName: "brightnessMin"),
                                      imageMin: #imageLiteral(resourceName: "brightnessMin"),
                                      imageMax: #imageLiteral(resourceName: "brightnessMax"),
-                                     maxValue: self.dataProvider.brightness.maxValue,
-                                     minValue: self.dataProvider.brightness.minValue,
-                                     currentValue: { self.dataProvider.brightness.currentValue },
-                                     newValueHandler: { self.dataProvider.brightness.currentValue = $0 })
+                                     maxValue: provider().brightness.maxValue,
+                                     minValue: provider().brightness.minValue,
+                                     currentValue: { provider().brightness.currentValue },
+                                     newValueHandler: {
+                                        self.eventHandler(.changePanelData(.brightness($0)))})
         let contrast = ControlItem(image: #imageLiteral(resourceName: "contrastMax"),
                                    imageMin: #imageLiteral(resourceName: "contrastMin"),
                                    imageMax: #imageLiteral(resourceName: "contrastMax"),
-                                   maxValue: self.dataProvider.brightness.maxValue,
-                                   minValue: self.dataProvider.brightness.minValue,
-                                   currentValue: { self.dataProvider.contrast.currentValue },
-                                   newValueHandler: { self.dataProvider.contrast.currentValue = $0 })
+                                   maxValue: provider().brightness.maxValue,
+                                   minValue: provider().brightness.minValue,
+                                   currentValue: { provider().contrast.currentValue },
+                                   newValueHandler: {
+                                    self.eventHandler(.changePanelData(.contrast($0)))})
         let saturation = ControlItem(image: #imageLiteral(resourceName: "saturationMin"),
                                      imageMin: #imageLiteral(resourceName: "saturationMin"),
                                      imageMax: #imageLiteral(resourceName: "saturationMax"),
-                                     maxValue: self.dataProvider.brightness.maxValue,
-                                     minValue: self.dataProvider.brightness.minValue,
-                                     currentValue: { self.dataProvider.saturation.currentValue },
-                                     newValueHandler: { self.dataProvider.saturation.currentValue = $0 })
+                                     maxValue: provider().brightness.maxValue,
+                                     minValue: provider().brightness.minValue,
+                                     currentValue: { provider().saturation.currentValue },
+                                      newValueHandler: {
+                                        self.eventHandler(.changePanelData(.saturation($0)))})
         let ir = ToggleItem(image: #imageLiteral(resourceName: "irOff"),
                             imageSelected: #imageLiteral(resourceName: "irOn"),
-                            currentValue: { self.dataProvider.ir },
+                            currentValue: { provider().ir },
                             newValueHandler: {
-                                self.dataProvider.ir = $0
+                                self.eventHandler(.changePanelData(.ir($0)))
                                 self.setNeedsLayout()
         })
         items = [.control(brightness), .control(contrast), .control(saturation), .toggle(ir)]

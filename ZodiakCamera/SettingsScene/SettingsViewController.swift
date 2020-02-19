@@ -24,6 +24,10 @@ class SettingsViewController: FormViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        setupView()
+    }
+    
+    func setupView() {
         var login: String? = settingsProvider.login
         var password: String? = settingsProvider.password
         var host: URL? = settingsProvider.host

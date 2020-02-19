@@ -81,10 +81,10 @@ class PopupContainer: UIViewController {
     }
     
     override func showSuccessPopup(_ sender: UIViewController, withTitle title: String) {
-        let runPopupShow = { [unowned self] in self.showSuccessView(withTitle: title) }
-        
+        let runPopupShow = { [unowned self] in
+                self.showSuccessView(withTitle: title)
+        }
         let senderWasPresented = sender.isBeingPresented || sender.presentingViewController != nil
-        
         senderWasPresented ? sender.dismiss(animated: true, completion: runPopupShow) : runPopupShow()
     }
 }
@@ -120,6 +120,7 @@ extension UIViewController {
             
             target = target?.parent ?? target?.presentingViewController
         }
+        
         return target
     }
 }

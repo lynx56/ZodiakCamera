@@ -8,7 +8,19 @@
 
 import Foundation
 
-class MockModel: ZodiakProvider, PanelDataProvider {
+class MockModel: ZodiakProvider {
+    func chageSettings(param: String, value: String, handler: @escaping (Result<Settings, Error>) -> Void) {
+        chageSettings(param: param, value: value)
+    }
+    
+    func userManipulate(_ command: UserManipulation, handler: @escaping (Result<Void, Error>) -> Void) {
+        userManipulate(command)
+    }
+    
+    func chageSettings(param: String, value: String, handler: Result<Settings, Error>) {
+        chageSettings(param: param, value: value)
+    }
+    
     var contrast: LimitValue = .initial {
         didSet {
             chageSettings(param: "contrast", value: String(contrast.currentValue))
@@ -30,9 +42,6 @@ class MockModel: ZodiakProvider, PanelDataProvider {
         }
     }
     
-    func image() -> Data? {
-        return nil
-    }
     func chageSettings(param: String, value: String) {
         print("chageSettings(param: \(param), value: \(value)")
     }
