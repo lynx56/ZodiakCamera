@@ -25,11 +25,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 }
 
 class CameraFlowViewController: CameraViewControllerRouter {
-    private let keychain = KeychainSwift()
+    private let keychain = KeychainSwiftWrapper(keychain: KeychainSwift())
     var popup: PopupContainer?
     
     func start() -> UIViewController {
-        let factory = DefaultCameraViewFactory(cameraSettings: keychain, mode: .stream)
+        let factory = DefaultCameraViewFactory(cameraSettingsProvider: keychain, mode: .stream)
         //let factory = MockFactory()
         let cameraVc = CameraViewController(factory: factory, router: self)
         popup = PopupContainer(root: cameraVc)

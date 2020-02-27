@@ -9,41 +9,17 @@
 import Foundation
 
 class MockModel: ZodiakProvider {
-    func chageSettings(param: String, value: String, handler: @escaping (Result<Settings, Error>) -> Void) {
-        chageSettings(param: param, value: value)
+    func chageSettings(_ change: Settings.Change, handler: @escaping (Result<Settings, Error>) -> Void) {
+        let (param, value) = change.urlParameters
+        print("chageSettings(param: \(param), value: \(value)")
     }
+    
+    var liveStreamUrl: URL { fatalError("mock") }
+    
+    var snapshotUrl: URL { fatalError("mock") }
     
     func userManipulate(_ command: UserManipulation, handler: @escaping (Result<Void, Error>) -> Void) {
         userManipulate(command)
-    }
-    
-    func chageSettings(param: String, value: String, handler: Result<Settings, Error>) {
-        chageSettings(param: param, value: value)
-    }
-    
-    var contrast: LimitValue = .initial {
-        didSet {
-            chageSettings(param: "contrast", value: String(contrast.currentValue))
-        }
-    }
-    var brightness: LimitValue = .initial{
-        didSet {
-            chageSettings(param: "brightness", value: String(brightness.currentValue))
-        }
-    }
-    var saturation: LimitValue = .initial{
-        didSet {
-            chageSettings(param: "saturation", value: String(saturation.currentValue))
-        }
-    }
-    var ir: Bool = false{
-        didSet {
-            chageSettings(param: "ir", value: String(ir))
-        }
-    }
-    
-    func chageSettings(param: String, value: String) {
-        print("chageSettings(param: \(param), value: \(value)")
     }
     
     func userManipulate(_ command: UserManipulation) {

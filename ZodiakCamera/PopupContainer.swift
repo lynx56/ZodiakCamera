@@ -39,9 +39,10 @@ class PopupContainer: UIViewController {
             constraint(\.centerYAnchor)
         ])
         popup.transform = CGAffineTransform(scaleX: 0, y: 0)
-        let duration: CFTimeInterval = 0.8
+        let duration: CFTimeInterval = 0.5
         let fadeInOut = CABasicAnimation.fadeInOut(for: duration)
-        let boundsAnimation = CABasicAnimation.transformToIdentity(for: duration/3)
+        let boundsAnimation = CABasicAnimation.transformToIdentity(for: duration/3.0)
+        animations.forEach { $0.duration = 0.2 }
         
         let animationGroup = CAAnimationGroup()
         animationGroup.animations = [fadeInOut, boundsAnimation] + animations
@@ -92,8 +93,8 @@ class PopupContainer: UIViewController {
 
 // MARK: - CAAnimationDelegate
 extension PopupContainer: CAAnimationDelegate {
-    func animationDidStop(_ anim: CAAnimation, finished flag: Bool) {
-        if flag {
+    func animationDidStop(_ anim: CAAnimation, finished: Bool) {
+        if finished {
             animationCompleted()
         }
     }

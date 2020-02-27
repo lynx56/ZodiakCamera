@@ -26,7 +26,7 @@ class ArcSlider: UIControl {
         static let circleSize = CGSize(width: 24, height: 24)
     }
     
-    struct Settings {
+    struct ViewModel {
         let innerRadiusOffset: CGFloat
         let color: UIColor
         let tintColor: UIColor
@@ -36,27 +36,27 @@ class ArcSlider: UIControl {
         let maxValue: Int
         let currentValue: Int
         
-        static var initial = Settings(innerRadiusOffset: 20,
-                                      color: .white,
-                                      tintColor: .black,
-                                      startImage: .empty(sized: .zero),
-                                      endImage: .empty(sized: .zero),
-                                      minValue: 0,
-                                      maxValue: 255,
-                                      currentValue: 128)
+        static var initial = ViewModel(innerRadiusOffset: 20,
+                                       color: .white,
+                                       tintColor: .black,
+                                       startImage: .empty(sized: .zero),
+                                       endImage: .empty(sized: .zero),
+                                       minValue: 0,
+                                       maxValue: 255,
+                                       currentValue: 128)
     }
     
     
-    private let settings: Settings
+    private let model: ViewModel
     override init(frame: CGRect) {
-        settings = .initial
+        self.model = .initial
         super.init(frame: frame)
         setup()
     }
     
     init(frame: CGRect,
-         settings: Settings) {
-        self.settings = settings
+         model: ViewModel) {
+        self.model = model
         super.init(frame: frame)
         setup()
     }
@@ -83,24 +83,24 @@ class ArcSlider: UIControl {
     private var decorate: ArcLayer!
     
     func setup() {
-        self.tintColor = settings.tintColor
-        self.currentValue = settings.currentValue
+        self.tintColor = model.tintColor
+        self.currentValue = model.currentValue
         circleView.settings =  .init(color: .black, font: .systemFont(ofSize: 8))
         mainArc = Arc(startPoint: startPoint,
                       endPoint: endPoint,
                       middlePoint: topPoint)
         
         scaleArc = Arc(arc: self.mainArc,
-                       radius: self.mainArc.radius - settings.innerRadiusOffset)
+                       radius: self.mainArc.radius - model.innerRadiusOffset)
         
         decorate = ArcLayer(arc: mainArc,
                             scale: scaleArc,
-                            color: settings.tintColor,
-                            backgroundColor: settings.color)
+                            color: model.tintColor,
+                            backgroundColor: model.color)
         
         self.layer.addSublayer(decorate)
-        startImageView.image = settings.startImage
-        endImageView.image = settings.endImage
+        startImageView.image = model.startImage
+        endImageView.image = model.endImage
         
         addSubview(startImageView)
         addSubview(endImageView)
@@ -120,7 +120,7 @@ class ArcSlider: UIControl {
                       middlePoint: topPoint)
         
         scaleArc = Arc(arc: mainArc,
-                       radius: mainArc.radius - settings.innerRadiusOffset)
+                       radius: mainArc.radius - model.innerRadiusOffset)
         
         decorate.arc = mainArc
         decorate.scale = scaleArc
@@ -139,7 +139,7 @@ class ArcSlider: UIControl {
         startImageView.transform = .init(rotationAngle: scaleArc.startAngle + .pi/2)
         endImageView.transform = .init(rotationAngle: scaleArc.endAngle + .pi/2)
         
-        let rangeValues = settings.maxValue-settings.minValue
+        let rangeValues = model.maxValue-model.minValue
         guard rangeValues != 0 else {
             cachedBounds = .zero
             return
@@ -171,7 +171,7 @@ class ArcSlider: UIControl {
         let traversedLength = scaleArc.length(angle: angle)
         let currentPoint = scaleArc.point(for: scaleArc.angle(for: traversedLength))
         circleView.center = currentPoint
-        currentValue = Int(traversedLength/scaleArc.length() * CGFloat(settings.maxValue-settings.minValue))
+        currentValue = Int(traversedLength/scaleArc.length() * CGFloat(model.maxValue-model.minValue))
        
         sendActions(for: .valueChanged)
     }

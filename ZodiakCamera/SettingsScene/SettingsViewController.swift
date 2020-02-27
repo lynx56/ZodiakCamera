@@ -28,67 +28,69 @@ class SettingsViewController: FormViewController {
     }
     
     func setupView() {
-        var login: String? = settingsProvider.login
-        var password: String? = settingsProvider.password
-        var host: URL? = settingsProvider.host
-        var port: Int? = settingsProvider.port
+        var settings = settingsProvider.settings
         
         form +++ Section(L10n.Settings.access)
             <<< TextRow() { row in
                 row.title = L10n.Settings.login
                 row.placeholder = "admin"
-                row.value = settingsProvider.login
+                row.value = settings.login
                 row.add(rule: RuleRequired())
                 row.cellUpdate({if !$1.isValid { $0.titleLabel?.textColor = .systemRed }})
-            }.onChange { login = $0.value }
+            }.onChange{ settings.login = $0.value ?? "" }
             <<< PasswordRow() { row in
                 row.title = L10n.Settings.password
                 row.placeholder = "123123"
-                row.value = settingsProvider.password
+                row.value = settings.password
                 row.add(rule: RuleRequired())
                 row.cellUpdate({if !$1.isValid { $0.titleLabel?.textColor = .systemRed }})
-            }.onChange { password = $0.value }
+            }.onChange { settings.password = $0.value ?? "" }
             +++ Section(L10n.Settings.address)
             <<< URLRow() { row in
                 row.title = L10n.Settings.host
                 row.placeholder = "192.168.1.1"
-                row.value = settingsProvider.host
+                row.value = settings.host
                 row.add(rule: RuleRequired())
                 row.cellUpdate({if !$1.isValid { $0.titleLabel?.textColor = .systemRed }})
             }.onChange{
-                host = $0.value
+                settings.host = $0.value ?? URL(string: "192.168.1.1")!
             }
             <<< IntRow() { row in
                 row.title = L10n.Settings.port
                 row.placeholder = "81"
-                row.value = settingsProvider.port
+                row.value = settings.port
                 row.add(rule: RuleRequired())
                 row.cellUpdate({if !$1.isValid { $0.titleLabel?.textColor = .systemRed }})
-            }.onChange { port = $0.value }
+            }.onChange { settings.port = $0.value ?? 81 }
         
         form +++ ButtonRow() {
             $0.title = L10n.Settings.save
         }.onCellSelection({ [unowned self] (cell, row) in
             if self.form.validate().isEmpty {
-                self.settingsProvider.login = login!
-                self.settingsProvider.password = password!
-                self.settingsProvider.host = host!
-                self.settingsProvider.port = port!
+                self.settingsProvider.update(settings: settings)
                 self.showSuccessPopup(self, withTitle: L10n.Settings.saved)
             }
         })
     }
 }
 
-
-protocol CameraSettingsProvider {
-    var login: String { get set }
-    var password: String { get set }
-    var host: URL { get set }
-    var port: Int { get set }
+struct CameraSettings {
+    var login: String
+    var password: String
+    var host: URL
+    var port: Int
 }
 
-extension KeychainSwift: CameraSettingsProvider {
+protocol CameraSettingsProvider {
+    var settings: CameraSettings { get }
+    func update(settings: CameraSettings)
+    var updated: ()->Void { get set }
+}
+
+class KeychainSwiftWrapper: CameraSettingsProvider {
+    var updated: () -> Void = {}
+    
+    private var keychain: KeychainSwift
     enum Keys {
         static let login = "ZodiakCamera.CameraSettings.Login"
         static let password = "ZodiakCamera.CameraSettings.Password"
@@ -96,39 +98,22 @@ extension KeychainSwift: CameraSettingsProvider {
         static let port = "ZodiakCamera.CameraSettings.Port"
     }
     
-    var login: String {
-        get {
-            return get(Keys.login) ?? ""
-        }
-        set {
-            set(newValue, forKey: Keys.login)
-        }
+    var settings: CameraSettings {
+        return .init(login: keychain.get(Keys.login) ?? "",
+                     password: keychain.get(Keys.password) ?? "",
+                     host: URL(string: keychain.get(Keys.host) ?? "") ?? URL(string: "192.168.1.1")!,
+                     port: Int(keychain.get(Keys.port) ?? "") ?? 81)
     }
     
-    var password: String {
-        get {
-            return get(Keys.password) ?? ""
-        }
-        set {
-            set(newValue, forKey: Keys.password)
-        }
+    init(keychain: KeychainSwift) {
+        self.keychain = keychain
     }
     
-    var host: URL {
-        get {
-            return URL(string: get(Keys.host) ?? "") ?? URL(string: "192.168.1.1")!
-        }
-        set {
-            set(newValue.absoluteString, forKey: Keys.host)
-        }
-    }
-    
-    var port: Int {
-        get {
-            return Int(get(Keys.port) ?? "") ?? 81
-        }
-        set {
-            set(String(newValue), forKey: Keys.port)
-        }
+    func update(settings: CameraSettings) {
+        keychain.set(settings.login, forKey: Keys.login)
+        keychain.set(settings.password, forKey: Keys.password)
+        keychain.set(settings.host.absoluteString, forKey: Keys.host)
+        keychain.set(String(settings.port), forKey: Keys.port)
+        updated()
     }
 }

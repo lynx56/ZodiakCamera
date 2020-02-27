@@ -281,7 +281,7 @@ class IPCameraViewController: UIViewController, URLSessionDataDelegate {
 
 protocol LiveImageProvider {
     var stateHandler: (LiveImageProviderState)->Void { get set }
-    func start()
+    func start(with url: URL)
     func stop()
     func configure(for: UIImageView)
 }
@@ -292,18 +292,15 @@ enum LiveImageProviderState {
 }
   
 class DisplayLinkImageUpdater: LiveImageProvider {
-    private var urlProvider: () -> URL
+    private var url: URL!
     private var displaylink: CADisplayLink?
   
-    init(urlProvider: @escaping () -> URL) {
-        self.urlProvider = urlProvider
-    }
-    
     func configure(for imageView: UIImageView) {
         imageView.contentMode = .redraw
     }
     
-    func start() {
+    func start(with url: URL) {
+        self.url = url
         createDisplayLink()
     }
     
@@ -325,7 +322,7 @@ class DisplayLinkImageUpdater: LiveImageProvider {
     
     @objc private func update(displaylink: CADisplayLink) {
         do {
-            let data = try Data(contentsOf: urlProvider())
+            let data = try Data(contentsOf: url)
             let image = UIImage(data: data)?.resizeWithScaleAspectFitMode(to: UIScreen.main.bounds.size)
             stateHandler(.active(image))
         } catch {
@@ -336,29 +333,26 @@ class DisplayLinkImageUpdater: LiveImageProvider {
 
 
 class OnlineImageProvider: NSObject, URLSessionDataDelegate, LiveImageProvider {
-    private var urlProvider: () -> URL
+    private var url: URL!
     var stateHandler: (LiveImageProviderState)->Void =  { _ in }
     private var endMarkerData = Data(bytes: [0xFF, 0xD9] as [UInt8], count: 2)
     private var receivedData = Data()
     private var dataTask: URLSessionDataTask!
     
-    init(urlProvider: @escaping () -> URL) {
-        self.urlProvider = urlProvider
-    }
-    
     func configure(for imageView: UIImageView) {
         imageView.contentMode = UIView.ContentMode.scaleAspectFill
     }
     
-    func start() {
+    func start(with url: URL) {
+        stop()
         let session = URLSession(configuration: .default, delegate: self, delegateQueue: nil)
-        let request = URLRequest(url: urlProvider())
-        self.dataTask = session.dataTask(with: request as URLRequest)
+        let request = URLRequest(url: url)
+        self.dataTask = session.dataTask(with: request)
         self.dataTask.resume()
     }
     
     func stop() {
-        self.dataTask.cancel()
+        self.dataTask?.cancel()
     }
     
     func urlSession(_ session: URLSession, task: URLSessionTask, didCompleteWithError error: Error?) {

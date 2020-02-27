@@ -21,10 +21,12 @@ class CameraViewController: UIViewController {
     private var imageProvider: LiveImageProvider
     private let ipCameraView = UIImageView()
     private var panelData: PanelData = PanelData(brightness: .initial, saturation: .initial, contrast: .initial, ir: false)
+    private var factory: CameraViewControllerFactory
     
     init(factory: CameraViewControllerFactory,
          router: CameraViewControllerRouter) {
         self.router = router
+        self.factory = factory
         zodiak = factory.createCameraProvider()
         imageProvider = factory.createImageProvider()
         super.init(nibName: nil, bundle: nil)
@@ -44,6 +46,7 @@ class CameraViewController: UIViewController {
         self.imageProvider.stateHandler = self.handleLiveImageEvent
         self.settings.addTarget(self, action: #selector(self.openSettings), for: .touchUpInside)
         self.view.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(self.tap)))
+        factory.reloaded = { [unowned self] in self.imageProvider.start(with: self.zodiak.liveStreamUrl) }
     }
     
     
@@ -92,7 +95,7 @@ class CameraViewController: UIViewController {
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        imageProvider.start()
+        imageProvider.start(with: zodiak.liveStreamUrl)
     }
     
     override func viewDidDisappear(_ animated: Bool) {
@@ -100,18 +103,46 @@ class CameraViewController: UIViewController {
         imageProvider.stop()
     }
     
-    private lazy var noConnection = NoConnectionView()
-    func handleLiveImageEvent(_ event: LiveImageProviderState) {
-        switch event {
+    enum State {
+        case error(Error)
+        case editing
+        case active(UIImage?)
+        enum Error {
+            case noConnection
+            case unknown
+        }
+    }
+    
+    private var countErrors: Int = 0
+    func update(_ state: State) {
+        switch state {
         case .active(let image):
             DispatchQueue.main.async {
                 self.noConnection.removeFromSuperview()
                 self.ipCameraView.image = image
+                self.joystickView.isHidden = false
+                self.countErrors = 0
             }
+        case .editing:
+            joystickView.isHidden = true
+        case .error:
+            countErrors += 1
+            if countErrors > 3 {
+                DispatchQueue.main.async {
+                    self.view.insertSubview(self.noConnection, aboveSubview: self.ipCameraView, constraints: .pin)
+                    self.countErrors = 0
+                }
+            }
+        }
+    }
+    
+    private lazy var noConnection = NoConnectionView()
+    func handleLiveImageEvent(_ event: LiveImageProviderState) {
+        switch event {
+        case .active(let image):
+            update(.active(image))
         case .error(let error):
-            DispatchQueue.main.async {
-                self.view.insertSubview(self.noConnection, aboveSubview: self.ipCameraView, constraints: .pin)
-            }
+            update(.error(.noConnection))
         }
     }
     
@@ -123,15 +154,14 @@ class CameraViewController: UIViewController {
             switch item {
             case .control(let control):
                 let slider = ArcSlider(frame: .zero,
-                                       settings: .init(innerRadiusOffset: 30,
-                                                       color: UIColor.black.withAlphaComponent(0.2),
-                                                       tintColor: .white,
-                                                       startImage: control.imageMin ?? UIImage.empty(),
-                                                       endImage: control.imageMax ?? UIImage.empty(),
-                                                       minValue: control.minValue,
-                                                       //TODO:
-                                        maxValue: control.maxValue != 0 ? control.maxValue : 255,
-                                        currentValue: control.currentValue()))
+                                       model: .init(innerRadiusOffset: 30,
+                                                    color: UIColor.black.withAlphaComponent(0.2),
+                                                    tintColor: .white,
+                                                    startImage: control.imageMin ?? UIImage.empty(),
+                                                    endImage: control.imageMax ?? UIImage.empty(),
+                                                    minValue: control.minValue,
+                                                    maxValue: control.maxValue != 0 ? control.maxValue : 255,
+                                                    currentValue: control.currentValue()))
                 
                 slider.valueChanged = control.newValueHandler
                 slider.isEnabled = true
@@ -149,13 +179,14 @@ class CameraViewController: UIViewController {
                     slider.alpha = 1
                 }
                 self.showedSlider = slider
+                update(.editing)
             case .toggle(let toggle):
                 toggle.newValueHandler(!toggle.currentValue())
             }
         case .changePanelData(let changes):
-            let (param, val) = CameraViewController.convertPanelChanges(changes)
+            let change = CameraViewController.convertPanelChanges(changes)
             
-            zodiak.chageSettings(param:  param, value: val, handler: { result in
+            zodiak.chageSettings(change, handler: { result in
                 switch result {
                 case .failure(let error): print(error)
                 case .success(let settings): self.panelData = .init(brightness: settings.brightness,
@@ -167,20 +198,20 @@ class CameraViewController: UIViewController {
         }
     }
     
-    static func convertPanelChanges(_ change: PanelView.Event.PanelDataChanges) -> (String, String) {
+    static private func convertPanelChanges(_ change: PanelView.Event.PanelDataChanges) -> Settings.Change {
         switch  change{
         case .brightness(let value):
-            return ("1", String(value))
+            return .brightness(value)
         case .contrast(let value):
-            return ("2", String(value))
+            return .contrast(value)
         case .saturation(let value):
-            return ("8", String(value))
+            return .saturation(value)
         case .ir(let value):
-            return ("14", value == true ? "1" : "0")
+            return .ir(value)
         }
     }
     
-    func handleJoystickEvent(_ event: JoystickView.Event) {
+    private func handleJoystickEvent(_ event: JoystickView.Event) {
         zodiak.userManipulate(CameraViewController.converter(event)) { result in
             switch result {
             case .success:
@@ -226,29 +257,37 @@ protocol ActiveView: UIView&Observable { }
 protocol CameraViewControllerFactory {
     func createImageProvider() -> LiveImageProvider
     func createCameraProvider() -> ZodiakProvider
+    var reloaded: ()->Void { get set }
 }
 
 
 class DefaultCameraViewFactory: CameraViewControllerFactory {
-    private let cameraSettings: CameraSettingsProvider
+    private var cameraSettingsProvider: CameraSettingsProvider
     private let mode: Mode
     private let zodiak: Model
-    
+    var reloaded: ()->Void = { } {
+        didSet {
+             self.cameraSettingsProvider.updated = reloaded
+        }
+    }
     enum Mode {
         case snapshot
         case stream
     }
     
     func createImageProvider() -> LiveImageProvider {
+        let cameraSettings = cameraSettingsProvider.settings
         switch mode {
         case .snapshot:
-            return DisplayLinkImageUpdater() {
-                URL(string: "http://\(self.cameraSettings.host.absoluteString):\(self.cameraSettings.port)/snapshot.cgi?user=\(self.cameraSettings.login)&pwd=\(self.cameraSettings.password)")!
-            }
+            return DisplayLinkImageUpdater()
+//                {
+//                URL(string: "http://\(cameraSettings.host.absoluteString):\(cameraSettings.port)/snapshot.cgi?user=\(cameraSettings.login)&pwd=\(cameraSettings.password)")!
+//            }
         case .stream:
-            return OnlineImageProvider() {
-                URL(string: "http://\(self.cameraSettings.host):\(self.cameraSettings.port)/videostream.cgi?loginuse=\(self.cameraSettings.login)&loginpas=\(self.cameraSettings.password)")!}
-            //            return IPCameraView(frame: .zero, urlProvider: urlProvider) as! T
+            return OnlineImageProvider()
+//                {
+//                URL(string: "http://\(cameraSettings.host):\(cameraSettings.port)/videostream.cgi?loginuse=\(cameraSettings.login)&loginpas=\(cameraSettings.password)")!}
+//            //            return IPCameraView(frame: .zero, urlProvider: urlProvider) as! T
         }
     }
     
@@ -256,15 +295,17 @@ class DefaultCameraViewFactory: CameraViewControllerFactory {
         return zodiak
     }
     
-    init(cameraSettings: CameraSettingsProvider, mode: Mode) {
-        self.cameraSettings = cameraSettings
+    init(cameraSettingsProvider: CameraSettingsProvider, mode: Mode ) {
+        self.cameraSettingsProvider = cameraSettingsProvider
         self.mode = mode
-        self.zodiak = Model(cameraSettings: cameraSettings)
+        self.zodiak = Model(cameraSettingsProvider: cameraSettingsProvider)
     }
 }
 
 
 struct MockFactory: CameraViewControllerFactory {
+    var reloaded: () -> Void = { print("reloaded") }
+    
     func createImageProvider() -> LiveImageProvider {
         return MoqLiveImageProvider()
     }
@@ -280,16 +321,14 @@ struct MockFactory: CameraViewControllerFactory {
     }
     
     struct MoqLiveImageProvider: LiveImageProvider {
-        var stateHandler: (LiveImageProviderState) -> Void = { _ in }
-        
-        func start() {
+        func start(with url: URL) {
             stateHandler(.active(Images.mock.image))
         }
+        
+        var stateHandler: (LiveImageProviderState) -> Void = { _ in }
         
         func stop() {}
         
         func configure(for: UIImageView) {}
     }
 }
-
-

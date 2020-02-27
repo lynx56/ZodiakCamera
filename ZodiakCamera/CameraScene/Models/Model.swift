@@ -12,13 +12,17 @@ import AVKit
 import Photos
 
 class Model: ZodiakProvider {
-    private let cameraSettings: CameraSettingsProvider
+    var liveStreamUrl: URL { return URL(string: getUrl(with: "videostream.cgi"))! }
+    var snapshotUrl: URL { return URL(string: getUrl(with: "snapshot.cgi"))! }
     
-    init(cameraSettings: CameraSettingsProvider) {
-        self.cameraSettings = cameraSettings
+    private let cameraSettingsProvider: CameraSettingsProvider
+    
+    init(cameraSettingsProvider: CameraSettingsProvider) {
+        self.cameraSettingsProvider = cameraSettingsProvider
     }
     
     private func getUrl(with cgi: String) -> String {
+        let cameraSettings = cameraSettingsProvider.settings
         return "http://\(cameraSettings.host.absoluteString):\(cameraSettings.port)/\(cgi)?loginuse=\(cameraSettings.login)&amp;loginpas=\(cameraSettings.password)"
     }
     
@@ -38,7 +42,8 @@ class Model: ZodiakProvider {
         task.resume()
     }
     
-    func chageSettings(param: String, value: String, handler: @escaping (Result<Settings, Error>) -> Void) {
+    func chageSettings(_ changes: Settings.Change, handler: @escaping (Result<Settings, Error>) -> Void) {
+        let (param, value) = changes.urlParameters
         var cgi =  getUrl(with: "camera_control.cgi")
         cgi += "&param=\(param)&value=\(value)"
         cgi += "&\(Date().stamp()!)"
@@ -57,8 +62,11 @@ class Model: ZodiakProvider {
     
     func userManipulate(_ command: UserManipulation, handler: @escaping (Result<Void, Error>) -> Void) {
         let convertedCommand: Int?
+        var cancellOthersCommands = false
         switch command {
-        case .stop: convertedCommand = 1
+        case .stop:
+            convertedCommand = 1
+            cancellOthersCommands = true
         case .start: convertedCommand = nil
         case .move(let direction):
             switch direction {
@@ -75,30 +83,41 @@ class Model: ZodiakProvider {
         
         guard let cameraManipulate = convertedCommand else { return }
         
-        userControl("\(cameraManipulate)", handler: handler)
+        userControl("\(cameraManipulate)", cancelPrevious: cancellOthersCommands, handler: handler)
     }
 
-    
-    private func userControl(_ command: String, handler: @escaping (Result<Void, Error>) -> Void) {
+    private var userCancellableTasks: [URL: URLSessionDataTask] = [:]
+    private func userControl(_ command: String, cancelPrevious: Bool = false, handler: @escaping (Result<Void, Error>) -> Void) {
         var cgi = getUrl(with: "decoder_control.cgi");
         cgi += "&command=\(command)"
         cgi += "&onestep=0"
         cgi += "&\(Date().stamp())"
         
         let url = URL(string: cgi)!
+
+        if cancelPrevious {
+            userCancellableTasks.values.forEach { if $0.state == .running { $0.cancel() }}
+            userCancellableTasks.removeAll()
+        }
         
-        let task = URLSession.shared.dataTask(with: url) { (data, response, error) in
+        let task = URLSession.shared.dataTask(with: url) { [url] (data, response, error) in
+            self.userCancellableTasks.removeValue(forKey: url)
             guard let error = error else { return }
             handler(.failure(error))
         }
         
         task.resume()
+        if !cancelPrevious {
+            userCancellableTasks[url] = task
+        }
     }
 }
 
 protocol ZodiakProvider {
-    func chageSettings(param: String, value: String, handler: @escaping (Result<Settings, Error>) -> Void)
+    func chageSettings(_ change: Settings.Change, handler: @escaping (Result<Settings, Error>) -> Void)
     func userManipulate(_ command: UserManipulation, handler: @escaping (Result<Void, Error>) -> Void)
+    var liveStreamUrl: URL { get }
+    var snapshotUrl: URL { get }
 }
 
 enum UserManipulation {
@@ -115,6 +134,21 @@ enum UserManipulation {
     case move(Move)
     case stop
     case start
+}
+
+extension Settings.Change {
+    var urlParameters: (String, String) {
+        switch self {
+        case .brightness(let value):
+            return ("1", String(value))
+        case .contrast(let value):
+            return ("2", String(value))
+        case .saturation(let value):
+            return ("8", String(value))
+        case .ir(let value):
+            return ("14", value == true ? "1" : "0")
+        }
+    }
 }
 
 //
