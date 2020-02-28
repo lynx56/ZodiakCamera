@@ -29,9 +29,9 @@ class CameraFlowViewController: CameraViewControllerRouter {
     var popup: PopupContainer?
     
     func start() -> UIViewController {
-        let factory = DefaultCameraViewFactory(cameraSettingsProvider: keychain, mode: .stream)
-        //let factory = MockFactory()
-        let cameraVc = CameraViewController(factory: factory, router: self)
+        let model = Model(cameraSettingsProvider: keychain, mode: .stream)
+        //let model = MockFactory()
+        let cameraVc = CameraViewController(model: model, router: self)
         popup = PopupContainer(root: cameraVc)
         return popup!
     }

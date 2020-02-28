@@ -17,18 +17,14 @@ class CameraViewController: UIViewController {
     private var panelView: PanelView!
     private let settings = UIButton(type: .custom)
     private let router: CameraViewControllerRouter
-    private let zodiak: ZodiakProvider
-    private var imageProvider: LiveImageProvider
     private let ipCameraView = UIImageView()
     private var panelData: PanelData = PanelData(brightness: .initial, saturation: .initial, contrast: .initial, ir: false)
-    private var factory: CameraViewControllerFactory
+    private var model: CameraViewControllerModel
     
-    init(factory: CameraViewControllerFactory,
+    init(model: CameraViewControllerModel,
          router: CameraViewControllerRouter) {
         self.router = router
-        self.factory = factory
-        zodiak = factory.createCameraProvider()
-        imageProvider = factory.createImageProvider()
+        self.model = model
         super.init(nibName: nil, bundle: nil)
     }
     
@@ -43,15 +39,14 @@ class CameraViewController: UIViewController {
         self.setupLayout()
         self.panelView.eventHandler = self.handlePanelViewEvent
         self.joystickView.moveHandler = self.handleJoystickEvent
-        self.imageProvider.stateHandler = self.handleLiveImageEvent
+        model.imageProviderHandler = self.handleLiveImageEvent
         self.settings.addTarget(self, action: #selector(self.openSettings), for: .touchUpInside)
         self.view.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(self.tap)))
-        factory.reloaded = { [unowned self] in self.imageProvider.start(with: self.zodiak.liveStreamUrl) }
     }
     
     
     private func setupLayout() {
-        self.imageProvider.configure(for: ipCameraView)
+        model.imageProvider.configure(for: ipCameraView)
         view.addSubview(ipCameraView, constraints: .pin)
         view.addSubview(panelView, constraints: [
             constraint(\.leftAnchor),
@@ -95,12 +90,12 @@ class CameraViewController: UIViewController {
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        imageProvider.start(with: zodiak.liveStreamUrl)
+        model.imageProvider.start()
     }
     
     override func viewDidDisappear(_ animated: Bool) {
         super.viewDidDisappear(animated)
-        imageProvider.stop()
+        model.imageProvider.stop()
     }
     
     enum State {
@@ -129,6 +124,7 @@ class CameraViewController: UIViewController {
             countErrors += 1
             if countErrors > 3 {
                 DispatchQueue.main.async {
+                    self.noConnection.reset()
                     self.view.insertSubview(self.noConnection, aboveSubview: self.ipCameraView, constraints: .pin)
                     self.countErrors = 0
                 }
@@ -186,7 +182,7 @@ class CameraViewController: UIViewController {
         case .changePanelData(let changes):
             let change = CameraViewController.convertPanelChanges(changes)
             
-            zodiak.chageSettings(change, handler: { result in
+            model.changeSettings(change, resultHandler: { result in
                 switch result {
                 case .failure(let error): print(error)
                 case .success(let settings): self.panelData = .init(brightness: settings.brightness,
@@ -198,7 +194,7 @@ class CameraViewController: UIViewController {
         }
     }
     
-    static private func convertPanelChanges(_ change: PanelView.Event.PanelDataChanges) -> Settings.Change {
+    static private func convertPanelChanges(_ change: PanelView.Event.PanelDataChanges) -> SettingsChange {
         switch  change{
         case .brightness(let value):
             return .brightness(value)
@@ -212,7 +208,7 @@ class CameraViewController: UIViewController {
     }
     
     private func handleJoystickEvent(_ event: JoystickView.Event) {
-        zodiak.userManipulate(CameraViewController.converter(event)) { result in
+        model.userManipulate(command: CameraViewController.converter(event)) { result in
             switch result {
             case .success:
                 return
@@ -250,85 +246,3 @@ struct PanelData {
     var ir: Bool
 }
 
-
-protocol ActiveView: UIView&Observable { }
-
-
-protocol CameraViewControllerFactory {
-    func createImageProvider() -> LiveImageProvider
-    func createCameraProvider() -> ZodiakProvider
-    var reloaded: ()->Void { get set }
-}
-
-
-class DefaultCameraViewFactory: CameraViewControllerFactory {
-    private var cameraSettingsProvider: CameraSettingsProvider
-    private let mode: Mode
-    private let zodiak: Model
-    var reloaded: ()->Void = { } {
-        didSet {
-             self.cameraSettingsProvider.updated = reloaded
-        }
-    }
-    enum Mode {
-        case snapshot
-        case stream
-    }
-    
-    func createImageProvider() -> LiveImageProvider {
-        let cameraSettings = cameraSettingsProvider.settings
-        switch mode {
-        case .snapshot:
-            return DisplayLinkImageUpdater()
-//                {
-//                URL(string: "http://\(cameraSettings.host.absoluteString):\(cameraSettings.port)/snapshot.cgi?user=\(cameraSettings.login)&pwd=\(cameraSettings.password)")!
-//            }
-        case .stream:
-            return OnlineImageProvider()
-//                {
-//                URL(string: "http://\(cameraSettings.host):\(cameraSettings.port)/videostream.cgi?loginuse=\(cameraSettings.login)&loginpas=\(cameraSettings.password)")!}
-//            //            return IPCameraView(frame: .zero, urlProvider: urlProvider) as! T
-        }
-    }
-    
-    func createCameraProvider() -> ZodiakProvider {
-        return zodiak
-    }
-    
-    init(cameraSettingsProvider: CameraSettingsProvider, mode: Mode ) {
-        self.cameraSettingsProvider = cameraSettingsProvider
-        self.mode = mode
-        self.zodiak = Model(cameraSettingsProvider: cameraSettingsProvider)
-    }
-}
-
-
-struct MockFactory: CameraViewControllerFactory {
-    var reloaded: () -> Void = { print("reloaded") }
-    
-    func createImageProvider() -> LiveImageProvider {
-        return MoqLiveImageProvider()
-    }
-    
-    private let model: MockModel
-    
-    init() {
-        model = MockModel()
-    }
-    
-    func createCameraProvider() -> ZodiakProvider {
-        return model
-    }
-    
-    struct MoqLiveImageProvider: LiveImageProvider {
-        func start(with url: URL) {
-            stateHandler(.active(Images.mock.image))
-        }
-        
-        var stateHandler: (LiveImageProviderState) -> Void = { _ in }
-        
-        func stop() {}
-        
-        func configure(for: UIImageView) {}
-    }
-}

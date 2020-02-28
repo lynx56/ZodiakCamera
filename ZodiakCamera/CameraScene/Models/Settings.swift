@@ -23,11 +23,4 @@ public struct Settings {
     var speed: Int = 0
     var framerate: Int = 0
     var contrast: LimitValue = .initial
-    
-    enum Change {
-        case brightness(Int)
-        case contrast(Int)
-        case saturation(Int)
-        case ir(Bool)
-    }
 }

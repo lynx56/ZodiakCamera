@@ -41,26 +41,4 @@ extension Settings {
             }
         }
     }
-    
-    func convert(for keyPath: KeyPath<Settings, LimitValue>) -> (parameter: String, value: String) {
-          switch  keyPath{
-          case \.brightness:
-              return ("1", String(self[keyPath: keyPath].currentValue))
-          case \.contrast:
-              return ("2", String(self[keyPath: keyPath].currentValue))
-          case \.saturation:
-              return ("8", String(self[keyPath: keyPath].currentValue))
-          default:
-              return ("", "")
-          }
-      }
-    
-    func convert(for keyPath: KeyPath<Settings, Bool>) -> (parameter: String, value: String) {
-        switch  keyPath{
-        case \.ir:
-            return ("14", String(self[keyPath: keyPath] == true ? 1 : 0))
-        default:
-            return ("", "")
-        }
-    }
 }

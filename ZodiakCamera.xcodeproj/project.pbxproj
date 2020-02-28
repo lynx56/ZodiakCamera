@@ -12,14 +12,13 @@
 		BF08A65223577C9800CEADD1 /* JoystickView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF08A65123577C9800CEADD1 /* JoystickView.swift */; };
 		BF08A65423577CE400CEADD1 /* TLAnalogJoystickComponent.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF08A65323577CE400CEADD1 /* TLAnalogJoystickComponent.swift */; };
 		BF08A6562359AFB400CEADD1 /* CircleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF08A6552359AFB400CEADD1 /* CircleView.swift */; };
-		BF534AF8236C4025007B5F2F /* Model.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF534AF7236C4025007B5F2F /* Model.swift */; };
+		BF534AF8236C4025007B5F2F /* Api.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF534AF7236C4025007B5F2F /* Api.swift */; };
 		BF57E73523686F2700F6D43B /* AutolayoutDSL.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF57E73423686F2700F6D43B /* AutolayoutDSL.swift */; };
 		BF763B4223548D3F00D89FAB /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF763B4123548D3F00D89FAB /* AppDelegate.swift */; };
 		BF763B4423548D3F00D89FAB /* CameraViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF763B4323548D3F00D89FAB /* CameraViewController.swift */; };
 		BF763B4723548D3F00D89FAB /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = BF763B4523548D3F00D89FAB /* Main.storyboard */; };
 		BF763B4923548D4100D89FAB /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = BF763B4823548D4100D89FAB /* Assets.xcassets */; };
 		BF763B4C23548D4100D89FAB /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = BF763B4A23548D4100D89FAB /* LaunchScreen.storyboard */; };
-		BF998EA22372EE4B00325BD9 /* MockModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF998EA12372EE4B00325BD9 /* MockModel.swift */; };
 		BF998EA52372EEDD00325BD9 /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF998EA42372EEDD00325BD9 /* Extensions.swift */; };
 		BF998EA72372EEE700325BD9 /* Arc.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF998EA62372EEE700325BD9 /* Arc.swift */; };
 		BF998EA92372EEEE00325BD9 /* ArcSlider.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF998EA82372EEEE00325BD9 /* ArcSlider.swift */; };
@@ -38,8 +37,13 @@
 		BF9A7F4023E2DA560069273D /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = BF9A7F4223E2DA560069273D /* Localizable.strings */; };
 		BF9A7F4E23E45FC60069273D /* LoadingButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF9A7F4D23E45FC60069273D /* LoadingButton.swift */; };
 		BF9A7F5023E4647D0069273D /* NoConnectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF9A7F4F23E4647D0069273D /* NoConnectionView.swift */; };
-		BFA6A88B2394E6D700CBB011 /* IPCameraView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFA6A88A2394E6D700CBB011 /* IPCameraView.swift */; };
+		BFA6A88B2394E6D700CBB011 /* LiveImageProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFA6A88A2394E6D700CBB011 /* LiveImageProvider.swift */; };
 		BFA6A88D2394EC8F00CBB011 /* IPCameraViewBySnapshots.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFA6A88C2394EC8F00CBB011 /* IPCameraViewBySnapshots.swift */; };
+		BFCB4FB9240900B4004D7F3E /* ModelInterface.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFCB4FB8240900B4004D7F3E /* ModelInterface.swift */; };
+		BFCB4FBB240900E3004D7F3E /* Model.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFCB4FBA240900E3004D7F3E /* Model.swift */; };
+		BFCB4FC224090280004D7F3E /* LiveImageProvideByDisplayLink.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFCB4FC124090280004D7F3E /* LiveImageProvideByDisplayLink.swift */; };
+		BFCB4FC4240902C6004D7F3E /* LiveImageProvideByStream.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFCB4FC3240902C6004D7F3E /* LiveImageProvideByStream.swift */; };
+		BFCB4FC6240903BE004D7F3E /* MockModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFCB4FC5240903BE004D7F3E /* MockModel.swift */; };
 		BFCEECD223CF0EEC007EE8FF /* PopupContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFCEECD123CF0EEC007EE8FF /* PopupContainer.swift */; };
 		BFD85E7F23E2C27400B8ED12 /* swiftgen.yml in Resources */ = {isa = PBXBuildFile; fileRef = BFD85E7E23E2C27400B8ED12 /* swiftgen.yml */; };
 		BFFBB347237303ED008C1D47 /* NetworkListener.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFFBB346237303ED008C1D47 /* NetworkListener.swift */; };
@@ -55,14 +59,13 @@
 		BF08A65123577C9800CEADD1 /* JoystickView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JoystickView.swift; sourceTree = "<group>"; };
 		BF08A65323577CE400CEADD1 /* TLAnalogJoystickComponent.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TLAnalogJoystickComponent.swift; sourceTree = "<group>"; };
 		BF08A6552359AFB400CEADD1 /* CircleView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CircleView.swift; sourceTree = "<group>"; };
-		BF534AF7236C4025007B5F2F /* Model.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Model.swift; sourceTree = "<group>"; };
+		BF534AF7236C4025007B5F2F /* Api.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Api.swift; sourceTree = "<group>"; };
 		BF57E73423686F2700F6D43B /* AutolayoutDSL.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AutolayoutDSL.swift; sourceTree = "<group>"; };
 		BF763B3E23548D3F00D89FAB /* ZodiakCamera.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ZodiakCamera.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		BF763B4123548D3F00D89FAB /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		BF763B4323548D3F00D89FAB /* CameraViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraViewController.swift; sourceTree = "<group>"; };
 		BF763B4823548D4100D89FAB /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		BF763B4D23548D4100D89FAB /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		BF998EA12372EE4B00325BD9 /* MockModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockModel.swift; sourceTree = "<group>"; };
 		BF998EA42372EEDD00325BD9 /* Extensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Extensions.swift; sourceTree = "<group>"; };
 		BF998EA62372EEE700325BD9 /* Arc.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Arc.swift; sourceTree = "<group>"; };
 		BF998EA82372EEEE00325BD9 /* ArcSlider.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ArcSlider.swift; sourceTree = "<group>"; };
@@ -88,8 +91,13 @@
 		BF9A7F4C23E2E0F30069273D /* ru */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ru; path = ru.lproj/Localizable.strings; sourceTree = "<group>"; };
 		BF9A7F4D23E45FC60069273D /* LoadingButton.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LoadingButton.swift; sourceTree = "<group>"; };
 		BF9A7F4F23E4647D0069273D /* NoConnectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NoConnectionView.swift; sourceTree = "<group>"; };
-		BFA6A88A2394E6D700CBB011 /* IPCameraView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IPCameraView.swift; sourceTree = "<group>"; };
+		BFA6A88A2394E6D700CBB011 /* LiveImageProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LiveImageProvider.swift; sourceTree = "<group>"; };
 		BFA6A88C2394EC8F00CBB011 /* IPCameraViewBySnapshots.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IPCameraViewBySnapshots.swift; sourceTree = "<group>"; };
+		BFCB4FB8240900B4004D7F3E /* ModelInterface.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModelInterface.swift; sourceTree = "<group>"; };
+		BFCB4FBA240900E3004D7F3E /* Model.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Model.swift; sourceTree = "<group>"; };
+		BFCB4FC124090280004D7F3E /* LiveImageProvideByDisplayLink.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LiveImageProvideByDisplayLink.swift; sourceTree = "<group>"; };
+		BFCB4FC3240902C6004D7F3E /* LiveImageProvideByStream.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LiveImageProvideByStream.swift; sourceTree = "<group>"; };
+		BFCB4FC5240903BE004D7F3E /* MockModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockModel.swift; sourceTree = "<group>"; };
 		BFCEECD123CF0EEC007EE8FF /* PopupContainer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PopupContainer.swift; sourceTree = "<group>"; };
 		BFD85E7E23E2C27400B8ED12 /* swiftgen.yml */ = {isa = PBXFileReference; lastKnownFileType = text.yaml; path = swiftgen.yml; sourceTree = "<group>"; };
 		BFFBB346237303ED008C1D47 /* NetworkListener.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NetworkListener.swift; sourceTree = "<group>"; };
@@ -150,12 +158,12 @@
 				BF998EB72372F26200325BD9 /* CameraScene */,
 				BF998EB62372F1ED00325BD9 /* SettingsScene */,
 				BF763B4123548D3F00D89FAB /* AppDelegate.swift */,
+				BFCEECD123CF0EEC007EE8FF /* PopupContainer.swift */,
 				BFFBB34823730B6B008C1D47 /* UiViewController+child.swift */,
 				BFFBB346237303ED008C1D47 /* NetworkListener.swift */,
+				BF57E73423686F2700F6D43B /* AutolayoutDSL.swift */,
 				BFD85E8023E2C57600B8ED12 /* Resources */,
 				BF763B4D23548D4100D89FAB /* Info.plist */,
-				BF57E73423686F2700F6D43B /* AutolayoutDSL.swift */,
-				BFCEECD123CF0EEC007EE8FF /* PopupContainer.swift */,
 				BFD85E7E23E2C27400B8ED12 /* swiftgen.yml */,
 			);
 			path = ZodiakCamera;
@@ -164,11 +172,16 @@
 		BF998EA02372EE2500325BD9 /* Models */ = {
 			isa = PBXGroup;
 			children = (
-				BF534AF7236C4025007B5F2F /* Model.swift */,
-				BF998EA12372EE4B00325BD9 /* MockModel.swift */,
+				BF534AF7236C4025007B5F2F /* Api.swift */,
 				BF998EBC2372F51200325BD9 /* Settings+Model.swift */,
 				BF998EBA2372F4E700325BD9 /* Settings.swift */,
 				BF998EC22372F61A00325BD9 /* LimitValue.swift */,
+				BFA6A88A2394E6D700CBB011 /* LiveImageProvider.swift */,
+				BFCB4FC124090280004D7F3E /* LiveImageProvideByDisplayLink.swift */,
+				BFCB4FC3240902C6004D7F3E /* LiveImageProvideByStream.swift */,
+				BFCB4FB8240900B4004D7F3E /* ModelInterface.swift */,
+				BFCB4FBA240900E3004D7F3E /* Model.swift */,
+				BFCB4FC5240903BE004D7F3E /* MockModel.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -191,7 +204,6 @@
 				BF998EAD2372F06E00325BD9 /* Joystick */,
 				BF998EA32372EEC500325BD9 /* ArcSlider */,
 				BF998EB82372F4A400325BD9 /* PanelView.swift */,
-				BFA6A88A2394E6D700CBB011 /* IPCameraView.swift */,
 				BFA6A88C2394EC8F00CBB011 /* IPCameraViewBySnapshots.swift */,
 				BF9A7F4F23E4647D0069273D /* NoConnectionView.swift */,
 				BF9A7F4D23E45FC60069273D /* LoadingButton.swift */,
@@ -224,12 +236,20 @@
 			children = (
 				BF998EA02372EE2500325BD9 /* Models */,
 				BF998EAC2372F04300325BD9 /* Views */,
+				BFCB4FBC24090148004D7F3E /* Extensions */,
 				BF763B4323548D3F00D89FAB /* CameraViewController.swift */,
+			);
+			path = CameraScene;
+			sourceTree = "<group>";
+		};
+		BFCB4FBC24090148004D7F3E /* Extensions */ = {
+			isa = PBXGroup;
+			children = (
 				BF998EBE2372F5D900325BD9 /* Date+stamp.swift */,
 				BF998EC02372F5F900325BD9 /* String+removing.swift */,
 				BFFBB34A23749DD1008C1D47 /* UIImage+resize.swift */,
 			);
-			path = CameraScene;
+			path = Extensions;
 			sourceTree = "<group>";
 		};
 		BFD85E8023E2C57600B8ED12 /* Resources */ = {
@@ -373,14 +393,15 @@
 			buildActionMask = 2147483647;
 			files = (
 				BF998EC12372F5F900325BD9 /* String+removing.swift in Sources */,
+				BFCB4FBB240900E3004D7F3E /* Model.swift in Sources */,
 				BF998EAB2372EF7A00325BD9 /* ArcLayer.swift in Sources */,
-				BF998EA22372EE4B00325BD9 /* MockModel.swift in Sources */,
 				BFFBB34923730B6B008C1D47 /* UiViewController+child.swift in Sources */,
-				BFA6A88B2394E6D700CBB011 /* IPCameraView.swift in Sources */,
+				BFA6A88B2394E6D700CBB011 /* LiveImageProvider.swift in Sources */,
 				BF998EB92372F4A400325BD9 /* PanelView.swift in Sources */,
-				BF534AF8236C4025007B5F2F /* Model.swift in Sources */,
+				BF534AF8236C4025007B5F2F /* Api.swift in Sources */,
 				BF998EBF2372F5D900325BD9 /* Date+stamp.swift in Sources */,
 				BFCEECD223CF0EEC007EE8FF /* PopupContainer.swift in Sources */,
+				BFCB4FC6240903BE004D7F3E /* MockModel.swift in Sources */,
 				BF998EB52372F19800325BD9 /* JoystickScene.swift in Sources */,
 				BF9A7F3823E2D9020069273D /* L10n-Constants.swift in Sources */,
 				BF08A65223577C9800CEADD1 /* JoystickView.swift in Sources */,
@@ -395,7 +416,10 @@
 				BF998EBD2372F51200325BD9 /* Settings+Model.swift in Sources */,
 				BF998EA52372EEDD00325BD9 /* Extensions.swift in Sources */,
 				BF08A65423577CE400CEADD1 /* TLAnalogJoystickComponent.swift in Sources */,
+				BFCB4FC4240902C6004D7F3E /* LiveImageProvideByStream.swift in Sources */,
 				BF998EAF2372F07E00325BD9 /* TLAnalogJoystickHiddenArea.swift in Sources */,
+				BFCB4FC224090280004D7F3E /* LiveImageProvideByDisplayLink.swift in Sources */,
+				BFCB4FB9240900B4004D7F3E /* ModelInterface.swift in Sources */,
 				BF998EA72372EEE700325BD9 /* Arc.swift in Sources */,
 				BF9A7F5023E4647D0069273D /* NoConnectionView.swift in Sources */,
 				BF998EB12372F08700325BD9 /* TLAnalogJoystick.swift in Sources */,

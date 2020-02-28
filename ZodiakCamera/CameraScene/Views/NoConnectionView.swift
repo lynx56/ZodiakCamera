@@ -77,10 +77,6 @@ class NoConnectionView: UIView {
     @objc private func update(_ sender: UIButton?) {
         handler(.update)
         reloadButton.render(model: .loading)
-        //todo: REMOVE
-        DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + 4) {
-            self.reset()
-        }
     }
     
     func reset() {
