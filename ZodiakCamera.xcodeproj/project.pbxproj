@@ -38,7 +38,6 @@
 		BF9A7F4E23E45FC60069273D /* LoadingButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF9A7F4D23E45FC60069273D /* LoadingButton.swift */; };
 		BF9A7F5023E4647D0069273D /* NoConnectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF9A7F4F23E4647D0069273D /* NoConnectionView.swift */; };
 		BFA6A88B2394E6D700CBB011 /* LiveImageProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFA6A88A2394E6D700CBB011 /* LiveImageProvider.swift */; };
-		BFA6A88D2394EC8F00CBB011 /* IPCameraViewBySnapshots.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFA6A88C2394EC8F00CBB011 /* IPCameraViewBySnapshots.swift */; };
 		BFCB4FB9240900B4004D7F3E /* ModelInterface.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFCB4FB8240900B4004D7F3E /* ModelInterface.swift */; };
 		BFCB4FBB240900E3004D7F3E /* Model.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFCB4FBA240900E3004D7F3E /* Model.swift */; };
 		BFCB4FC224090280004D7F3E /* LiveImageProvideByDisplayLink.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFCB4FC124090280004D7F3E /* LiveImageProvideByDisplayLink.swift */; };
@@ -92,7 +91,6 @@
 		BF9A7F4D23E45FC60069273D /* LoadingButton.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LoadingButton.swift; sourceTree = "<group>"; };
 		BF9A7F4F23E4647D0069273D /* NoConnectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NoConnectionView.swift; sourceTree = "<group>"; };
 		BFA6A88A2394E6D700CBB011 /* LiveImageProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LiveImageProvider.swift; sourceTree = "<group>"; };
-		BFA6A88C2394EC8F00CBB011 /* IPCameraViewBySnapshots.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IPCameraViewBySnapshots.swift; sourceTree = "<group>"; };
 		BFCB4FB8240900B4004D7F3E /* ModelInterface.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModelInterface.swift; sourceTree = "<group>"; };
 		BFCB4FBA240900E3004D7F3E /* Model.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Model.swift; sourceTree = "<group>"; };
 		BFCB4FC124090280004D7F3E /* LiveImageProvideByDisplayLink.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LiveImageProvideByDisplayLink.swift; sourceTree = "<group>"; };
@@ -204,7 +202,6 @@
 				BF998EAD2372F06E00325BD9 /* Joystick */,
 				BF998EA32372EEC500325BD9 /* ArcSlider */,
 				BF998EB82372F4A400325BD9 /* PanelView.swift */,
-				BFA6A88C2394EC8F00CBB011 /* IPCameraViewBySnapshots.swift */,
 				BF9A7F4F23E4647D0069273D /* NoConnectionView.swift */,
 				BF9A7F4D23E45FC60069273D /* LoadingButton.swift */,
 			);
@@ -412,7 +409,6 @@
 				BF57E73523686F2700F6D43B /* AutolayoutDSL.swift in Sources */,
 				BF998EA92372EEEE00325BD9 /* ArcSlider.swift in Sources */,
 				BFFBB34B23749DD1008C1D47 /* UIImage+resize.swift in Sources */,
-				BFA6A88D2394EC8F00CBB011 /* IPCameraViewBySnapshots.swift in Sources */,
 				BF998EBD2372F51200325BD9 /* Settings+Model.swift in Sources */,
 				BF998EA52372EEDD00325BD9 /* Extensions.swift in Sources */,
 				BF08A65423577CE400CEADD1 /* TLAnalogJoystickComponent.swift in Sources */,

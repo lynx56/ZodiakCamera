@@ -31,7 +31,11 @@ class Model: CameraViewControllerModel {
         
         return cachedImageProvider!
     }
-    var imageProviderHandler: (LiveImageProviderState) -> Void = { _ in }
+    var imageProviderHandler: (LiveImageProviderState) -> Void = { _ in } {
+        didSet {
+            cachedImageProvider?.stateHandler = imageProviderHandler
+        }
+    }
     
     init(cameraSettingsProvider: CameraSettingsProvider, mode: Mode) {
         self.cameraSettingsProvider = cameraSettingsProvider
@@ -71,7 +75,9 @@ class Model: CameraViewControllerModel {
              }
          }
          
-         return ("\(convertedCommand!)", cancellOthersCommands)
+        guard let command = convertedCommand else { return ("", false) }
+        
+         return ("\(command)", cancellOthersCommands)
      }
     
     static func settingsChangeToUrlParamsConverter(_ changes: SettingsChange) -> (parameter: String, value: String) {

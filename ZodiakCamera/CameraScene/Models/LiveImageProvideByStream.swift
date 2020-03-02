@@ -36,8 +36,8 @@ class LiveImageProvideByStream: NSObject, URLSessionDataDelegate, LiveImageProvi
     }
     
     func urlSession(_ session: URLSession, task: URLSessionTask, didCompleteWithError error: Error?) {
-        guard let nsError = error as NSError?, let urlError = NSURLError(rawValue: nsError.code) else { return }
-        stateHandler(.error(urlError))
+        guard let error = error else { return }
+        stateHandler(.error(error))
     }
     
     func urlSession(_ session: URLSession, dataTask: URLSessionDataTask, didReceive data: Data) {

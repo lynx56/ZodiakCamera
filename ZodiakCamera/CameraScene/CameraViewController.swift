@@ -108,7 +108,6 @@ class CameraViewController: UIViewController {
         }
     }
     
-    private var countErrors: Int = 0
     func update(_ state: State) {
         switch state {
         case .active(let image):
@@ -116,18 +115,14 @@ class CameraViewController: UIViewController {
                 self.noConnection.removeFromSuperview()
                 self.ipCameraView.image = image
                 self.joystickView.isHidden = false
-                self.countErrors = 0
             }
         case .editing:
             joystickView.isHidden = true
         case .error:
-            countErrors += 1
-            if countErrors > 3 {
-                DispatchQueue.main.async {
-                    self.noConnection.reset()
-                    self.view.insertSubview(self.noConnection, aboveSubview: self.ipCameraView, constraints: .pin)
-                    self.countErrors = 0
-                }
+            DispatchQueue.main.async {
+                self.noConnection.reset()
+                self.view.insertSubview(self.noConnection, aboveSubview: self.ipCameraView, constraints: .pin)
+                self.joystickView.isHidden = true
             }
         }
     }
@@ -138,6 +133,7 @@ class CameraViewController: UIViewController {
         case .active(let image):
             update(.active(image))
         case .error(let error):
+            print("Local", error.localizedDescription, "end")
             update(.error(.noConnection))
         }
     }
