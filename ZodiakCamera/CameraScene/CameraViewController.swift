@@ -128,17 +128,22 @@ class CameraViewController: UIViewController {
     }
     
     private lazy var noConnection = NoConnectionView()
+    private var liveImageErrors = 0
     func handleLiveImageEvent(_ event: LiveImageProviderState) {
         switch event {
         case .active(let image):
+            liveImageErrors = 0
             update(.active(image))
-        case .error(let error):
-            print("Local", error.localizedDescription, "end")
-            update(.error(.noConnection))
+        case .error:
+            liveImageErrors += 1
+            if liveImageErrors > 3 {
+                update(.error(.noConnection))
+            }
         }
     }
     
     private var showedSlider: ArcSlider?
+    private var panelImageErrors = 0
     func handlePanelViewEvent(_ event: PanelView.Event) {
         switch event {
         case .itemSelected(let item):
@@ -180,18 +185,24 @@ class CameraViewController: UIViewController {
             
             model.changeSettings(change, resultHandler: { result in
                 switch result {
-                case .failure(let error): print(error)
+                case .failure:
+                    self.panelImageErrors += 1
+                    if self.panelImageErrors > 3 {
+                        self.update(.error(.noConnection))
+                    }
+                    
                 case .success(let settings): self.panelData = .init(brightness: settings.brightness,
                                                                     saturation: settings.saturation,
                                                                     contrast: settings.contrast,
                                                                     ir: settings.ir)
+                self.panelImageErrors = 0
                 }
             })
         }
     }
     
     static private func convertPanelChanges(_ change: PanelView.Event.PanelDataChanges) -> SettingsChange {
-        switch  change{
+        switch  change {
         case .brightness(let value):
             return .brightness(value)
         case .contrast(let value):
@@ -203,13 +214,19 @@ class CameraViewController: UIViewController {
         }
     }
     
+    private var joystickErrors = 0
+    
     private func handleJoystickEvent(_ event: JoystickView.Event) {
         model.userManipulate(command: CameraViewController.converter(event)) { result in
             switch result {
             case .success:
+                self.joystickErrors = 0
                 return
-            case .failure(let error):
-                print(error)
+            case .failure:
+                self.joystickErrors += 1
+                if self.joystickErrors > 3 {
+                    self.update(.error(.noConnection))
+                }
             }
         }
     }

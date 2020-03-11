@@ -104,9 +104,9 @@ extension PopupContainer: CAAnimationDelegate {
 extension UIViewController {
     @objc func showSuccessPopup(_ sender: UIViewController, withTitle title: String) {
         let action = #selector(PopupContainer.showSuccessPopup(_:withTitle:))
-        let target = searchTargetInHierarchy(forAction: action,
-                                             sender: self)
-        target?.perform(action, with: sender, with: title)
+        guard let target = searchTargetInHierarchy(forAction: action,
+                                                   sender: self) else { fatalError("PopupContainer not found in UIViewController hierarchy") }
+        target.perform(action, with: sender, with: title)
     }
     
     func searchTargetInHierarchy(forAction action:Selector,
