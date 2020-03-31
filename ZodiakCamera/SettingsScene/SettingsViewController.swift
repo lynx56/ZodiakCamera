@@ -47,7 +47,12 @@ class SettingsViewController: FormViewController {
                 row.cellUpdate({if !$1.isValid { $0.titleLabel?.textColor = .systemRed }})
             }.onChange { settings.password = $0.value ?? "" }
             <<< SwitchRow() { row in
-                switch LAContext().biometryType {
+                let context = LAContext()
+                var error: NSError?
+                let evaluated = context.canEvaluatePolicy(.deviceOwnerAuthenticationWithBiometrics, error: &error)
+                guard error == nil, evaluated else { return }
+                
+                switch context.biometryType {
                 case .faceID:
                     row.title = L10n.Settings.faceId
                     row.hidden = false

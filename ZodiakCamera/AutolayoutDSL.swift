@@ -155,4 +155,18 @@ extension Array where Element == PairedConstraint {
                 constraint(\.leadingAnchor, constant: -1),
                 constraint(\.trailingAnchor, constant: 1)]
     }
+    
+    static func pinWithOffset(_ space: CGFloat) -> [PairedConstraint] {
+        return [constraint(\.topAnchor, constant: -space),
+                constraint(\.bottomAnchor, constant: space),
+                constraint(\.leadingAnchor, constant: -space),
+                constraint(\.trailingAnchor, constant: space)]
+    }
+    
+    static func pinWithOffsets(top: CGFloat, bottom: CGFloat, left: CGFloat, right: CGFloat) -> [PairedConstraint] {
+        return [constraint(\.topAnchor, constant: -top),
+                constraint(\.bottomAnchor, constant: bottom),
+                constraint(\.leadingAnchor, constant: -left),
+                constraint(\.trailingAnchor, constant: right)]
+    }
 }
