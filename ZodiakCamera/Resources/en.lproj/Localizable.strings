@@ -14,5 +14,7 @@
 "Settings.Port" = "Port";
 "Settings.Save" = "Save";
 "Settings.Saved" = "Saved";
+"Settings.TouchId" = "Use TouchId";
+"Settings.FaceId" = "Use FaceId";
 "NoConnection.Text" = "No connection...";
 

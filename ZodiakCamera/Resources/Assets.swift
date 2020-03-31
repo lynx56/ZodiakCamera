@@ -18,13 +18,13 @@
 
 // swiftlint:disable identifier_name line_length nesting type_body_length type_name
 internal enum Images {
+  internal static let asset1 = ImageAsset(name: "Asset 1")
   internal static let brightnessMax = ImageAsset(name: "brightnessMax")
   internal static let brightnessMin = ImageAsset(name: "brightnessMin")
   internal static let contrastMax = ImageAsset(name: "contrastMax")
   internal static let contrastMin = ImageAsset(name: "contrastMin")
   internal static let irOff = ImageAsset(name: "irOff")
   internal static let irOn = ImageAsset(name: "irOn")
-  internal static let mock = ImageAsset(name: "mock")
   internal static let restart = ImageAsset(name: "restart")
   internal static let saturationMax = ImageAsset(name: "saturationMax")
   internal static let saturationMin = ImageAsset(name: "saturationMin")

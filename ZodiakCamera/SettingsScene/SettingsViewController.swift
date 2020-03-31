@@ -9,6 +9,7 @@
 import Eureka
 import UIKit
 import KeychainSwift
+import LocalAuthentication
 
 class SettingsViewController: FormViewController {
     private var settingsProvider: CameraSettingsProvider
@@ -45,6 +46,21 @@ class SettingsViewController: FormViewController {
                 row.add(rule: RuleRequired())
                 row.cellUpdate({if !$1.isValid { $0.titleLabel?.textColor = .systemRed }})
             }.onChange { settings.password = $0.value ?? "" }
+            <<< SwitchRow() { row in
+                switch LAContext().biometryType {
+                case .faceID:
+                    row.title = L10n.Settings.faceId
+                    row.hidden = false
+                case .touchID:
+                    row.title = L10n.Settings.faceId
+                    row.hidden = false
+                case .none:
+                    row.hidden = true
+                @unknown default:
+                    row.hidden = true
+                }
+                row.value = settings.authEnabled
+            }
             +++ Section(L10n.Settings.address)
             <<< URLRow() { row in
                 row.title = L10n.Settings.host
@@ -79,6 +95,7 @@ struct CameraSettings {
     var password: String
     var host: URL
     var port: Int
+    var authEnabled: Bool
 }
 
 protocol CameraSettingsProvider {
@@ -96,13 +113,15 @@ class KeychainSwiftWrapper: CameraSettingsProvider {
         static let password = "ZodiakCamera.CameraSettings.Password"
         static let host = "ZodiakCamera.CameraSettings.Host"
         static let port = "ZodiakCamera.CameraSettings.Port"
+        static let authEnabled = "ZodiakCamera.CameraSettings.AuthEnabled"
     }
     
     var settings: CameraSettings {
         return .init(login: keychain.get(Keys.login) ?? "",
                      password: keychain.get(Keys.password) ?? "",
                      host: URL(string: keychain.get(Keys.host) ?? "") ?? URL(string: "192.168.1.1")!,
-                     port: Int(keychain.get(Keys.port) ?? "") ?? 81)
+                     port: Int(keychain.get(Keys.port) ?? "") ?? 81,
+                     authEnabled: keychain.getBool(Keys.authEnabled) ?? false)
     }
     
     init(keychain: KeychainSwift) {
@@ -114,6 +133,8 @@ class KeychainSwiftWrapper: CameraSettingsProvider {
         keychain.set(settings.password, forKey: Keys.password)
         keychain.set(settings.host.absoluteString, forKey: Keys.host)
         keychain.set(String(settings.port), forKey: Keys.port)
+        keychain.set(settings.authEnabled, forKey: Keys.authEnabled)
         updated()
     }
 }
+

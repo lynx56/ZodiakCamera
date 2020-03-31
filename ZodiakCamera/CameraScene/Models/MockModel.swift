@@ -20,7 +20,7 @@ struct MockModel: CameraViewControllerModel {
     
     struct MoqLiveImageProvider: LiveImageProvider {
         func start() {
-            stateHandler(.active(Images.mock.image))
+            stateHandler(.active(Images.sky.image))
         }
         var stateHandler: (LiveImageProviderState) -> Void = { _ in }
         func stop() {}

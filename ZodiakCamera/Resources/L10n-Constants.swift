@@ -22,6 +22,8 @@ internal enum L10n {
     internal static let access = L10n.tr("Localizable", "Settings.Access")
     /// Address
     internal static let address = L10n.tr("Localizable", "Settings.Address")
+    /// Use FaceId
+    internal static let faceId = L10n.tr("Localizable", "Settings.FaceId")
     /// Host
     internal static let host = L10n.tr("Localizable", "Settings.Host")
     /// Login
@@ -34,6 +36,8 @@ internal enum L10n {
     internal static let save = L10n.tr("Localizable", "Settings.Save")
     /// Saved
     internal static let saved = L10n.tr("Localizable", "Settings.Saved")
+    /// Use TouchId
+    internal static let touchId = L10n.tr("Localizable", "Settings.TouchId")
   }
 }
 // swiftlint:enable explicit_type_interface function_parameter_count identifier_name line_length

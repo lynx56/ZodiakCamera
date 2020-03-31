@@ -1,13 +1,13 @@
 {
   "images" : [
     {
-      "idiom" : "universal",
-      "filename" : "icons8-Ð½Ð°ÑÑÑÐ¾Ð¹ÐºÐ¸.pdf"
+      "filename" : "iconfinder_cog-settings-alt_353407.pdf",
+      "idiom" : "universal"
     }
   ],
   "info" : {
-    "version" : 1,
-    "author" : "xcode"
+    "author" : "xcode",
+    "version" : 1
   },
   "properties" : {
     "template-rendering-intent" : "template"
