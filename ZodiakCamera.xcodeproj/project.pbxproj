@@ -158,6 +158,7 @@
 				BF998EB72372F26200325BD9 /* CameraScene */,
 				BF998EB62372F1ED00325BD9 /* SettingsScene */,
 				BF763B4123548D3F00D89FAB /* AppDelegate.swift */,
+				BF876AA62433AB0A0031FB0A /* AuthViewController.swift */,
 				BFCEECD123CF0EEC007EE8FF /* PopupContainer.swift */,
 				BFFBB34823730B6B008C1D47 /* UiViewController+child.swift */,
 				BFFBB346237303ED008C1D47 /* NetworkListener.swift */,
@@ -206,7 +207,6 @@
 				BF998EB82372F4A400325BD9 /* PanelView.swift */,
 				BF9A7F4F23E4647D0069273D /* NoConnectionView.swift */,
 				BF9A7F4D23E45FC60069273D /* LoadingButton.swift */,
-				BF876AA62433AB0A0031FB0A /* AuthViewController.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";

@@ -169,4 +169,8 @@ extension Array where Element == PairedConstraint {
                 constraint(\.leadingAnchor, constant: -left),
                 constraint(\.trailingAnchor, constant: right)]
     }
+    
+    static func aspectRatio(_ ratio: CGFloat) -> [PairedConstraint] {
+        return [constraint(\.widthAnchor, \.heightAnchor, multiplier: ratio)]
+    }
 }

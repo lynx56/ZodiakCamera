@@ -19,10 +19,12 @@
 // swiftlint:disable identifier_name line_length nesting type_body_length type_name
 internal enum Images {
   internal static let asset1 = ImageAsset(name: "Asset 1")
+  internal static let backspace = ImageAsset(name: "backspace")
   internal static let brightnessMax = ImageAsset(name: "brightnessMax")
   internal static let brightnessMin = ImageAsset(name: "brightnessMin")
   internal static let contrastMax = ImageAsset(name: "contrastMax")
   internal static let contrastMin = ImageAsset(name: "contrastMin")
+  internal static let faceId = ImageAsset(name: "faceId")
   internal static let irOff = ImageAsset(name: "irOff")
   internal static let irOn = ImageAsset(name: "irOn")
   internal static let restart = ImageAsset(name: "restart")
@@ -32,6 +34,7 @@ internal enum Images {
   internal static let sky = ImageAsset(name: "sky")
   internal static let stick = ImageAsset(name: "stick")
   internal static let substrate = ImageAsset(name: "substrate")
+  internal static let touchId = ImageAsset(name: "touchId")
 }
 // swiftlint:enable identifier_name line_length nesting type_body_length type_name
 
