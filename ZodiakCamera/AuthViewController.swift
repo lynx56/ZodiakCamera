@@ -21,15 +21,63 @@ class AuthViewController: UIViewController {
         setupLayout()
     }
     
+    private let pinView = PinView()
     func setupLayout() {
+        view.addSubview(pinView, constraints: [
+            constraint(\.leadingAnchor, constant: 47),
+            constraint(\.trailingAnchor, constant: -47),
+            constraint(\.topAnchor, constant: 152)
+        ])
+        pinView.outputHandler = handlePinViewEvent
         
+        pinView.render(.init(title: pinTitle, filledDotsCount: pin.count, biometricType: .faceId))
+    }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        let gradient = CAGradientLayer()
+        gradient.frame = view.bounds
+        gradient.startPoint = .zero
+        gradient.endPoint = CGPoint(x: 1, y: 1)
+        gradient.colors = [UIColor(red:34.0/255.0, green:211/255.0, blue:198/255.0, alpha:1.0).cgColor,
+                           UIColor(red:145/255.0, green:72.0/255.0, blue:203/255.0, alpha:1.0).cgColor]
+            
+        view.layer.insertSublayer(gradient, at: 0)
+    }
+    
+    private var pin: [Int] = []
+    private var pinTitle = "Enter a pin"
+    func handlePinViewEvent(_ event: PinView.OutputEvent) {
+        switch event {
+        case .backspaceTapped:
+            guard pin.count > 0 else { return }
+            pin.remove(at: pin.count - 1)
+            pinView.render(.init(title: pinTitle,
+                                 filledDotsCount: pin.count,
+                                 biometricType: .faceId))
+        case .biometricTapped:
+            print("biometricTapped")
+        case .numberTapped(let number):
+            guard pin.count < 4 else { return }
+            pin.append(number)
+            pinView.render(.init(title: pinTitle,
+                                 filledDotsCount: pin.count,
+                                 biometricType: .faceId))
+            print(number)
+        }
     }
 }
 
 class PinView: UIView {
     struct State {
         var title: String
-        var icon: String
+        var filledDotsCount: Int
+        var biometricType: BiometricType
+        
+        enum BiometricType {
+            case none
+            case faceId
+            case touchId
+        }
     }
     
     enum OutputEvent {
@@ -39,55 +87,96 @@ class PinView: UIView {
     }
     
     var outputHandler: (OutputEvent)->Void = { _ in }
-    private let backspaceImageName = Images.backspace.name
-    private let biometricImageNames = (touchId: Images.touchId.name, faceId: Images.faceId.name)
+    private static let backspaceImageName = Images.backspace.name
+    private static let biometricImageNames = (touchId: Images.touchId.name, faceId: Images.faceId.name)
     
-    func layout() {
-        let titleLabel = UILabel()
+    override init(frame: CGRect) {
+        super.init(frame: frame)
+        setupLayout()
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
+    private let titleLabel = UILabel()
+    private let dots = [DotView(), DotView(), DotView(), DotView()]
+    private let biometricButton = NumberView(state: .icon(biometricImageNames.touchId))
+    func setupLayout() {
         titleLabel.textColor = .white
         titleLabel.font = .systemFont(ofSize: 15, weight: .semibold)
         titleLabel.textAlignment = .center
         
-        let dots = [DotView(), DotView(), DotView(), DotView()]
         dots.forEach {
             $0.setContentHuggingPriority(.defaultHigh, for: .horizontal)
             $0.constrainToView($0, constraints: .aspectRatio(1))
+            $0.tintColor = .white
         }
         
         let dotsStack = UIStackView(arrangedSubviews: dots)
-        var numbers: [[NumberView]] =
-            [[.init(state: .numberAndLetters(1, [])),
+        dotsStack.spacing = 10
+        let five = NumberView(state: .numberAndLetters(5, ["J", "K", "L"]))
+        let numbers: [[NumberView]] =
+            [[.init(state: .numberAndLetters(1, [" "])),
              .init(state: .numberAndLetters(2, ["A", "B", "C"])),
              .init(state: .numberAndLetters(3, ["D", "E", "F"]))],
              [.init(state: .numberAndLetters(4, ["G", "H", "I"])),
-             .init(state: .numberAndLetters(5, ["J", "K", "L"])),
+              five,
              .init(state: .numberAndLetters(6, ["M", "N", "O"]))],
              [.init(state: .numberAndLetters(7, ["P", "Q", "R", "S"])),
              .init(state: .numberAndLetters(8, ["T", "U", "V"])),
              .init(state: .numberAndLetters(9, ["W", "X", "Y", "Z"]))],
-             [.init(state: .icon(biometricImageNames.touchId)),
-             .init(state: .numberAndLetters(0, [])),
-             .init(state: .icon(backspaceImageName))]]
+             [biometricButton,
+             .init(state: .numberAndLetters(0, [" "])),
+             .init(state: .icon(PinView.backspaceImageName))]]
         
         let numbersPad = UIStackView()
         numbersPad.axis = .vertical
         numbersPad.spacing = 15
+        numbersPad.distribution = .fillEqually
         for number in numbers {
             let stack = UIStackView(arrangedSubviews: number)
             stack.axis = .horizontal
             stack.distribution = .fillEqually
-            stack.spacing = 18
+            stack.spacing = 28
        
             numbersPad.addArrangedSubview(stack)
         }
         
-        numbers.flatMap { $0 }.forEach { $0.addTarget(self, action: #selector(numberTapped), for: .touchUpInside) }
-        
-        addSubview(numbersPad, constraints: [
-            constraint(\.leadingAnchor, constraintRelation: .greaterThanOrEqual, constant: 47),
-            constraint(\.trailingAnchor, constraintRelation: .lessThanOrEqual, constant: -47),
+        addSubview(titleLabel, constraints: [
+            constraint(\.topAnchor),
+            constraint(\.leadingAnchor),
+            constraint(\.trailingAnchor)
+        ])
+
+        addSubview(dotsStack, constraints:  [
             constraint(\.centerXAnchor)
         ])
+        
+        dotsStack.constrainToView(titleLabel, constraints: [
+            constraint(\.topAnchor, \.bottomAnchor, constant: 18)
+        ])
+               
+        addSubview(numbersPad, constraints: [
+            constraint(\.leadingAnchor),
+            constraint(\.trailingAnchor),
+            constraint(\.bottomAnchor)
+        ])
+        
+        numbersPad.constrainToView(dotsStack, constraints: [
+            constraint(\.topAnchor, \.bottomAnchor, constant: 47)
+        ])
+        
+        numbersPad.constrainToView(numbersPad, constraints: .aspectRatio(281/345))
+        
+        numbers.flatMap { $0 }.forEach {
+            $0.addTarget(self, action: #selector(numberTapped), for: .touchUpInside)
+            $0.isUserInteractionEnabled = true
+            $0.setContentHuggingPriority(.required, for: .horizontal)
+            $0.setContentHuggingPriority(.required, for: .vertical)
+            $0.setContentCompressionResistancePriority(.required, for: .horizontal)
+            $0.setContentCompressionResistancePriority(.required, for: .vertical)
+        }
     }
     
     @objc
@@ -97,13 +186,28 @@ class PinView: UIView {
         case .numberAndLetters(let number, _):
             outputHandler(.numberTapped(number))
         case .icon(let imageName):
-            if imageName == backspaceImageName {
+            if imageName == PinView.backspaceImageName {
                 outputHandler(.backspaceTapped)
-            } else if imageName == biometricImageNames.faceId || imageName == biometricImageNames.touchId {
+            } else if imageName == PinView.biometricImageNames.faceId || imageName == PinView.biometricImageNames.touchId {
                 outputHandler(.biometricTapped)
-            } else {
-                assertionFailure("Unknown image name in NumberControl")
             }
+        }
+    }
+    
+    func render(_ state: State) {
+        titleLabel.text = state.title
+        
+        switch state.biometricType {
+        case .faceId:
+            biometricButton.render(state: .icon(PinView.biometricImageNames.faceId))
+        case .none:
+            biometricButton.render(state: .icon(""))
+        case .touchId:
+            biometricButton.render(state: .icon(PinView.biometricImageNames.touchId))
+        }
+        
+        for dot in dots.enumerated() {
+            dot.element.render(state: .init(isFilled: dot.offset < state.filledDotsCount))
         }
     }
 }
@@ -112,7 +216,6 @@ class PinView: UIView {
 class DotView: UIView {
     struct State {
         var isFilled: Bool
-        var color: UIColor
     }
     
     override func layoutSubviews() {
@@ -120,9 +223,13 @@ class DotView: UIView {
     }
     
     func render(state: State) {
-        backgroundColor = state.isFilled ? state.color : nil
-        layer.borderColor = state.color.cgColor
-        layer.borderWidth = 1
+        backgroundColor = state.isFilled ? tintColor : nil
+        layer.borderColor = tintColor.cgColor
+        layer.borderWidth = 2
+    }
+    
+    override var intrinsicContentSize: CGSize {
+        return CGSize(width: 13, height: 13)
     }
 }
 
@@ -137,7 +244,12 @@ class NumberView: UIControl {
     }
     
     override func layoutSubviews() {
-        layer.cornerRadius = bounds.width/2
+        layer.cornerRadius = bounds.height/2
+        underlineLayer.frame = self.bounds
+    }
+    
+    override var intrinsicContentSize: CGSize {
+        return .init(width: 75, height: 75)
     }
     
     convenience init(state: State) {
@@ -147,30 +259,45 @@ class NumberView: UIControl {
     
     override init(frame: CGRect) {
         super.init(frame: frame)
+        clipsToBounds = true
+        underlineLayer.backgroundColor = UIColor.white.withAlphaComponent(0.3).cgColor
+        underlineLayer.opacity = 0
+        layer.addSublayer(underlineLayer)
     }
+    
+    override func hitTest(_ point: CGPoint, with event: UIEvent?) -> UIView? {
+        if self.bounds.contains(point) {
+            return self
+        }
+        
+        return nil
+    }
+    
+    private let underlineLayer = CALayer()
     
     override func beginTracking(_ touch: UITouch, with event: UIEvent?) -> Bool {
         sendActions(for: .touchDown)
+        underlineLayer.opacity = 1
         return true
     }
     
     override func continueTracking(_ touch: UITouch, with event: UIEvent?) -> Bool {
         let touchPoint = touch.location(in: self)
         
-        guard self.frame.contains(touchPoint) else {
+        guard self.bounds.contains(touchPoint) else {
             sendActions(for: .touchDragOutside)
-            backgroundColor = backgroundColor?.withAlphaComponent(1)
+            underlineLayer.opacity = 0
             return true
         }
-        backgroundColor = backgroundColor?.withAlphaComponent(0.5)
+        
+        underlineLayer.opacity = 1
         sendActions(for: .touchDragInside)
         return true
     }
     
     override func endTracking(_ touch: UITouch?, with event: UIEvent?) {
-        backgroundColor = backgroundColor?.withAlphaComponent(1)
-        
-        guard let touchPoint = touch?.location(in: self), self.frame.contains(touchPoint) else {
+        underlineLayer.opacity = 0
+        guard let touchPoint = touch?.location(in: self), self.bounds.contains(touchPoint) else {
             sendActions(for: .touchUpOutside)
             return
         }
@@ -180,40 +307,45 @@ class NumberView: UIControl {
     
     override func cancelTracking(with event: UIEvent?) {
         sendActions(for: .touchCancel)
+        underlineLayer.isHidden = true
     }
     
     private(set) var currentState: State?
     func render(state: State) {
         self.subviews.forEach { $0.removeFromSuperview() }
         addSubview(blur, constraints: .pin)
+        self.backgroundColor = .clear
         switch state {
         case .icon(let imageName):
             let imageView = UIImageView(image: UIImage(named: imageName)?.withRenderingMode(.alwaysTemplate))
             imageView.tintColor = .white
-            self.addSubview(imageView, constraints: .pinWithOffset(11))
+            imageView.contentMode = .scaleAspectFit
+            self.addSubview(imageView, constraints: .pinWithOffset(25))
         case .numberAndLetters(let number, let letters):
             let numberLabel = UILabel()
             numberLabel.font = UIFont.systemFont(ofSize: 36)
             numberLabel.textAlignment = .center
             numberLabel.text = "\(number)"
             numberLabel.textColor = .white
+            numberLabel.textAlignment = .center
             
             let lettersLabel = UILabel()
-            lettersLabel.font = UIFont.systemFont(ofSize: 12, weight: .medium)
+            lettersLabel.font = UIFont.systemFont(ofSize: 10)
             lettersLabel.text = letters.joined(separator: " ").uppercased()
             lettersLabel.textColor = .white
+            lettersLabel.textAlignment = .center
             
             let stack = UIStackView(arrangedSubviews: [numberLabel, lettersLabel])
             stack.alignment = .center
             stack.axis = .vertical
-            addSubview(stack, constraints: .pinWithOffsets(top: 11, bottom: 14, left: 25, right: 24))
+            addSubview(stack, constraints: .pinWithOffsets(top: 10, bottom: 14, left: 0, right: 0))
         }
         
         currentState = state
     }
     
     private lazy var blur: UIVisualEffectView = {
-        let blur = UIBlurEffect(style: .extraLight)
+        let blur = UIBlurEffect(style: .light)
         return UIVisualEffectView(effect: blur)
     }()
 }

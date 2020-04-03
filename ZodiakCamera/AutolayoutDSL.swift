@@ -110,7 +110,6 @@ func constraint(from constraint: NSLayoutConstraint,
 
 extension UIView {
     func addSubview(_ child: UIView, pairingTo pairingView: UIView? = nil, constraints: [PairedConstraint]) {
-        print(self.bounds)
             self.addSubview(child)
             child.translatesAutoresizingMaskIntoConstraints = false
             NSLayoutConstraint.activate(constraints.map { $0(child, pairingView ?? self) })
@@ -157,17 +156,17 @@ extension Array where Element == PairedConstraint {
     }
     
     static func pinWithOffset(_ space: CGFloat) -> [PairedConstraint] {
-        return [constraint(\.topAnchor, constant: -space),
-                constraint(\.bottomAnchor, constant: space),
-                constraint(\.leadingAnchor, constant: -space),
-                constraint(\.trailingAnchor, constant: space)]
+        return [constraint(\.topAnchor, constant: space),
+                constraint(\.bottomAnchor, constant: -space),
+                constraint(\.leadingAnchor, constant: space),
+                constraint(\.trailingAnchor, constant: -space)]
     }
     
     static func pinWithOffsets(top: CGFloat, bottom: CGFloat, left: CGFloat, right: CGFloat) -> [PairedConstraint] {
-        return [constraint(\.topAnchor, constant: -top),
-                constraint(\.bottomAnchor, constant: bottom),
-                constraint(\.leadingAnchor, constant: -left),
-                constraint(\.trailingAnchor, constant: right)]
+        return [constraint(\.topAnchor, constant: top),
+                constraint(\.bottomAnchor, constant: -bottom),
+                constraint(\.leadingAnchor, constant: left),
+                constraint(\.trailingAnchor, constant: -right)]
     }
     
     static func aspectRatio(_ ratio: CGFloat) -> [PairedConstraint] {
