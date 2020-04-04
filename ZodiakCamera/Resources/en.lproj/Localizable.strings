@@ -17,4 +17,5 @@
 "Settings.TouchId" = "Use TouchId";
 "Settings.FaceId" = "Use FaceId";
 "NoConnection.Text" = "No connection...";
+"AuthViewController.Reason" = "%@ is locked now, because of too many failed attempts. Enter passcode to unlock %@.";
 

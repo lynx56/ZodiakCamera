@@ -18,7 +18,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         
         let cameraFlow = CameraFlowViewController()
         window = UIWindow(frame: UIScreen.main.bounds)
-        window?.rootViewController = cameraFlow.start()
+        window?.rootViewController = AuthViewController()
+            //cameraFlow.start()
         window?.makeKeyAndVisible()
         return true
     }

@@ -14,7 +14,7 @@ class AuthViewController: UIViewController {
         case signOut
         case signIn
     }
-
+    
     override func viewDidLoad() {
         super.viewDidLoad()
 
@@ -22,6 +22,8 @@ class AuthViewController: UIViewController {
     }
     
     private let pinView = PinView()
+    private var authentificator: BioMetricAuthenticator = DefaultBioMetricAuthenticator()
+    
     func setupLayout() {
         view.addSubview(pinView, constraints: [
             constraint(\.leadingAnchor, constant: 47),
@@ -55,7 +57,14 @@ class AuthViewController: UIViewController {
                                  filledDotsCount: pin.count,
                                  biometricType: .faceId))
         case .biometricTapped:
-            print("biometricTapped")
+            let availableBiometricType = authentificator.availableBiometricType.rawValue
+           
+            authentificator.authenticateWithBioMetrics(reason: L10n.AuthViewController.reason(availableBiometricType, availableBiometricType),
+                                                       fallbackTitle: nil,
+                                                       cancelTitle: nil) { result in
+                                                        print(result)
+            }
+            
         case .numberTapped(let number):
             guard pin.count < 4 else { return }
             pin.append(number)

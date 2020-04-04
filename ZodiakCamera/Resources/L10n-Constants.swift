@@ -12,6 +12,13 @@ import Foundation
 // swiftlint:disable nesting type_body_length type_name
 internal enum L10n {
 
+  internal enum AuthViewController {
+    /// %@ is locked now, because of too many failed attempts. Enter passcode to unlock %@.
+    internal static func reason(_ p1: String, _ p2: String) -> String {
+      return L10n.tr("Localizable", "AuthViewController.Reason", p1, p2)
+    }
+  }
+
   internal enum NoConnection {
     /// No connection...
     internal static let text = L10n.tr("Localizable", "NoConnection.Text")
