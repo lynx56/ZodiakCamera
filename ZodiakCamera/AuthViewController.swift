@@ -7,12 +7,15 @@
 //
 
 import UIKit
+import KeychainSwift
 
 class AuthViewController: UIViewController {
     
-    enum State {
+    enum State: Equatable {
         case signOut
+        case reenterPin([Int])
         case signIn
+        case wrongPasscode
     }
     
     override func viewDidLoad() {
@@ -23,6 +26,7 @@ class AuthViewController: UIViewController {
     
     private let pinView = PinView()
     private var authentificator: BioMetricAuthenticator = DefaultBioMetricAuthenticator()
+    private var pinStorage: PinStorage = KeychainSwift()
     
     func setupLayout() {
         view.addSubview(pinView, constraints: [
@@ -36,6 +40,8 @@ class AuthViewController: UIViewController {
     }
     
     override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        
         let gradient = CAGradientLayer()
         gradient.frame = view.bounds
         gradient.startPoint = .zero
@@ -44,11 +50,31 @@ class AuthViewController: UIViewController {
                            UIColor(red:145/255.0, green:72.0/255.0, blue:203/255.0, alpha:1.0).cgColor]
             
         view.layer.insertSublayer(gradient, at: 0)
+        
+        if state == .signIn {
+            handlePinViewEvent(.biometricTapped)
+        }
     }
     
     private var pin: [Int] = []
-    private var pinTitle = "Enter a pin"
-    func handlePinViewEvent(_ event: PinView.OutputEvent) {
+
+    private var pinTitle: String {
+        switch state {
+        case .signIn:
+            let availableBiometricType = authentificator.availableBiometricType.rawValue
+            return L10n.AuthViewController.title(availableBiometricType)
+        case .signOut:
+            return L10n.AuthViewController.enterPasscode
+        case .reenterPin:
+            return L10n.AuthViewController.confirmPasscode
+        case .wrongPasscode:
+            return L10n.AuthViewController.wrongPasscode
+        }
+    }
+    
+    private var state: State = .signOut
+    
+    private func handlePinViewEvent(_ event: PinView.OutputEvent) {
         switch event {
         case .backspaceTapped:
             guard pin.count > 0 else { return }
@@ -57,6 +83,8 @@ class AuthViewController: UIViewController {
                                  filledDotsCount: pin.count,
                                  biometricType: .faceId))
         case .biometricTapped:
+            guard state == .signIn else { return }
+            
             let availableBiometricType = authentificator.availableBiometricType.rawValue
            
             authentificator.authenticateWithBioMetrics(reason: L10n.AuthViewController.reason(availableBiometricType, availableBiometricType),
@@ -66,7 +94,32 @@ class AuthViewController: UIViewController {
             }
             
         case .numberTapped(let number):
-            guard pin.count < 4 else { return }
+            guard pin.count <= 4 else { return }
+            if pin.count == 4 {
+                switch state {
+                case .signIn, .wrongPasscode:
+                    let savedPin: String = pin.map { String($0) }.joined()
+                    if savedPin == pinStorage.pin {
+                        //router.openMain
+                    } else {
+                        pin.removeAll()
+                    }
+                case .reenterPin(let code):
+                    if code == pin {
+                        pinStorage.pin = pin.map { String($0) }.joined()
+                        showSuccessPopup(self, withTitle: L10n.AuthViewController.passcodeSaved)
+                    } else {
+                        state = .signOut
+                        pin.removeAll()
+                    }
+                case .signOut:
+                    state = .reenterPin(pin)
+                    pin.removeAll()
+                }
+                
+                return
+            }
+        
             pin.append(number)
             pinView.render(.init(title: pinTitle,
                                  filledDotsCount: pin.count,
@@ -357,4 +410,22 @@ class NumberView: UIControl {
         let blur = UIBlurEffect(style: .light)
         return UIVisualEffectView(effect: blur)
     }()
+}
+
+
+protocol PinStorage {
+    var pin: String? { set get }
+}
+
+extension KeychainSwift: PinStorage {
+    static let pinKey = "Auth.Passcode"
+    var pin: String? {
+        get {
+            return get(KeychainSwift.pinKey)
+        }
+        set {
+            guard let pin = newValue else { delete(KeychainSwift.pinKey); return }
+            set(pin, forKey: KeychainSwift.pinKey)
+        }
+    }
 }

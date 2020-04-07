@@ -17,4 +17,9 @@
 "Settings.TouchId" = "Использовать TouchId";
 "Settings.FaceId" = "Использовать FaceId";
 "NoConnection.Text" = "Нет подключения...";
-"AuthViewController.Reason" = "%@ is locked now, because of too many failed attempts. Enter passcode to unlock %@.";
+"AuthViewController.Reason" = "%@ заблокирован, из-за большого количества неудавшихся попыток. Введите код для разблокировки %@.";
+"AuthViewController.Title" = "%@ или введите код.";
+"AuthViewController.EnterPasscode" = "Введите код";
+"AuthViewController.ConfirmPasscode" = "Повторите код";
+"AuthViewController.PasscodeSaved" = "Код установлен.";
+"AuthViewController.WrongPasscode" = "Введен неверный пароль.";

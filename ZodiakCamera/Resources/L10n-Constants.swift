@@ -13,10 +13,22 @@ import Foundation
 internal enum L10n {
 
   internal enum AuthViewController {
+    /// Confirm passcode.
+    internal static let confirmPasscode = L10n.tr("Localizable", "AuthViewController.ConfirmPasscode")
+    /// Enter passcode.
+    internal static let enterPasscode = L10n.tr("Localizable", "AuthViewController.EnterPasscode")
+    /// Passcode be maintained.
+    internal static let passcodeSaved = L10n.tr("Localizable", "AuthViewController.PasscodeSaved")
     /// %@ is locked now, because of too many failed attempts. Enter passcode to unlock %@.
     internal static func reason(_ p1: String, _ p2: String) -> String {
       return L10n.tr("Localizable", "AuthViewController.Reason", p1, p2)
     }
+    /// %@ or Enter Passcode.
+    internal static func title(_ p1: String) -> String {
+      return L10n.tr("Localizable", "AuthViewController.Title", p1)
+    }
+    /// You enter wrong passcode.
+    internal static let wrongPasscode = L10n.tr("Localizable", "AuthViewController.WrongPasscode")
   }
 
   internal enum NoConnection {
