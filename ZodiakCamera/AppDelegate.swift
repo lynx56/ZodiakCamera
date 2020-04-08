@@ -17,9 +17,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         
         let cameraFlow = CameraFlowViewController()
-      
+      let popup = PopupContainer(root: AuthViewController())
         window = UIWindow(frame: UIScreen.main.bounds)
-        window?.rootViewController = AuthViewController()//cameraFlow.start()
+        window?.rootViewController = popup//cameraFlow.start()
         window?.makeKeyAndVisible()
         return true
     }

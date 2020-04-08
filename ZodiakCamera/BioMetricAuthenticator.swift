@@ -10,7 +10,7 @@ import Foundation
 import LocalAuthentication
 
 class DefaultBioMetricAuthenticator: BioMetricAuthenticator {
-    var availableBiometricType: BiometricType {
+    var availableType: BiometricType {
         let context = LAContext()
         var error: NSError?
         
@@ -42,11 +42,11 @@ class DefaultBioMetricAuthenticator: BioMetricAuthenticator {
     
     private var context = LAContext()
     
-    func authenticateWithBioMetrics(reason: String,
-                                    fallbackTitle: String? = "",
-                                    cancelTitle: String? = "",
-                                    completion: @escaping (Result<Bool, BiometricAuthenticationError>) -> Void) {
-    
+    func authenticate(reason: String,
+                      fallbackTitle: String? = "",
+                      cancelTitle: String? = "",
+                      completion: @escaping (Result<Bool, BiometricAuthenticationError>) -> Void) {
+        
         if allowableReuseDuration == nil {
             context = LAContext()
         }
@@ -111,9 +111,9 @@ public enum BiometricAuthenticationError: Error {
 }
 
 protocol BioMetricAuthenticator {
-    var availableBiometricType: BiometricType { get }
-    func authenticateWithBioMetrics(reason: String,
-                                    fallbackTitle: String?,
-                                    cancelTitle: String?,
-                                    completion: @escaping (Result<Bool, BiometricAuthenticationError>) -> Void)
+    var availableType: BiometricType { get }
+    func authenticate(reason: String,
+                      fallbackTitle: String?,
+                      cancelTitle: String?,
+                      completion: @escaping (Result<Bool, BiometricAuthenticationError>) -> Void)
 }

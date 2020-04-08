@@ -22,4 +22,4 @@
 "AuthViewController.EnterPasscode" = "Введите код";
 "AuthViewController.ConfirmPasscode" = "Повторите код";
 "AuthViewController.PasscodeSaved" = "Код установлен.";
-"AuthViewController.WrongPasscode" = "Введен неверный пароль.";
+"AuthViewController.WrongPasscode" = "Введен неверный пароль. Попробуйте еще раз.";
