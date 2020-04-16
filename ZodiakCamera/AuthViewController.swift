@@ -388,8 +388,8 @@ extension KeychainSwift: PinStorage {
 extension AuthViewController {
     class Model {
         enum OutputEvents {
-            case change(title: String, filledNumbers: Int, biometricType: BiometricType)
-            case passcodeSaved
+                case change(title: String, filledNumbers: Int, biometricType: BiometricType)
+                case passcodeSaved
         }
         
         enum Mode {
@@ -399,9 +399,8 @@ extension AuthViewController {
         
         private var bioMetricauthentificator: BioMetricAuthenticator
         private var pinStorage: PinStorage
-        private var mode: Mode
         private var pin: [Int] = []
-        
+        private let mode: Mode
         var outputHandler: (OutputEvents) -> Void = { _ in }
         
         init(bioMetricauthentificator: BioMetricAuthenticator = DefaultBioMetricAuthenticator(),
@@ -410,13 +409,17 @@ extension AuthViewController {
             self.bioMetricauthentificator = bioMetricauthentificator
             self.pinStorage = pinStorage
             self.mode = mode
+            switch mode {
+            case .auth: biometricType = bioMetricauthentificator.availableType
+            case .new: biometricType = .none
+            }
         }
-        
-        
+    
         enum State {
             case idle
             case inProccess(String)
             case confirm(pin: [Int])
+            case check(pin1: [Int], pin2: [Int])
             case finish
         }
         
@@ -428,15 +431,14 @@ extension AuthViewController {
             case tapped(TapEvent)
             case start
             case authentificate
+            case check
         }
         
         typealias Transition = () throws -> (State)
         typealias PreAction = () -> ()
+        typealias PostAction = () -> ()
         
-        private var biometricType: BiometricType {
-            guard mode == .auth else { return .none }
-            return self.bioMetricauthentificator.availableType
-        }
+        private var biometricType: BiometricType = .none
         
         struct Context {
             var pin: [Int]
@@ -444,107 +446,214 @@ extension AuthViewController {
         
         var currentState: State = .idle
         
+        func postAction(old: State, new: State) {
+            switch (old, new) {
+            case (.inProccess, .confirm):
+                self.pin.removeAll()
+                self.outputHandler(.change(title: L10n.AuthViewController.confirmPasscode,
+                                           filledNumbers: 0,
+                                           biometricType: self.biometricType))
+            case (.confirm, .inProccess):
+                self.pin.removeAll()
+                self.outputHandler(.change(title: L10n.AuthViewController.wrongPasscode,
+                                           filledNumbers: self.pin.count,
+                                           biometricType: self.biometricType))
+            case (.confirm, .finish):
+                self.outputHandler(.change(title: L10n.AuthViewController.confirmPasscode,
+                                           filledNumbers: self.pin.count,
+                                           biometricType: self.biometricType))
+            default: return
+            }
+        }
         
         func preAction(old: State, new: State) {
             switch (old, new) {
             case (.inProccess(let title), .confirm):
-                self.pin.removeAll()
                 self.outputHandler(.change(title: title,
+                                           filledNumbers: pin.count,
+                                           biometricType: self.biometricType))
+            case (.idle, .inProccess):
+                self.outputHandler(.change(title: L10n.AuthViewController.enterPasscode,
                                            filledNumbers: 0,
                                            biometricType: self.biometricType))
+            case (.inProccess, .inProccess(let title)):
+                self.outputHandler(.change(title: title,
+                                           filledNumbers: self.pin.count,
+                                           biometricType: self.biometricType))
+            case (.confirm, .confirm):
+                self.outputHandler(.change(title: L10n.AuthViewController.confirmPasscode,
+                                           filledNumbers: self.pin.count,
+                                           biometricType: self.biometricType))
                 
-            case (.confirm, .inProccess):
-                self.pin.removeAll()
-                self.outputHandler.self(.change(title: L10n.AuthViewController.wrongPasscode,
-                                                filledNumbers: self.pin.count,
-                                                biometricType: self.biometricType))
+            case (.confirm, .finish):
+                self.pinStorage.pin = pin.map { String($0) }.joined()
+                self.outputHandler(.passcodeSaved)
             default:
                 return
             }
         }
-    
-        func transitions(forEvent event: Event) throws -> Transition {
-            switch (currentState, event) {
-            case (.idle, .start): return {
-                self.outputHandler(.change(title: L10n.AuthViewController.enterPasscode,
-                                           filledNumbers: 0,
-                                           biometricType: self.biometricType))
-                return .inProccess(L10n.AuthViewController.enterPasscode)
+        
+        func changePin(pin: [Int], by tapEvent: Event.TapEvent) -> [Int] {
+            var changingPin = pin
+            switch tapEvent {
+            case .number(let number):
+                changingPin.append(number)
+            case .delete:
+                if changingPin.count > 0 {
+                    changingPin.removeLast()
                 }
-            case (.inProccess(let title), .tapped(let tapEvent)): return {
-                switch tapEvent {
-                case .number(let number):
-                    self.pin.append(number)
-                case .delete:
-                    if self.pin.count > 0 {
-                        self.pin.removeLast()
-                    }
+            }
+            
+            return changingPin
+        }
+        
+        private var authTransition: Transition {
+            return {
+                let operation = AuthOperation(bioMetricauthentificator: self.bioMetricauthentificator)
+                self.authQueue.addOperation(operation)
+                self.authQueue.waitUntilAllOperationsAreFinished()
+                switch operation.result {
+                case .failure, .none: return .inProccess(L10n.AuthViewController.enterPasscode)
+                case .success(let isAuthentificated): return isAuthentificated ? .finish : .inProccess(L10n.AuthViewController.enterPasscode)
                 }
-                
-                self.outputHandler(.change(title: title,
-                                           filledNumbers: self.pin.count,
-                                           biometricType: self.biometricType))
+            }
+        }
+        
+        private func inProcessTransitionLoop(title: String, tapEvent: Event.TapEvent, nextState: @escaping () -> State) -> Transition {
+            return { [unowned self] in
+                self.pin = self.changePin(pin: self.pin, by: tapEvent)
                 
                 if self.pin.count < 4 {
                     return .inProccess(title)
                 }
                 
-                self.outputHandler(.change(title: title,
-                                           filledNumbers: self.pin.count,
-                                           biometricType: self.biometricType))
-                
-                return .confirm(pin: self.pin)
-                }
-            case (.confirm(let pin), .tapped(let tapEvent)): return {
-                switch tapEvent {
-                case .number(let number):
-                    self.pin.append(number)
-                case .delete:
-                    if self.pin.count > 0 {
-                        self.pin.removeLast()
+                return nextState()
+            }
+        }
+        
+        private lazy var authQueue = OperationQueue()
+       
+        private func authTransitions(forEvent event: Event) throws -> Transition {
+            switch (currentState, event) {
+            case (.idle, .start): return authTransition
+            case (_, .authentificate): return authTransition
+            case (.inProccess(let title), .tapped(let tapEvent)):
+                return inProcessTransitionLoop(title: title, tapEvent: tapEvent, nextState: {
+                    if self.pin.map({ String($0) }).joined() == self.pinStorage.pin {
+                        return .finish
                     }
-                }
+                    return .inProccess(L10n.AuthViewController.wrongPasscode)
+                })
+            default: throw MyErrors.transitionNotFound
+            }
+        }
+        
+        private func transitions(forEvent event: Event) throws -> Transition {
+            switch (currentState, event) {
+            case (.idle, .start): return { return .inProccess(L10n.AuthViewController.enterPasscode) }
+            case (.inProccess(let title), .tapped(let tapEvent)):
+                return inProcessTransitionLoop(title: title, tapEvent: tapEvent, nextState: { .confirm(pin: self.pin) })
+            case (.confirm(let pin), .tapped(let tapEvent)): return { [unowned self] in
+                self.pin = self.changePin(pin: self.pin, by: tapEvent)
                 
-                self.outputHandler.self(.change(title: L10n.AuthViewController.confirmPasscode,
-                                                filledNumbers: self.pin.count,
-                                                biometricType: self.biometricType))
                 if self.pin.count < 4 {
                     return .confirm(pin: pin)
                 }
                 
                 if pin == self.pin {
-                    self.pinStorage.pin = pin.map { String($0) }.joined()
-                    self.outputHandler(.passcodeSaved)
                     return .finish
                 }
                 
                 return .inProccess(L10n.AuthViewController.wrongPasscode)
             }
             default: throw MyErrors.transitionNotFound
+         }
+        }
+        
+        
+        private var stateTransitions: (Event) throws -> Transition {
+            switch mode {
+            case .auth:
+                return authTransitions
+            case .new:
+                return transitions
             }
         }
         
         func handle(event: Event) throws {
-            let transition = try transitions(forEvent: event)
+            let transition = try stateTransitions(event)
             let oldState = currentState
-            currentState = try transition()
-            preAction(old: oldState, new: currentState)
+            let newState = try transition()
+            preAction(old: currentState, new: newState)
+            currentState = newState
+            postAction(old: oldState, new: currentState)
         }
         
         enum MyErrors: Error {
             case transitionNotFound
         }
+    }
+}
+
+class AsyncOperation: Operation {
+    enum State: String {
+        case ready, executing, finished
         
-        private func authentificate() {
-            guard mode == .new else { assertionFailure("Model in \(mode) mode can't authentificate"); return }
-            
-            let availableBiometricType = bioMetricauthentificator.availableType.rawValue
-            
-            bioMetricauthentificator.authenticate(reason: L10n.AuthViewController.reason(availableBiometricType, availableBiometricType),
-                                                  fallbackTitle: nil,
-                                                  cancelTitle: nil) { result in
-                                                    print(result)
-            }
+        fileprivate var keyPath: String {
+            return "is\(rawValue.capitalized)"
+        }
+    }
+    
+    var state = State.ready {
+        willSet {
+            willChangeValue(forKey: newValue.keyPath)
+            willChangeValue(forKey: state.keyPath)
+        }
+        didSet {
+            didChangeValue(forKey: oldValue.keyPath)
+            didChangeValue(forKey: state.keyPath)
+        }
+    }
+    
+    override var isReady: Bool {
+        return super.isReady && state == .ready
+    }
+    
+    override var isExecuting: Bool {
+        return state == .executing
+    }
+    
+    override var isFinished: Bool {
+        return state == .finished
+    }
+    
+    override var isAsynchronous: Bool {
+        return true
+    }
+    
+    override func start() {
+        main()
+        state = .executing
+    }
+}
+
+class AuthOperation: AsyncOperation {
+    var result: Result<Bool, BiometricAuthenticationError>?
+    private let bioMetricauthentificator: BioMetricAuthenticator
+    
+    init(bioMetricauthentificator: BioMetricAuthenticator) {
+        self.bioMetricauthentificator = bioMetricauthentificator
+        super.init()
+    }
+    
+    override func main() {
+        let availableBiometricType = bioMetricauthentificator.availableType.rawValue
+           
+        bioMetricauthentificator.authenticate(reason: L10n.AuthViewController.reason(availableBiometricType, availableBiometricType),
+                                              fallbackTitle: nil,
+                                              cancelTitle: nil) {[unowned self] authResult in
+                                                defer { self.state = .finished }
+                                                self.result = authResult
         }
     }
 }
