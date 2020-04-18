@@ -21,6 +21,6 @@
 "AuthViewController.Title" = "%@ or Enter Passcode.";
 "AuthViewController.EnterPasscode" = "Enter passcode.";
 "AuthViewController.ConfirmPasscode" = "Confirm passcode.";
-"AuthViewController.PasscodeSaved" = "Passcode be maintained.";
+"AuthViewController.PasscodeSaved" = "Saved.";
 "AuthViewController.WrongPasscode" = "You enter wrong passcode. Try again.";
 

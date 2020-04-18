@@ -10,8 +10,15 @@ import Foundation
 import LocalAuthentication
 
 class DefaultBioMetricAuthenticator: BioMetricAuthenticator {
+    var cacheLifeTime: TimeInterval? {
+        didSet {
+            allowableReuseDuration = cacheLifeTime
+        }
+    }
+    
+    private var context = LAContext()
+    
     var availableType: BiometricType {
-        let context = LAContext()
         var error: NSError?
         
         let canEvaluate = context.canEvaluatePolicy(LAPolicy.deviceOwnerAuthenticationWithBiometrics, error: &error)
@@ -40,8 +47,6 @@ class DefaultBioMetricAuthenticator: BioMetricAuthenticator {
         }
     }
     
-    private var context = LAContext()
-    
     func authenticate(reason: String,
                       fallbackTitle: String? = "",
                       cancelTitle: String? = "",
@@ -53,16 +58,14 @@ class DefaultBioMetricAuthenticator: BioMetricAuthenticator {
         
         context.localizedFallbackTitle = fallbackTitle
         context.localizedCancelTitle = cancelTitle
-        
+       
         context.evaluatePolicy(.deviceOwnerAuthenticationWithBiometrics, localizedReason: reason) { (success, err) in
-            DispatchQueue.main.async {
                 if success {
                     completion(.success(true))
                 }else {
                     let errorType = (err as! LAError).authenticationError
                     completion(.failure(errorType))
                 }
-            }
         }
     }
 }
@@ -112,6 +115,7 @@ public enum BiometricAuthenticationError: Error {
 
 protocol BioMetricAuthenticator {
     var availableType: BiometricType { get }
+    var cacheLifeTime: TimeInterval? { set get }
     func authenticate(reason: String,
                       fallbackTitle: String?,
                       cancelTitle: String?,

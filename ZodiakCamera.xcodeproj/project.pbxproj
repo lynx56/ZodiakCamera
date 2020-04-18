@@ -8,6 +8,11 @@
 
 /* Begin PBXBuildFile section */
 		424B46A0A7D4A890E9EE5FDA /* Pods_ZodiakCamera.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7068A07341DE977E61A05851 /* Pods_ZodiakCamera.framework */; };
+		88212AE7244B235D0029F6EA /* PinView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 88212AE6244B235D0029F6EA /* PinView.swift */; };
+		88212AE9244B23840029F6EA /* DotView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 88212AE8244B23840029F6EA /* DotView.swift */; };
+		88212AEB244B23A10029F6EA /* NumberView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 88212AEA244B23A10029F6EA /* NumberView.swift */; };
+		88212AED244B23E70029F6EA /* AuthModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 88212AEC244B23E70029F6EA /* AuthModel.swift */; };
+		88212AF3244B25E30029F6EA /* PinStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 88212AF2244B25E30029F6EA /* PinStorage.swift */; };
 		88F04DCB24391B8400F96427 /* BioMetricAuthenticator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 88F04DCA24391B8400F96427 /* BioMetricAuthenticator.swift */; };
 		BF08A64F2355DD2F00CEADD1 /* SettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF08A64E2355DD2F00CEADD1 /* SettingsViewController.swift */; };
 		BF08A65223577C9800CEADD1 /* JoystickView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF08A65123577C9800CEADD1 /* JoystickView.swift */; };
@@ -56,6 +61,11 @@
 		3A05330CAE8D42F326FFA6F4 /* Pods-ZodiakCamera.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ZodiakCamera.release.xcconfig"; path = "Pods/Target Support Files/Pods-ZodiakCamera/Pods-ZodiakCamera.release.xcconfig"; sourceTree = "<group>"; };
 		7068A07341DE977E61A05851 /* Pods_ZodiakCamera.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_ZodiakCamera.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		77D8A1F548E238707E71F5A5 /* Pods-ZodiakCamera.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ZodiakCamera.debug.xcconfig"; path = "Pods/Target Support Files/Pods-ZodiakCamera/Pods-ZodiakCamera.debug.xcconfig"; sourceTree = "<group>"; };
+		88212AE6244B235D0029F6EA /* PinView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PinView.swift; sourceTree = "<group>"; };
+		88212AE8244B23840029F6EA /* DotView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DotView.swift; sourceTree = "<group>"; };
+		88212AEA244B23A10029F6EA /* NumberView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NumberView.swift; sourceTree = "<group>"; };
+		88212AEC244B23E70029F6EA /* AuthModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthModel.swift; sourceTree = "<group>"; };
+		88212AF2244B25E30029F6EA /* PinStorage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PinStorage.swift; sourceTree = "<group>"; };
 		88F04DCA24391B8400F96427 /* BioMetricAuthenticator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BioMetricAuthenticator.swift; sourceTree = "<group>"; };
 		BF08A64E2355DD2F00CEADD1 /* SettingsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsViewController.swift; sourceTree = "<group>"; };
 		BF08A65123577C9800CEADD1 /* JoystickView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JoystickView.swift; sourceTree = "<group>"; };
@@ -136,6 +146,19 @@
 			name = Pods;
 			sourceTree = "<group>";
 		};
+		88212AE5244B232A0029F6EA /* AuthScene */ = {
+			isa = PBXGroup;
+			children = (
+				88212AEC244B23E70029F6EA /* AuthModel.swift */,
+				BF876AA62433AB0A0031FB0A /* AuthViewController.swift */,
+				88212AE6244B235D0029F6EA /* PinView.swift */,
+				88212AE8244B23840029F6EA /* DotView.swift */,
+				88212AEA244B23A10029F6EA /* NumberView.swift */,
+				88212AF2244B25E30029F6EA /* PinStorage.swift */,
+			);
+			path = AuthScene;
+			sourceTree = "<group>";
+		};
 		BF763B3523548D3F00D89FAB = {
 			isa = PBXGroup;
 			children = (
@@ -159,9 +182,9 @@
 			children = (
 				BF998EB72372F26200325BD9 /* CameraScene */,
 				BF998EB62372F1ED00325BD9 /* SettingsScene */,
-				BF763B4123548D3F00D89FAB /* AppDelegate.swift */,
-				BF876AA62433AB0A0031FB0A /* AuthViewController.swift */,
+				88212AE5244B232A0029F6EA /* AuthScene */,
 				BFCEECD123CF0EEC007EE8FF /* PopupContainer.swift */,
+				BF763B4123548D3F00D89FAB /* AppDelegate.swift */,
 				BFFBB34823730B6B008C1D47 /* UiViewController+child.swift */,
 				BFFBB346237303ED008C1D47 /* NetworkListener.swift */,
 				BF57E73423686F2700F6D43B /* AutolayoutDSL.swift */,
@@ -395,18 +418,23 @@
 				BF998EB92372F4A400325BD9 /* PanelView.swift in Sources */,
 				BF534AF8236C4025007B5F2F /* Api.swift in Sources */,
 				BF998EBF2372F5D900325BD9 /* Date+stamp.swift in Sources */,
+				88212AF3244B25E30029F6EA /* PinStorage.swift in Sources */,
 				BFCEECD223CF0EEC007EE8FF /* PopupContainer.swift in Sources */,
+				88212AED244B23E70029F6EA /* AuthModel.swift in Sources */,
 				BFCB4FC6240903BE004D7F3E /* MockModel.swift in Sources */,
+				88212AE9244B23840029F6EA /* DotView.swift in Sources */,
 				BF998EB52372F19800325BD9 /* JoystickScene.swift in Sources */,
 				BF9A7F3823E2D9020069273D /* L10n-Constants.swift in Sources */,
 				BF08A65223577C9800CEADD1 /* JoystickView.swift in Sources */,
 				BF9A7F3723E2D9020069273D /* Assets.swift in Sources */,
 				BF998EBB2372F4E700325BD9 /* Settings.swift in Sources */,
 				BF763B4423548D3F00D89FAB /* CameraViewController.swift in Sources */,
+				88212AE7244B235D0029F6EA /* PinView.swift in Sources */,
 				BF876AA72433AB0A0031FB0A /* AuthViewController.swift in Sources */,
 				BF763B4223548D3F00D89FAB /* AppDelegate.swift in Sources */,
 				BF57E73523686F2700F6D43B /* AutolayoutDSL.swift in Sources */,
 				BF998EA92372EEEE00325BD9 /* ArcSlider.swift in Sources */,
+				88212AEB244B23A10029F6EA /* NumberView.swift in Sources */,
 				BFFBB34B23749DD1008C1D47 /* UIImage+resize.swift in Sources */,
 				BF998EBD2372F51200325BD9 /* Settings+Model.swift in Sources */,
 				BF998EA52372EEDD00325BD9 /* Extensions.swift in Sources */,
