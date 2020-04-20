@@ -10,14 +10,6 @@ import UIKit
 import KeychainSwift
 
 class AuthViewController: UIViewController {
-    
-    enum State: Equatable {
-        case signOut
-        case reenterPin([Int])
-        case signIn
-        case wrongPasscode
-    }
-    
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -26,16 +18,19 @@ class AuthViewController: UIViewController {
         
         model.outputHandler = { event in
             switch event {
-            case .change(let title, let filledNumbers, let biometricType):
-                self.pinView.render(.init(title: title,
-                                          filledDotsCount: filledNumbers,
-                                          biometricType: biometricType))
-            case .passcodeSaved: self.showSuccessPopup(self, withTitle: L10n.AuthViewController.passcodeSaved)
+            case .change(let viewState):
+                self.pinView.render(.init(title: viewState.title,
+                                          filledDotsCount: viewState.filledNumbers,
+                                          biometricType: viewState.biometricType))
+            case .success: self.showSuccessPopup(self, withTitle: L10n.AuthViewController.passcodeSaved)
             }
         }
     }
     
     private let pinView = PinView()
+    
+   // var model = Model(mode: .auth(AuthModel(), .idle))
+    var model = Model(mode: .register(RegisterModel(), .idle))
     
     func setupLayout() {
         view.addSubview(pinView, constraints: [
@@ -60,20 +55,17 @@ class AuthViewController: UIViewController {
     
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-        
-        try! model.handle(event: .start)
+        model.handle(.start)
     }
     
-    private var model = Model(mode:.auth)
-    
-    private func handlePinViewEvent(_ event: PinView.OutputEvent) {
+    func handlePinViewEvent(_ event: PinView.OutputEvent) {
         switch event {
         case .backspaceTapped:
-            try! model.handle(event: .tapped(.delete))
+            model.handle(.tapped(.delete))
         case .biometricTapped:
-            try! model.handle(event: .authentificate)
+            model.handle(.authentificate)
         case .numberTapped(let number):
-            try! model.handle(event: .tapped(.number(number)))
+            model.handle(.tapped(.number(number)))
         }
     }
 }
