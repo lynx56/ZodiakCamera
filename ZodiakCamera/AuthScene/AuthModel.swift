@@ -23,11 +23,10 @@ extension AuthViewController {
     class AuthModel {
         private var bioMetricauthentificator: BioMetricAuthenticator
         private var pinStorage: PinStorage
-        private var pin: [Int] = []
         
         enum State {
             case idle
-            case inProccess(String)
+            case inProccess(title: String, pin: [Int])
             case finish
         }
         
@@ -60,9 +59,9 @@ extension AuthViewController {
                 
                 switch result {
                 case .failure, .none:
-                    return .inProccess(L10n.AuthViewController.enterPasscode)
+                    return .inProccess(title: L10n.AuthViewController.enterPasscode, pin: [])
                 case .success(let isAuthentificated):
-                    return isAuthentificated ? .finish : .inProccess(L10n.AuthViewController.enterPasscode)
+                    return isAuthentificated ? .finish : .inProccess(title: L10n.AuthViewController.enterPasscode, pin: [])
                 }
             }
         }
@@ -71,20 +70,33 @@ extension AuthViewController {
             switch (state, event) {
             case (.idle, .start): return authTransition
             case (_, .authentificate): return authTransition
-            case (.inProccess(let title), .tapped(let tapEvent)):
+            case (.inProccess(let title, let pin), .tapped(let tapEvent)):
                 return {
-                    self.pin = tapEvent.changePin(pin: self.pin)
+                    let changedPin = tapEvent.changePin(pin: pin)
                     
-                    if self.pin.count < 4 {
-                        return .inProccess(title)
+                    if changedPin.count < 4 {
+                        return .inProccess(title: title, pin: changedPin)
                     }
                     
-                    if self.pin.map({ String($0) }).joined() == self.pinStorage.pin {
+                    if changedPin.map({ String($0) }).joined() == self.pinStorage.pin {
                         return .finish
                     }
-                    return .inProccess(L10n.AuthViewController.wrongPasscode)
+                    
+                    return .inProccess(title: L10n.AuthViewController.wrongPasscode, pin: [])
                 }
             default: throw MyErrors.transitionNotFound
+            }
+        }
+        
+        func transitionViewState(from oldState: State, to newState: State) -> ViewState? {
+            switch (oldState, newState) {
+            case (.inProccess(let title, let pin), .finish):
+                return .init(title: title, filledNumbers: pin.count + 1, biometricType: bioMetricauthentificator.availableType)
+            case (.inProccess(let title, let pin), .inProccess(_, let newpin)):
+                return newpin.isEmpty ?
+                 .init(title: title, filledNumbers: pin.count + 1, biometricType: bioMetricauthentificator.availableType) :
+                 .init(title: title, filledNumbers: newpin.count, biometricType: bioMetricauthentificator.availableType)
+            default: return nil
             }
         }
         
@@ -92,7 +104,7 @@ extension AuthViewController {
             switch state {
             case .finish: return nil
             case .idle: return .init(title: L10n.AuthViewController.enterPasscode, filledNumbers: 0, biometricType: bioMetricauthentificator.availableType)
-            case .inProccess(let title): return .init(title: title, filledNumbers: self.pin.count, biometricType: bioMetricauthentificator.availableType)
+            case .inProccess(let title, let pin): return .init(title: title, filledNumbers: pin.count, biometricType: bioMetricauthentificator.availableType)
             }
         }
     }
@@ -100,8 +112,8 @@ extension AuthViewController {
     class RegisterModel {
         enum State {
             case idle
-            case inProccess(String)
-            case confirm(pin: [Int])
+            case inProccess(title: String, pin: [Int])
+            case confirm(confirmPin: [Int], proccessPin: [Int])
             case finish
         }
         
@@ -111,60 +123,62 @@ extension AuthViewController {
         }
         
         private var pinStorage: PinStorage
-        private var pin: [Int] = []
-        
+
         init(pinStorage: PinStorage = KeychainSwift()) {
             self.pinStorage = pinStorage
         }
         
         typealias Transition = () throws -> (State)
-        typealias PostAction = ()->Void
-        
-        func prepare(oldState: State, newState: State) {
-            switch (oldState, newState) {
-                case (.inProccess, .confirm):  self.pin.removeAll()
-                case (.confirm, .inProccess): self.pin.removeAll()
-                default : return
-            }
-        }
         
         func transitions(from state: State, forEvent event: Event) throws -> Transition {
             switch (state, event) {
-            case (.idle, .start): return { return .inProccess(L10n.AuthViewController.enterPasscode) }
-            case (.inProccess(let title), .tapped(let tapEvent)):
+            case (.idle, .start): return { return .inProccess(title: L10n.AuthViewController.enterPasscode, pin: []) }
+            case (.inProccess(let title, let pin), .tapped(let tapEvent)):
                 return {
-                    self.pin = tapEvent.changePin(pin: self.pin)
+                    let changedPin = tapEvent.changePin(pin: pin)
                     
-                    if self.pin.count < 4 {
-                        return .inProccess(title)
+                    if changedPin.count < 4 {
+                        return .inProccess(title: title, pin: changedPin)
                     }
-                    let pin = self.pin
-                    return .confirm(pin: pin)
+                    
+                    return .confirm(confirmPin: changedPin, proccessPin: [])
                 }
-            case (.confirm(let pin), .tapped(let tapEvent)): return { [unowned self] in
-                self.pin = tapEvent.changePin(pin: self.pin)
+            case (.confirm(let confirmPin, let proccessPin), .tapped(let tapEvent)): return { [unowned self] in
+                let changedPin = tapEvent.changePin(pin: proccessPin)
                 
-                if self.pin.count < 4 {
-                    return .confirm(pin: pin)
+                if changedPin.count < 4 {
+                    return .confirm(confirmPin: confirmPin, proccessPin: changedPin)
                 }
                 
-                if pin == self.pin {
-                    self.pinStorage.pin = self.pin.map { String($0) }.joined()
+                if changedPin == confirmPin {
+                    self.pinStorage.pin = changedPin.map { String($0) }.joined()
                     return .finish
                 }
-                
-                return .inProccess(L10n.AuthViewController.wrongPasscode)
+                return .inProccess(title: L10n.AuthViewController.wrongPasscode, pin: [])
                 }
             default: throw MyErrors.transitionNotFound
             }
         }
         
-        func viewState(from state: State) -> ViewState? {
+        func transitionViewState(from oldState: State, to newState: State) -> ViewState? {
+            switch (oldState, newState) {
+            case (.inProccess, .confirm(let confirmPin, _)):
+                return .init(title: L10n.AuthViewController.confirmPasscode, filledNumbers: confirmPin.count, biometricType: .none)
+            case (.confirm(_, let proccessPin), .inProccess(let title, _)):
+                return .init(title: title, filledNumbers: proccessPin.count + 1, biometricType: .none)
+            case (.confirm(let confirmedPin, _), .finish):
+                return .init(title: L10n.AuthViewController.confirmPasscode, filledNumbers: confirmedPin.count, biometricType: .none)
+            default: return nil
+            }
+        }
+        
+        func viewState(for state: State) -> ViewState? {
             switch state {
-            case .confirm: return .init(title: L10n.AuthViewController.confirmPasscode, filledNumbers: self.pin.count, biometricType: .none)
+            case .confirm(_, let proccessPin):
+                return .init(title: L10n.AuthViewController.confirmPasscode, filledNumbers: proccessPin.count, biometricType: .none)
             case .finish: return nil
-            case .idle: return .init(title: L10n.AuthViewController.enterPasscode, filledNumbers: self.pin.count, biometricType: .none)
-            case .inProccess(let title): return .init(title: title, filledNumbers: self.pin.count, biometricType: .none)
+            case .idle: return .init(title: L10n.AuthViewController.enterPasscode, filledNumbers: 0, biometricType: .none)
+            case .inProccess(let title, let pin): return .init(title: title, filledNumbers: pin.count, biometricType: .none)
             }
         }
     }
@@ -241,9 +255,15 @@ extension AuthViewController {
             case .auth(let model, let currentState):
                 let transition = try! model.transitions(from: currentState, forEvent: Model.authEventConverter(event))
                 let newState = try! transition()
+              
+                if let transitionViewState = model.transitionViewState(from: currentState, to: newState) {
+                    outputHandler(.change(transitionViewState))
+                }
+                
                 if let newViewState = model.viewState(for: newState) {
                     outputHandler(.change(newViewState))
                 }
+                              
                 mode = .auth(model, newState)
                 if case .finish = newState {
                     outputHandler(.success)
@@ -254,12 +274,14 @@ extension AuthViewController {
                     
                 let newState = try! transition()
             
-                if let newViewState = model.viewState(from: newState) {
-                    outputHandler(.change(newViewState))
+                if let transitionViewState = model.transitionViewState(from: currentState, to: newState) {
+                     outputHandler(.change(transitionViewState))
                 }
                 
-                model.prepare(oldState: currentState, newState: newState)
-                
+                if let newViewState = model.viewState(for: newState) {
+                    outputHandler(.change(newViewState))
+                }
+    
                 mode = .register(model, newState)
                 if case .finish = newState {
                     outputHandler(.success)

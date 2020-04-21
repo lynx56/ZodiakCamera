@@ -29,8 +29,8 @@ class AuthViewController: UIViewController {
     
     private let pinView = PinView()
     
-   // var model = Model(mode: .auth(AuthModel(), .idle))
-    var model = Model(mode: .register(RegisterModel(), .idle))
+    var model = Model(mode: .auth(AuthModel(), .idle))
+   // var model = Model(mode: .register(RegisterModel(), .idle))
     
     func setupLayout() {
         view.addSubview(pinView, constraints: [

@@ -64,7 +64,7 @@ class Api {
         var cgi = getUrl(with: "decoder_control.cgi");
         cgi += "&command=\(command)"
         cgi += "&onestep=0"
-        cgi += "&\(Date().stamp())"
+        cgi += "&\(Date().stamp() ?? 0)"
         
         let url = URL(string: cgi)!
 
