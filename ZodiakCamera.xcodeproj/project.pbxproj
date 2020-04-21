@@ -155,6 +155,7 @@
 				88212AE8244B23840029F6EA /* DotView.swift */,
 				88212AEA244B23A10029F6EA /* NumberView.swift */,
 				88212AF2244B25E30029F6EA /* PinStorage.swift */,
+				88F04DCA24391B8400F96427 /* BioMetricAuthenticator.swift */,
 			);
 			path = AuthScene;
 			sourceTree = "<group>";
@@ -191,7 +192,6 @@
 				BFD85E8023E2C57600B8ED12 /* Resources */,
 				BF763B4D23548D4100D89FAB /* Info.plist */,
 				BFD85E7E23E2C27400B8ED12 /* swiftgen.yml */,
-				88F04DCA24391B8400F96427 /* BioMetricAuthenticator.swift */,
 			);
 			path = ZodiakCamera;
 			sourceTree = "<group>";

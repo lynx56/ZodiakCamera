@@ -23,6 +23,7 @@ extension AuthViewController {
     class AuthModel {
         private var bioMetricauthentificator: BioMetricAuthenticator
         private var pinStorage: PinStorage
+        private var removePin: Bool
         
         enum State {
             case idle
@@ -39,14 +40,17 @@ extension AuthViewController {
         typealias Transition = () throws -> (State)
         
         init(bioMetricauthentificator: BioMetricAuthenticator = DefaultBioMetricAuthenticator(),
-             pinStorage: PinStorage = KeychainSwift()) {
+             pinStorage: PinStorage = KeychainSwift(),
+             removePin: Bool) {
             self.bioMetricauthentificator = bioMetricauthentificator
             self.pinStorage = pinStorage
+            self.removePin = removePin
         }
         
         private var authTransition: Transition {
             return {
                 var result: Result<Bool, BiometricAuthenticationError>?
+                let semaphore = DispatchSemaphore(value: 0)
                 DispatchQueue.global(qos: .userInitiated).sync {
                     let availableBiometricType = self.bioMetricauthentificator.availableType.rawValue
                     
@@ -54,14 +58,22 @@ extension AuthViewController {
                                                                fallbackTitle: nil,
                                                                cancelTitle: nil) {authResult in
                                                                 result = authResult
+                                                                semaphore.signal()
                     }
                 }
                 
+                semaphore.wait()
                 switch result {
                 case .failure, .none:
                     return .inProccess(title: L10n.AuthViewController.enterPasscode, pin: [])
                 case .success(let isAuthentificated):
-                    return isAuthentificated ? .finish : .inProccess(title: L10n.AuthViewController.enterPasscode, pin: [])
+                    if isAuthentificated {
+                        if self.removePin {
+                            self.pinStorage.pin = nil
+                        }
+                        return .finish
+                    }
+                    return .inProccess(title: L10n.AuthViewController.enterPasscode, pin: [])
                 }
             }
         }
@@ -79,6 +91,9 @@ extension AuthViewController {
                     }
                     
                     if changedPin.map({ String($0) }).joined() == self.pinStorage.pin {
+                        if self.removePin {
+                            self.pinStorage.pin = nil
+                        }
                         return .finish
                     }
                     
@@ -202,24 +217,25 @@ extension AuthViewController {
         }
     }
     
-    class Model {
+    class Model: AuthViewControllerModel {
         enum Mode {
             case auth(AuthModel, AuthModel.State)
             case register(RegisterModel, RegisterModel.State)
         }
         
-        enum OutputEvents {
-            case change(ViewState)
-            case success
+        var outputHandler: (OutputEvents) -> Void = { _ in } {
+            didSet {
+                var viewState: ViewState?
+                switch mode {
+                    case .auth(let model, let currentState): viewState = model.viewState(for: currentState)
+                    case .register(let model, let currentState): viewState = model.viewState(for: currentState)
+                }
+                
+                if let viewState = viewState {
+                    outputHandler(.change(viewState))
+                }
+            }
         }
-        
-        enum Event {
-            case tapped(TapEvent)
-            case start
-            case authentificate
-        }
-        
-        var outputHandler: (OutputEvents) -> Void = { _ in }
         
         init(mode: Mode) {
             self.mode = mode
@@ -288,5 +304,23 @@ extension AuthViewController {
                 }
             }
         }
+    }
+}
+
+protocol AuthViewControllerModel {
+    func handle(_ event: AuthViewController.Event)
+    var outputHandler: (AuthViewController.OutputEvents) -> Void { get set }
+}
+
+extension AuthViewController {
+    enum OutputEvents {
+        case change(ViewState)
+        case success
+    }
+    
+    enum Event {
+        case tapped(TapEvent)
+        case start
+        case authentificate
     }
 }

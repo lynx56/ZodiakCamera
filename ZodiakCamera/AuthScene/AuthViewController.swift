@@ -10,6 +10,18 @@ import UIKit
 import KeychainSwift
 
 class AuthViewController: UIViewController {
+    private var model: AuthViewControllerModel
+    private let pinView = PinView()
+    
+    init(model: AuthViewControllerModel) {
+        self.model = model
+        super.init(nibName: nil, bundle: nil)
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -22,17 +34,13 @@ class AuthViewController: UIViewController {
                 self.pinView.render(.init(title: viewState.title,
                                           filledDotsCount: viewState.filledNumbers,
                                           biometricType: viewState.biometricType))
-            case .success: self.showSuccessPopup(self, withTitle: L10n.AuthViewController.passcodeSaved)
+            case .success:
+                self.showSuccessPopup(self, withTitle: L10n.AuthViewController.passcodeSaved)
             }
         }
     }
     
-    private let pinView = PinView()
-    
-    var model = Model(mode: .auth(AuthModel(), .idle))
-   // var model = Model(mode: .register(RegisterModel(), .idle))
-    
-    func setupLayout() {
+    private func setupLayout() {
         view.addSubview(pinView, constraints: [
             constraint(\.leadingAnchor, constant: 47),
             constraint(\.trailingAnchor, constant: -47),
@@ -58,7 +66,7 @@ class AuthViewController: UIViewController {
         model.handle(.start)
     }
     
-    func handlePinViewEvent(_ event: PinView.OutputEvent) {
+    private func handlePinViewEvent(_ event: PinView.OutputEvent) {
         switch event {
         case .backspaceTapped:
             model.handle(.tapped(.delete))

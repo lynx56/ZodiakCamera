@@ -14,8 +14,8 @@
 "Settings.Port" = "Порт";
 "Settings.Save" = "Сохранить";
 "Settings.Saved" = "Сохранено";
-"Settings.TouchId" = "Использовать TouchId";
-"Settings.FaceId" = "Использовать FaceId";
+"Settings.TouchId" = "Защитить вход паролем или TouchId";
+"Settings.FaceId" = "Защитить вход паролем или FaceId";
 "NoConnection.Text" = "Нет подключения...";
 "AuthViewController.Reason" = "%@ заблокирован, из-за большого количества неудавшихся попыток. Введите код для разблокировки %@.";
 "AuthViewController.Title" = "%@ или введите код.";

@@ -10,9 +10,16 @@ import KeychainSwift
 
 protocol PinStorage {
     var pin: String? { set get }
+    var authEnabled: Bool { get }
 }
 
 extension KeychainSwift: PinStorage {
+    var authEnabled: Bool {
+        get {
+            return pin != nil && !pin!.isEmpty
+        }
+    }
+    
     static let pinKey = "Auth.Passcode"
     var pin: String? {
         get {

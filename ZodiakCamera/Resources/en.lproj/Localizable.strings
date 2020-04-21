@@ -14,8 +14,8 @@
 "Settings.Port" = "Port";
 "Settings.Save" = "Save";
 "Settings.Saved" = "Saved";
-"Settings.TouchId" = "Use TouchId";
-"Settings.FaceId" = "Use FaceId";
+"Settings.TouchId" = "Passcode or TouchId protection";
+"Settings.FaceId" = "Passcode or FaceId protection";
 "NoConnection.Text" = "No connection...";
 "AuthViewController.Reason" = "%@ is locked now, because of too many failed attempts. Enter passcode to unlock %@.";
 "AuthViewController.Title" = "%@ or Enter Passcode.";

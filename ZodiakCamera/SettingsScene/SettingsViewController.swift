@@ -11,11 +11,21 @@ import UIKit
 import KeychainSwift
 import LocalAuthentication
 
+protocol SettingsViewControllerRouter {
+    func openAuthentificator(wantEnable: Bool, completion: (()->Void)?)
+}
+ 
 class SettingsViewController: FormViewController {
-    private var settingsProvider: CameraSettingsProvider
+    private let settingsProvider: CameraSettingsProvider
+    private let biometryAuthentification: () -> (type: BiometricType, enabled: Bool)
+    private let router: SettingsViewControllerRouter
     
-    init(settingsProvider: CameraSettingsProvider) {
+    init(settingsProvider: CameraSettingsProvider,
+         biometryAuthentification: @escaping () -> (type: BiometricType, enabled: Bool),
+         router: SettingsViewControllerRouter) {
         self.settingsProvider = settingsProvider
+        self.biometryAuthentification = biometryAuthentification
+        self.router = router
         super.init(nibName: nil, bundle: nil)
     }
     
@@ -28,7 +38,7 @@ class SettingsViewController: FormViewController {
         setupView()
     }
     
-    func setupView() {
+    private func setupView() {
         var settings = settingsProvider.settings
         
         form +++ Section(L10n.Settings.access)
@@ -46,26 +56,29 @@ class SettingsViewController: FormViewController {
                 row.add(rule: RuleRequired())
                 row.cellUpdate({if !$1.isValid { $0.titleLabel?.textColor = .systemRed }})
             }.onChange { settings.password = $0.value ?? "" }
-            <<< SwitchRow() { row in
-                let context = LAContext()
-                var error: NSError?
-                let evaluated = context.canEvaluatePolicy(.deviceOwnerAuthenticationWithBiometrics, error: &error)
-                guard error == nil, evaluated else { return }
-                
-                switch context.biometryType {
-                case .faceID:
+            <<< SwitchRow() { row in row.tag = "Auth" }
+                .onChange { [weak self] row in
+                guard let self = self else { return }
+                if row.value != self.biometryAuthentification().enabled {
+                    self.router.openAuthentificator(wantEnable: row.value!, completion: {
+                        self.form.rowBy(tag: "Auth")?.updateCell()
+                    })
+                }
+            }.cellUpdate({ (cell, row) in
+                let biometryAuthentification = self.biometryAuthentification()
+                switch biometryAuthentification.type {
+                case .faceId:
                     row.title = L10n.Settings.faceId
                     row.hidden = false
-                case .touchID:
+                case .touchId:
                     row.title = L10n.Settings.faceId
                     row.hidden = false
                 case .none:
                     row.hidden = true
-                @unknown default:
-                    row.hidden = true
                 }
-                row.value = settings.authEnabled
-            }
+                row.value = biometryAuthentification.enabled
+                row.reload()
+            })
             +++ Section(L10n.Settings.address)
             <<< URLRow() { row in
                 row.title = L10n.Settings.host
@@ -100,7 +113,6 @@ struct CameraSettings {
     var password: String
     var host: URL
     var port: Int
-    var authEnabled: Bool
 }
 
 protocol CameraSettingsProvider {
@@ -118,15 +130,13 @@ class KeychainSwiftWrapper: CameraSettingsProvider {
         static let password = "ZodiakCamera.CameraSettings.Password"
         static let host = "ZodiakCamera.CameraSettings.Host"
         static let port = "ZodiakCamera.CameraSettings.Port"
-        static let authEnabled = "ZodiakCamera.CameraSettings.AuthEnabled"
     }
     
     var settings: CameraSettings {
         return .init(login: keychain.get(Keys.login) ?? "",
                      password: keychain.get(Keys.password) ?? "",
                      host: URL(string: keychain.get(Keys.host) ?? "") ?? URL(string: "192.168.1.1")!,
-                     port: Int(keychain.get(Keys.port) ?? "") ?? 81,
-                     authEnabled: keychain.getBool(Keys.authEnabled) ?? false)
+                     port: Int(keychain.get(Keys.port) ?? "") ?? 81)
     }
     
     init(keychain: KeychainSwift) {
@@ -138,7 +148,6 @@ class KeychainSwiftWrapper: CameraSettingsProvider {
         keychain.set(settings.password, forKey: Keys.password)
         keychain.set(settings.host.absoluteString, forKey: Keys.host)
         keychain.set(String(settings.port), forKey: Keys.port)
-        keychain.set(settings.authEnabled, forKey: Keys.authEnabled)
         updated()
     }
 }
