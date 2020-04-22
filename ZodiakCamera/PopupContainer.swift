@@ -9,23 +9,10 @@
 import UIKit
 
 class PopupContainer: UIViewController {
-    private let rootViewController: UIViewController
-    init(root: UIViewController) {
-        rootViewController = root
-        super.init(nibName: nil, bundle: nil)
-    }
-    
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
-    
+    private var rootViewController: UIViewController!
+
     override func viewDidLoad() {
         super.viewDidLoad()
-        
-        addChild(rootViewController)
-        rootViewController.view.frame = view.bounds
-        view.addSubview(rootViewController.view, constraints: .pin)
-        rootViewController.didMove(toParent: self)
     }
     
     private var animationCompleted: ()->Void = { }
@@ -87,6 +74,15 @@ class PopupContainer: UIViewController {
         }
         let senderWasPresented = sender.isBeingPresented || sender.presentingViewController != nil
         senderWasPresented ? sender.dismiss(animated: true, completion: runPopupShow) : runPopupShow()
+    }
+    
+    override func show(_ vc: UIViewController, sender: Any?) {
+        rootViewController?.removeFromParent()
+        rootViewController = vc
+        addChild(rootViewController)
+        rootViewController.view.frame = view.bounds
+        view.addSubview(rootViewController.view, constraints: .pin)
+        rootViewController.didMove(toParent: self)
     }
 }
 

@@ -12,9 +12,12 @@ import KeychainSwift
 class AuthViewController: UIViewController {
     private var model: AuthViewControllerModel
     private let pinView = PinView()
-    
-    init(model: AuthViewControllerModel) {
+    private var completionHandler: (Bool) -> Void
+   
+    init(model: AuthViewControllerModel,
+         complete: @escaping (Bool) -> Void) {
         self.model = model
+        completionHandler = complete
         super.init(nibName: nil, bundle: nil)
     }
     
@@ -35,7 +38,7 @@ class AuthViewController: UIViewController {
                                           filledDotsCount: viewState.filledNumbers,
                                           biometricType: viewState.biometricType))
             case .success:
-                self.showSuccessPopup(self, withTitle: L10n.AuthViewController.passcodeSaved)
+                self.completionHandler(true)
             }
         }
     }

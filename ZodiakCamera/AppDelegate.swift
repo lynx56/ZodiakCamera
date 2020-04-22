@@ -16,49 +16,142 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         
-        let cameraFlow = CameraFlowViewController()
         window = UIWindow(frame: UIScreen.main.bounds)
-        window?.rootViewController = cameraFlow.start()
+        let appCoordinator = AppCoordinator(window: window!)
         window?.makeKeyAndVisible()
+        appCoordinator.start()
         return true
     }
 }
 
-class CameraFlowViewController: CameraViewControllerRouter, SettingsViewControllerRouter {
-    private let keychain = KeychainSwiftWrapper(keychain: KeychainSwift())
-    var popup: PopupContainer?
-    var bioMetricAuthenticator: BioMetricAuthenticator = DefaultBioMetricAuthenticator()
+
+protocol Coordinator {
+    func start()
+    func start<T>(parameters: T)
+}
+
+extension Coordinator {
+    func start<T>(parameters: T) { }
+}
+
+final class AppCoordinator: Coordinator {
+    private var root: UIViewController!
+    private let window: UIWindow
+    private var authCoordinator: AuthCoordinator?
     
-    func start() -> UIViewController {
+    private let settingsProvider: CameraSettingsProvider = KeychainSwiftWrapper(keychain: KeychainSwift())
+    private let bioMetricAuthenticator: BioMetricAuthenticator = DefaultBioMetricAuthenticator()
+    private let pinStorage: PinStorage = KeychainSwift()
+    
+    init(window: UIWindow) {
+        self.window = window
+        root = PopupContainer()
+        authCoordinator = DefaultAuthCoordinator(root: root, delegate: self)
+    }
+    
+    func start() {
+        window.rootViewController = root
+        window.makeKeyAndVisible()
+      //  pinStorage.authEnabled ? showAuth() :
+            showMain()
+    }
+    
+    private func showAuth() {
+        authCoordinator?.start()
+    }
+    
+    private func showMain() {
         #if targetEnvironment(simulator)
         let model = MockModel()
         #else
         let model = Model(cameraSettingsProvider: keychain, mode: .stream)
         #endif
         let cameraVc = CameraViewController(model: model, router: self)
-        popup = PopupContainer(root: cameraVc)
-        return popup!
+        root.show(cameraVc, sender: self)
     }
     
-    private var settingsController: SettingsViewController?
-    private var pinStorage: PinStorage = KeychainSwift()
+    private var settingsController: UIViewController!
+}
+
+extension AppCoordinator: CameraViewControllerRouter {
     func openSettings() {
-        settingsController = SettingsViewController(settingsProvider: keychain,
-                                                    biometryAuthentification: { (type: self.bioMetricAuthenticator.availableType, enable: self.pinStorage.authEnabled) },
-                                                    router: self)
-        popup?.present(settingsController!, animated: true, completion: nil)
+        settingsController = SettingsViewController(settingsProvider: settingsProvider,
+                                                        biometryAuthentification: { (type: self.bioMetricAuthenticator.availableType, enable: self.pinStorage.authEnabled) },
+                                                        router: self)
+        root.present(settingsController, animated: true, completion: nil)
+    }
+}
+
+extension AppCoordinator: SettingsViewControllerRouter {
+    func openAuthentificator(wantEnable: Bool, completion: (() -> Void)?) {
+        authCoordinator!.start(parameters: .manipulate(removePin: true, tryDisable: !wantEnable, manipulator: settingsController))
+    }
+}
+
+extension AppCoordinator: AuthCoordinatorDelegate {
+    func complete(_ success: Bool) {
+        if success {
+            showMain()
+        }
+    }
+}
+
+protocol AuthCoordinatorDelegate: AnyObject {
+    func complete(_ success: Bool)
+}
+
+enum AuthParameters {
+    case manipulate(removePin: Bool, tryDisable: Bool, manipulator: UIViewController)
+    case auth
+}
+
+protocol AuthCoordinator: Coordinator {
+    var delegate: AuthCoordinatorDelegate? { get set }
+    func start(parameters: AuthParameters)
+}
+
+final class DefaultAuthCoordinator: AuthCoordinator {
+    private let root: UIViewController
+    weak var delegate: AuthCoordinatorDelegate?
+    
+    init(root: UIViewController, delegate: AuthCoordinatorDelegate) {
+        self.root = root
+        self.delegate = delegate
     }
     
-    func openAuthentificator(wantEnable: Bool, completion: (()->Void)?) {
-        let model: AuthViewControllerModel
+    private var pinStorage: PinStorage = KeychainSwift()
+    private var bioMetricAuthenticator: BioMetricAuthenticator = DefaultBioMetricAuthenticator()
+    
+    func start(parameters: AuthParameters) {
+        let mode: AuthViewController.Model.Mode
         
-        if wantEnable == false, pinStorage.authEnabled {
-            model = AuthViewController.Model(mode: .auth(.init(bioMetricauthentificator: bioMetricAuthenticator, pinStorage: pinStorage, removePin: true), .idle))
-        } else {
-            model = AuthViewController.Model(mode: .register(.init(pinStorage: pinStorage), .idle))
+        switch parameters {
+        case .manipulate(let removePin, let tryDisable, let manipulator):
+            if tryDisable == true, pinStorage.authEnabled {
+                mode = .auth(.init(bioMetricauthentificator: bioMetricAuthenticator, pinStorage: pinStorage, removePin: removePin), .idle)
+            } else {
+                mode = .register(.init(pinStorage: pinStorage), .idle)
+            }
+            
+            let model: AuthViewControllerModel = AuthViewController.Model(mode: mode)
+            let authController = AuthViewController(model: model, complete: delegate!.complete)
+            
+            manipulator.present(authController, animated: true) { [weak self] in
+                self?.delegate?.complete(false)
+            }
+            
+        case .auth:
+            mode = .auth(.init(bioMetricauthentificator: bioMetricAuthenticator, pinStorage: pinStorage, removePin: false), .idle)
+            
+            let model: AuthViewControllerModel = AuthViewController.Model(mode: mode)
+            let authController = AuthViewController(model: model, complete: delegate!.complete)
+            authController.modalPresentationStyle = .fullScreen
+            
+            root.present(authController, animated: false, completion: nil)
         }
-     
-        let authController = AuthViewController(model: model)
-        settingsController?.present(authController, animated: true, completion: completion)
+    }
+    
+    func start() {
+        start(parameters: .auth)
     }
 }
