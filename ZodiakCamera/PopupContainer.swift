@@ -9,10 +9,24 @@
 import UIKit
 
 class PopupContainer: UIViewController {
-    private var rootViewController: UIViewController!
-
+    private let rootViewController: UIViewController
+    
+    init(root: UIViewController) {
+        rootViewController = root
+        super.init(nibName: nil, bundle: nil)
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        addChild(rootViewController)
+        rootViewController.view.frame = view.bounds
+        view.addSubview(rootViewController.view, constraints: .pin)
+        rootViewController.didMove(toParent: self)
     }
     
     private var animationCompleted: ()->Void = { }
@@ -26,7 +40,7 @@ class PopupContainer: UIViewController {
             constraint(\.centerYAnchor)
         ])
         popup.transform = CGAffineTransform(scaleX: 0, y: 0)
-        let duration: CFTimeInterval = 0.5
+        let duration: CFTimeInterval = 0.4
         let fadeInOut = CABasicAnimation.fadeInOut(for: duration)
         let boundsAnimation = CABasicAnimation.transformToIdentity(for: duration/3.0)
         animations.forEach { $0.duration = 0.2 }
@@ -74,15 +88,6 @@ class PopupContainer: UIViewController {
         }
         let senderWasPresented = sender.isBeingPresented || sender.presentingViewController != nil
         senderWasPresented ? sender.dismiss(animated: true, completion: runPopupShow) : runPopupShow()
-    }
-    
-    override func show(_ vc: UIViewController, sender: Any?) {
-        rootViewController?.removeFromParent()
-        rootViewController = vc
-        addChild(rootViewController)
-        rootViewController.view.frame = view.bounds
-        view.addSubview(rootViewController.view, constraints: .pin)
-        rootViewController.didMove(toParent: self)
     }
 }
 

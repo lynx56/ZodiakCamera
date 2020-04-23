@@ -9,15 +9,14 @@
 import UIKit
 import KeychainSwift
 
-class AuthViewController: UIViewController {
+class AuthViewController: UIViewController, Successful {
+    var delegate: ((Bool) -> Void)?
+    
     private var model: AuthViewControllerModel
     private let pinView = PinView()
-    private var completionHandler: (Bool) -> Void
    
-    init(model: AuthViewControllerModel,
-         complete: @escaping (Bool) -> Void) {
+    init(model: AuthViewControllerModel) {
         self.model = model
-        completionHandler = complete
         super.init(nibName: nil, bundle: nil)
     }
     
@@ -31,14 +30,14 @@ class AuthViewController: UIViewController {
         setupLayout()
         pinView.outputHandler = handlePinViewEvent
         
-        model.outputHandler = { event in
+        model.outputHandler = { [unowned self] event in
             switch event {
             case .change(let viewState):
                 self.pinView.render(.init(title: viewState.title,
                                           filledDotsCount: viewState.filledNumbers,
                                           biometricType: viewState.biometricType))
             case .success:
-                self.completionHandler(true)
+                self.delegate?(true)
             }
         }
     }

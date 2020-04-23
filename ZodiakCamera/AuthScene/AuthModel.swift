@@ -23,7 +23,6 @@ extension AuthViewController {
     class AuthModel {
         private var bioMetricauthentificator: BioMetricAuthenticator
         private var pinStorage: PinStorage
-        private var removePin: Bool
         
         enum State {
             case idle
@@ -40,11 +39,9 @@ extension AuthViewController {
         typealias Transition = () throws -> (State)
         
         init(bioMetricauthentificator: BioMetricAuthenticator = DefaultBioMetricAuthenticator(),
-             pinStorage: PinStorage = KeychainSwift(),
-             removePin: Bool) {
+             pinStorage: PinStorage = KeychainSwift()) {
             self.bioMetricauthentificator = bioMetricauthentificator
             self.pinStorage = pinStorage
-            self.removePin = removePin
         }
         
         private var authTransition: Transition {
@@ -68,9 +65,6 @@ extension AuthViewController {
                     return .inProccess(title: L10n.AuthViewController.enterPasscode, pin: [])
                 case .success(let isAuthentificated):
                     if isAuthentificated {
-                        if self.removePin {
-                            self.pinStorage.pin = nil
-                        }
                         return .finish
                     }
                     return .inProccess(title: L10n.AuthViewController.enterPasscode, pin: [])
@@ -91,9 +85,6 @@ extension AuthViewController {
                     }
                     
                     if changedPin.map({ String($0) }).joined() == self.pinStorage.pin {
-                        if self.removePin {
-                            self.pinStorage.pin = nil
-                        }
                         return .finish
                     }
                     

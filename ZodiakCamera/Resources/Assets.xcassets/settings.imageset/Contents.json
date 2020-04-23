@@ -1,7 +1,7 @@
 {
   "images" : [
     {
-      "filename" : "iconfinder_cog-settings-alt_353407.pdf",
+      "filename" : "icons8-services-3.pdf",
       "idiom" : "universal"
     }
   ],
@@ -10,6 +10,6 @@
     "version" : 1
   },
   "properties" : {
-    "template-rendering-intent" : "template"
+    "template-rendering-intent" : "original"
   }
 }

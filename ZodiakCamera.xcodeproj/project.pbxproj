@@ -13,6 +13,8 @@
 		88212AEB244B23A10029F6EA /* NumberView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 88212AEA244B23A10029F6EA /* NumberView.swift */; };
 		88212AED244B23E70029F6EA /* AuthModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 88212AEC244B23E70029F6EA /* AuthModel.swift */; };
 		88212AF3244B25E30029F6EA /* PinStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 88212AF2244B25E30029F6EA /* PinStorage.swift */; };
+		88C5B4E72451DB37004475C0 /* AppCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 88C5B4E62451DB37004475C0 /* AppCoordinator.swift */; };
+		88C5B4E92451DB6B004475C0 /* ControllerFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 88C5B4E82451DB6B004475C0 /* ControllerFactory.swift */; };
 		88F04DCB24391B8400F96427 /* BioMetricAuthenticator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 88F04DCA24391B8400F96427 /* BioMetricAuthenticator.swift */; };
 		BF08A64F2355DD2F00CEADD1 /* SettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF08A64E2355DD2F00CEADD1 /* SettingsViewController.swift */; };
 		BF08A65223577C9800CEADD1 /* JoystickView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF08A65123577C9800CEADD1 /* JoystickView.swift */; };
@@ -66,6 +68,8 @@
 		88212AEA244B23A10029F6EA /* NumberView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NumberView.swift; sourceTree = "<group>"; };
 		88212AEC244B23E70029F6EA /* AuthModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthModel.swift; sourceTree = "<group>"; };
 		88212AF2244B25E30029F6EA /* PinStorage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PinStorage.swift; sourceTree = "<group>"; };
+		88C5B4E62451DB37004475C0 /* AppCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppCoordinator.swift; sourceTree = "<group>"; };
+		88C5B4E82451DB6B004475C0 /* ControllerFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ControllerFactory.swift; sourceTree = "<group>"; };
 		88F04DCA24391B8400F96427 /* BioMetricAuthenticator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BioMetricAuthenticator.swift; sourceTree = "<group>"; };
 		BF08A64E2355DD2F00CEADD1 /* SettingsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsViewController.swift; sourceTree = "<group>"; };
 		BF08A65123577C9800CEADD1 /* JoystickView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JoystickView.swift; sourceTree = "<group>"; };
@@ -189,6 +193,8 @@
 				BFFBB34823730B6B008C1D47 /* UiViewController+child.swift */,
 				BFFBB346237303ED008C1D47 /* NetworkListener.swift */,
 				BF57E73423686F2700F6D43B /* AutolayoutDSL.swift */,
+				88C5B4E62451DB37004475C0 /* AppCoordinator.swift */,
+				88C5B4E82451DB6B004475C0 /* ControllerFactory.swift */,
 				BFD85E8023E2C57600B8ED12 /* Resources */,
 				BF763B4D23548D4100D89FAB /* Info.plist */,
 				BFD85E7E23E2C27400B8ED12 /* swiftgen.yml */,
@@ -414,9 +420,11 @@
 				BF998EAB2372EF7A00325BD9 /* ArcLayer.swift in Sources */,
 				BFFBB34923730B6B008C1D47 /* UiViewController+child.swift in Sources */,
 				BFA6A88B2394E6D700CBB011 /* LiveImageProvider.swift in Sources */,
+				88C5B4E72451DB37004475C0 /* AppCoordinator.swift in Sources */,
 				88F04DCB24391B8400F96427 /* BioMetricAuthenticator.swift in Sources */,
 				BF998EB92372F4A400325BD9 /* PanelView.swift in Sources */,
 				BF534AF8236C4025007B5F2F /* Api.swift in Sources */,
+				88C5B4E92451DB6B004475C0 /* ControllerFactory.swift in Sources */,
 				BF998EBF2372F5D900325BD9 /* Date+stamp.swift in Sources */,
 				88212AF3244B25E30029F6EA /* PinStorage.swift in Sources */,
 				BFCEECD223CF0EEC007EE8FF /* PopupContainer.swift in Sources */,

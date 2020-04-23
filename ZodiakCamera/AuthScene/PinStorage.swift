@@ -8,7 +8,7 @@
 
 import KeychainSwift
 
-protocol PinStorage {
+protocol PinStorage: class {
     var pin: String? { set get }
     var authEnabled: Bool { get }
 }
