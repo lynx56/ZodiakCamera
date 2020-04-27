@@ -41,7 +41,7 @@ internal enum L10n {
     internal static let access = L10n.tr("Localizable", "Settings.Access")
     /// Address
     internal static let address = L10n.tr("Localizable", "Settings.Address")
-    /// Use FaceId
+    /// Passcode or FaceId protection
     internal static let faceId = L10n.tr("Localizable", "Settings.FaceId")
     /// Host
     internal static let host = L10n.tr("Localizable", "Settings.Host")
@@ -49,13 +49,19 @@ internal enum L10n {
     internal static let login = L10n.tr("Localizable", "Settings.Login")
     /// Password
     internal static let password = L10n.tr("Localizable", "Settings.Password")
+    /// Passcode protection
+    internal static let pinProtection = L10n.tr("Localizable", "Settings.PinProtection")
     /// Port
     internal static let port = L10n.tr("Localizable", "Settings.Port")
+    /// Field must contains ip or url address
+    internal static let ruleInvalidHost = L10n.tr("Localizable", "Settings.RuleInvalidHost")
+    /// Field required
+    internal static let ruleRequired = L10n.tr("Localizable", "Settings.RuleRequired")
     /// Save
     internal static let save = L10n.tr("Localizable", "Settings.Save")
     /// Saved
     internal static let saved = L10n.tr("Localizable", "Settings.Saved")
-    /// Use TouchId
+    /// Passcode or TouchId protection
     internal static let touchId = L10n.tr("Localizable", "Settings.TouchId")
   }
 }

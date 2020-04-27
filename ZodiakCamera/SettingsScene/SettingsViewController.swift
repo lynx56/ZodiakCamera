@@ -46,14 +46,14 @@ class SettingsViewController: FormViewController {
                 row.title = L10n.Settings.login
                 row.placeholder = "admin"
                 row.value = settings.login
-                row.add(rule: RuleRequired())
+                row.add(rule: RuleRequired(msg: L10n.Settings.ruleRequired))
                 row.cellUpdate({if !$1.isValid { $0.titleLabel?.textColor = .systemRed }})
             }.onChange{ settings.login = $0.value ?? "" }
             <<< PasswordRow() { row in
                 row.title = L10n.Settings.password
                 row.placeholder = "123123"
                 row.value = settings.password
-                row.add(rule: RuleRequired())
+                row.add(rule: RuleRequired(msg: L10n.Settings.ruleRequired))
                 row.cellUpdate({if !$1.isValid { $0.titleLabel?.textColor = .systemRed }})
             }.onChange { settings.password = $0.value ?? "" }
             <<< SwitchRow() { row in row.tag = "Auth" }
@@ -69,12 +69,10 @@ class SettingsViewController: FormViewController {
                 switch biometryAuthentification.type {
                 case .faceId:
                     row.title = L10n.Settings.faceId
-                    row.hidden = false
                 case .touchId:
-                    row.title = L10n.Settings.faceId
-                    row.hidden = false
+                    row.title = L10n.Settings.touchId
                 case .none:
-                    row.hidden = true
+                    row.title = L10n.Settings.pinProtection
                 }
                 row.value = biometryAuthentification.enabled
                 row.reload()
@@ -84,7 +82,11 @@ class SettingsViewController: FormViewController {
                 row.title = L10n.Settings.host
                 row.placeholder = "192.168.1.1"
                 row.value = settings.host
-                row.add(rule: RuleRequired())
+                row.add(rule: RuleClosure(closure: { (row) -> ValidationError? in
+                    guard let value = row?.absoluteString else { return ValidationError(msg: L10n.Settings.ruleRequired) }
+                    guard value.isValidURL || value.isValidIP else { return ValidationError(msg: L10n.Settings.ruleInvalidHost) }
+                    return nil
+                }))
                 row.cellUpdate({if !$1.isValid { $0.titleLabel?.textColor = .systemRed }})
             }.onChange{
                 settings.host = $0.value ?? URL(string: "192.168.1.1")!
@@ -92,8 +94,9 @@ class SettingsViewController: FormViewController {
             <<< IntRow() { row in
                 row.title = L10n.Settings.port
                 row.placeholder = "81"
+                row.formatter = nil
                 row.value = settings.port
-                row.add(rule: RuleRequired())
+                row.add(rule: RuleRequired(msg: L10n.Settings.ruleRequired))
                 row.cellUpdate({if !$1.isValid { $0.titleLabel?.textColor = .systemRed }})
             }.onChange { settings.port = $0.value ?? 81 }
         
@@ -152,3 +155,45 @@ class KeychainSwiftWrapper: CameraSettingsProvider {
     }
 }
 
+
+extension String {
+    public func capturedGroups(withRegex pattern: String) -> [String] {
+        var results = [String]()
+
+        var regex: NSRegularExpression
+        do {
+            regex = try NSRegularExpression(pattern: pattern, options: [])
+        } catch {
+            return results
+        }
+        let matches = regex.matches(in: self, options: [], range: NSRange(location:0, length: self.count))
+
+        guard let match = matches.first else { return results }
+
+        let lastRangeIndex = match.numberOfRanges - 1
+        guard lastRangeIndex >= 1 else { return results }
+
+        for i in 1...lastRangeIndex {
+            let capturedGroupIndex = match.range(at: i)
+            guard capturedGroupIndex.location != NSNotFound else { break }
+            let matchedString = (self as NSString).substring(with: capturedGroupIndex)
+            results.append(matchedString)
+        }
+
+        return results
+    }
+    
+    var isValidURL: Bool {
+        guard let detector = try? NSDataDetector(types: NSTextCheckingResult.CheckingType.link.rawValue) else { return false }
+        if let match = detector.firstMatch(in: self, options: [], range: NSRange(location: 0, length: self.utf16.count)) {
+            return match.range.length == self.utf16.count
+        } else {
+            return false
+        }
+    }
+    
+    var isValidIP: Bool {
+        let ipRegex = #"(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)"#
+        return !self.capturedGroups(withRegex: ipRegex).isEmpty
+    }
+}

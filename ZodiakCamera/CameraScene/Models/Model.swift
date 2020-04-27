@@ -31,6 +31,7 @@ class Model: CameraViewControllerModel {
         
         return cachedImageProvider!
     }
+    
     var imageProviderHandler: (LiveImageProviderState) -> Void = { _ in } {
         didSet {
             cachedImageProvider?.stateHandler = imageProviderHandler
@@ -41,7 +42,16 @@ class Model: CameraViewControllerModel {
         self.cameraSettingsProvider = cameraSettingsProvider
         self.mode = mode
         self.zodiak = Api(cameraSettingsProvider: cameraSettingsProvider)
-        self.cameraSettingsProvider.updated = { self.cachedImageProvider = nil }
+        self.cameraSettingsProvider.updated = { [weak self] in
+            guard let self = self else { return }
+            switch mode {
+            case .snapshot:
+                self.cachedImageProvider = LiveImageProvideByDisplayLink(url: self.zodiak.snapshotUrl)
+            case .stream:
+                self.cachedImageProvider = LiveImageProvideByStream(url: self.zodiak.liveStreamUrl)
+            }
+            self.cachedImageProvider?.stateHandler = self.imageProviderHandler
+        }
     }
     
     func changeSettings(_ change: SettingsChange, resultHandler: @escaping (Result<Settings, Error>) -> Void) {

@@ -18,7 +18,6 @@
 
 // swiftlint:disable identifier_name line_length nesting type_body_length type_name
 internal enum Images {
-  internal static let asset1 = ImageAsset(name: "Asset 1")
   internal static let backspace = ImageAsset(name: "backspace")
   internal static let brightnessMax = ImageAsset(name: "brightnessMax")
   internal static let brightnessMin = ImageAsset(name: "brightnessMin")

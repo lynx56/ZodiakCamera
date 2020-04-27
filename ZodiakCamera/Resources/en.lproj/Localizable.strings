@@ -16,6 +16,9 @@
 "Settings.Saved" = "Saved";
 "Settings.TouchId" = "Passcode or TouchId protection";
 "Settings.FaceId" = "Passcode or FaceId protection";
+"Settings.PinProtection" = "Passcode protection";
+"Settings.RuleRequired" = "Field required";
+"Settings.RuleInvalidHost" = "Field must contains ip or url address";
 "NoConnection.Text" = "No connection...";
 "AuthViewController.Reason" = "%@ is locked now, because of too many failed attempts. Enter passcode to unlock %@.";
 "AuthViewController.Title" = "%@ or Enter Passcode.";
