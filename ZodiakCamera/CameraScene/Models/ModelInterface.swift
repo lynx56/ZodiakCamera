@@ -6,13 +6,15 @@
 //  Copyright © 2020 gulnaz. All rights reserved.
 //
 
-import Foundation
+import UIKit
 
 protocol CameraViewControllerModel {
-    var imageProvider: LiveImageProvider { get }
     var imageProviderHandler: (LiveImageProviderState) -> Void { get set }
     func changeSettings(_ change: SettingsChange, resultHandler: @escaping (Result<Settings, Error>) -> Void)
     func userManipulate(command: UserManipulation, resultHandler: @escaping (Result<Void, Error>) -> Void)
+    func start()
+    func pause()
+    var contentMode: UIView.ContentMode { get }
 }
 
 enum UserManipulation {

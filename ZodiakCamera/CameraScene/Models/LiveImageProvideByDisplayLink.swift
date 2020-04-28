@@ -16,10 +16,6 @@ class LiveImageProvideByDisplayLink: LiveImageProvider {
         self.url = url
     }
     
-    func configure(for imageView: UIImageView) {
-        imageView.contentMode = .redraw
-    }
-    
     func start() {
         createDisplayLink()
     }

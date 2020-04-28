@@ -13,7 +13,6 @@ protocol LiveImageProvider {
     var stateHandler: (LiveImageProviderState)->Void { get set }
     func start()
     func stop()
-    func configure(for: UIImageView)
 }
 
 enum LiveImageProviderState {

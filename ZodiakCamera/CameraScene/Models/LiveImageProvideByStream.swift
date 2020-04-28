@@ -18,11 +18,7 @@ class LiveImageProvideByStream: NSObject, URLSessionDataDelegate, LiveImageProvi
     init(url: URL) {
         self.url = url
     }
-    
-    func configure(for imageView: UIImageView) {
-        imageView.contentMode = UIView.ContentMode.scaleAspectFill
-    }
-    
+     
     func start() {
         stop()
         let session = URLSession(configuration: .default, delegate: self, delegateQueue: nil)

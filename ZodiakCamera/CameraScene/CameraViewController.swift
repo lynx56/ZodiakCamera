@@ -46,7 +46,7 @@ class CameraViewController: UIViewController {
     
     
     private func setupLayout() {
-        model.imageProvider.configure(for: ipCameraView)
+        ipCameraView.contentMode = model.contentMode
         view.addSubview(ipCameraView, constraints: .pin)
         view.addSubview(panelView, constraints: [
             constraint(\.leftAnchor),
@@ -90,12 +90,12 @@ class CameraViewController: UIViewController {
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        model.imageProvider.start()
+        model.start()
     }
     
     override func viewDidDisappear(_ animated: Bool) {
         super.viewDidDisappear(animated)
-        model.imageProvider.stop()
+        model.pause()
     }
     
     enum State {

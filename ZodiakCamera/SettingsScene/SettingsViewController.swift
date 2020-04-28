@@ -47,7 +47,9 @@ class SettingsViewController: FormViewController {
                 row.placeholder = "admin"
                 row.value = settings.login
                 row.add(rule: RuleRequired(msg: L10n.Settings.ruleRequired))
-                row.cellUpdate({if !$1.isValid { $0.titleLabel?.textColor = .systemRed }})
+                row.cellUpdate({if !$1.isValid {
+                    $0.titleLabel?.textColor = .systemRed
+                    }})
             }.onChange{ settings.login = $0.value ?? "" }
             <<< PasswordRow() { row in
                 row.title = L10n.Settings.password

@@ -11,47 +11,63 @@ import UIKit
 class Model: CameraViewControllerModel {
     private var cameraSettingsProvider: CameraSettingsProvider
     private let mode: Mode
-    private let zodiak: Api
+    private var zodiak: Api
     enum Mode {
         case snapshot
         case stream
     }
     
-    private var cachedImageProvider: LiveImageProvider?
-    
-    var imageProvider: LiveImageProvider {
-        if cachedImageProvider == nil {
-            switch mode {
-            case .snapshot:
-                cachedImageProvider = LiveImageProvideByDisplayLink(url: zodiak.snapshotUrl)
-            case .stream:
-                cachedImageProvider = LiveImageProvideByStream(url: zodiak.liveStreamUrl)
-            }
-        }
-        
-        return cachedImageProvider!
-    }
+    private var imageProvider: LiveImageProvider?
     
     var imageProviderHandler: (LiveImageProviderState) -> Void = { _ in } {
         didSet {
-            cachedImageProvider?.stateHandler = imageProviderHandler
+            self.imageProvider?.stateHandler = imageProviderHandler
         }
     }
-    
+      
     init(cameraSettingsProvider: CameraSettingsProvider, mode: Mode) {
         self.cameraSettingsProvider = cameraSettingsProvider
         self.mode = mode
-        self.zodiak = Api(cameraSettingsProvider: cameraSettingsProvider)
+         self.zodiak = Api(cameraSettingsProvider: cameraSettingsProvider)
         self.cameraSettingsProvider.updated = { [weak self] in
             guard let self = self else { return }
-            switch mode {
-            case .snapshot:
-                self.cachedImageProvider = LiveImageProvideByDisplayLink(url: self.zodiak.snapshotUrl)
-            case .stream:
-                self.cachedImageProvider = LiveImageProvideByStream(url: self.zodiak.liveStreamUrl)
-            }
-            self.cachedImageProvider?.stateHandler = self.imageProviderHandler
+            self.zodiak = Api(cameraSettingsProvider: self.cameraSettingsProvider)
+            self.reinitImageProvider()
+            self.imageProvider?.start()
         }
+        
+        reinitImageProvider()
+    }
+    
+    func reinitImageProvider() {
+        switch mode {
+        case .snapshot:
+            self.imageProvider = LiveImageProvideByDisplayLink(url: self.zodiak.snapshotUrl)
+        case .stream:
+            self.imageProvider = LiveImageProvideByStream(url: self.zodiak.liveStreamUrl)
+        }
+        self.imageProvider?.stateHandler = imageProviderHandler
+    }
+    
+    var contentMode: UIView.ContentMode {
+        switch mode {
+        case .snapshot:
+            return .redraw
+        case .stream:
+            return .scaleAspectFill
+        }
+    }
+    
+    deinit {
+        imageProvider?.stop()
+    }
+    
+    func start() {
+        imageProvider?.start()
+    }
+    
+    func pause() {
+        imageProvider?.stop()
     }
     
     func changeSettings(_ change: SettingsChange, resultHandler: @escaping (Result<Settings, Error>) -> Void) {
