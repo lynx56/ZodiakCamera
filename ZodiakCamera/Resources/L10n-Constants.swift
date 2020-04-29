@@ -31,9 +31,15 @@ internal enum L10n {
     internal static let wrongPasscode = L10n.tr("Localizable", "AuthViewController.WrongPasscode")
   }
 
-  internal enum NoConnection {
-    /// No connection...
-    internal static let text = L10n.tr("Localizable", "NoConnection.Text")
+  internal enum Error {
+    /// Try again
+    internal static let tryAgain = L10n.tr("Localizable", "Error.TryAgain")
+    internal enum NoAccess {
+      /// Please check host in the settings or connection to camera
+      internal static let description = L10n.tr("Localizable", "Error.NoAccess.Description")
+      /// No access to camera
+      internal static let title = L10n.tr("Localizable", "Error.NoAccess.Title")
+    }
   }
 
   internal enum Settings {

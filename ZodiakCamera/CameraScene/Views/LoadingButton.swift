@@ -10,7 +10,7 @@ import UIKit
 
 class LoadingButton: UIButton {
     enum ViewModel {
-        case normal(icon: UIImage?)
+        case normal(icon: UIImage?, title: String?)
         case loading
     }
     
@@ -38,13 +38,15 @@ class LoadingButton: UIButton {
     func render(model: ViewModel) {
         DispatchQueue.main.async { [unowned self] in
             switch model {
-            case .normal(let icon):
+            case .normal(let icon, let title):
                 self.activityIndicator.stopAnimating()
                 self.isEnabled = true
                 self.setImage(icon, for: .normal)
+                self.setTitle(title, for: .normal)
             case .loading:
                 self.isEnabled = false
                 self.setImage(nil, for: .normal)
+                self.setTitle(nil, for: .normal)
                 self.activityIndicator.startAnimating()
             }
         }

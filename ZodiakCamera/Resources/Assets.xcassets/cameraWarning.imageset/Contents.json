@@ -1,0 +1,12 @@
+{
+  "images" : [
+    {
+      "filename" : "camera_warn.pdf",
+      "idiom" : "universal"
+    }
+  ],
+  "info" : {
+    "author" : "xcode",
+    "version" : 1
+  }
+}

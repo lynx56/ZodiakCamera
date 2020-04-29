@@ -17,5 +17,11 @@ protocol LiveImageProvider {
 
 enum LiveImageProviderState {
     case active(UIImage?)
-    case error(Error)
+    case error(LiveImageProviderStateError)
+}
+
+
+enum LiveImageProviderStateError: Error {
+    case invalidHost
+    case temprorary
 }

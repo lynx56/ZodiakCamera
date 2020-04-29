@@ -19,7 +19,9 @@
 "Settings.PinProtection" = "Защитить вход паролем";
 "Settings.RuleRequired" = "Поле обязательно";
 "Settings.RuleInvalidHost" = "В поле необходимо указать url или ip";
-"NoConnection.Text" = "Нет подключения...";
+"Error.NoAccess.Title" = "Камера недоступна";
+"Error.NoAccess.Description" = "Пожалуйста, проверьте настройки подключения";
+"Error.TryAgain" = "Повторить";
 "AuthViewController.Reason" = "%@ заблокирован, из-за большого количества неудавшихся попыток. Введите код для разблокировки %@.";
 "AuthViewController.Title" = "%@ или введите код.";
 "AuthViewController.EnterPasscode" = "Введите код";

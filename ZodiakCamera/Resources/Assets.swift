@@ -21,6 +21,7 @@ internal enum Images {
   internal static let backspace = ImageAsset(name: "backspace")
   internal static let brightnessMax = ImageAsset(name: "brightnessMax")
   internal static let brightnessMin = ImageAsset(name: "brightnessMin")
+  internal static let cameraWarning = ImageAsset(name: "cameraWarning")
   internal static let contrastMax = ImageAsset(name: "contrastMax")
   internal static let contrastMin = ImageAsset(name: "contrastMin")
   internal static let faceId = ImageAsset(name: "faceId")

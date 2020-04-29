@@ -118,26 +118,32 @@ class CameraViewController: UIViewController {
             }
         case .editing:
             joystickView.isHidden = true
-        case .error:
-            DispatchQueue.main.async {
-                self.noConnection.reset()
-                self.view.insertSubview(self.noConnection, aboveSubview: self.ipCameraView, constraints: .pin)
-                self.joystickView.isHidden = true
+        case .error(let error):
+            switch error {
+            case .noConnection:
+                DispatchQueue.main.async {
+                    self.view.insertSubview(self.noConnection, aboveSubview: self.ipCameraView, constraints: .pin)
+                    self.joystickView.isHidden = true
+                    self.noConnection.render(state: .init(title: L10n.Error.NoAccess.title,
+                                                          description: L10n.Error.NoAccess.description,
+                                                          iconName: Images.cameraWarning.name))
+                }
+            case .unknown:
+                break;
             }
         }
     }
     
-    private lazy var noConnection = NoConnectionView()
-    private var liveImageErrors = 0
+    private lazy var noConnection = NoCameraAccessView()
     func handleLiveImageEvent(_ event: LiveImageProviderState) {
         switch event {
         case .active(let image):
-            liveImageErrors = 0
             update(.active(image))
-        case .error:
-            liveImageErrors += 1
-            if liveImageErrors > 3 {
+        case .error(let error):
+            switch error {
+            case .invalidHost:
                 update(.error(.noConnection))
+            case .temprorary: break;
             }
         }
     }

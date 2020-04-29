@@ -19,7 +19,9 @@
 "Settings.PinProtection" = "Passcode protection";
 "Settings.RuleRequired" = "Field required";
 "Settings.RuleInvalidHost" = "Field must contains ip or url address";
-"NoConnection.Text" = "No connection...";
+"Error.NoAccess.Title" = "No access to camera";
+"Error.NoAccess.Description" = "Please check host in the settings or connection to camera";
+"Error.TryAgain" = "Try again";
 "AuthViewController.Reason" = "%@ is locked now, because of too many failed attempts. Enter passcode to unlock %@.";
 "AuthViewController.Title" = "%@ or Enter Passcode.";
 "AuthViewController.EnterPasscode" = "Enter passcode.";

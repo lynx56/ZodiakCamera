@@ -9,11 +9,13 @@
 import UIKit
 
 struct MockModel: CameraViewControllerModel {
-    func start() {}
+    func start() {
+        imageProviderHandler(.error(.invalidHost))
+    }
     
     func pause() {}
     
-    var contentMode: UIView.ContentMode
+    var contentMode: UIView.ContentMode { return .redraw }
     
    
     var imageProviderHandler: (LiveImageProviderState) -> Void = { _ in }
@@ -23,10 +25,10 @@ struct MockModel: CameraViewControllerModel {
     func userManipulate(command: UserManipulation, resultHandler: @escaping (Result<Void, Error>) -> Void) {}
     
     struct MoqLiveImageProvider: LiveImageProvider {
-        func start() {
-            stateHandler(.active(Images.sky.image))
-        }
+        func start() {}
+        
         var stateHandler: (LiveImageProviderState) -> Void = { _ in }
+        
         func stop() {}
     }
 }

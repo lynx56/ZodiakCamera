@@ -13,6 +13,7 @@
 		88212AEB244B23A10029F6EA /* NumberView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 88212AEA244B23A10029F6EA /* NumberView.swift */; };
 		88212AED244B23E70029F6EA /* AuthModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 88212AEC244B23E70029F6EA /* AuthModel.swift */; };
 		88212AF3244B25E30029F6EA /* PinStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 88212AF2244B25E30029F6EA /* PinStorage.swift */; };
+		8848A67024596F0A00673347 /* NoCameraAccessView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8848A66F24596F0A00673347 /* NoCameraAccessView.swift */; };
 		88C5B4E72451DB37004475C0 /* AppCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 88C5B4E62451DB37004475C0 /* AppCoordinator.swift */; };
 		88C5B4E92451DB6B004475C0 /* ControllerFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 88C5B4E82451DB6B004475C0 /* ControllerFactory.swift */; };
 		88F04DCB24391B8400F96427 /* BioMetricAuthenticator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 88F04DCA24391B8400F96427 /* BioMetricAuthenticator.swift */; };
@@ -45,7 +46,7 @@
 		BF9A7F3823E2D9020069273D /* L10n-Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF9A7F3623E2D9020069273D /* L10n-Constants.swift */; };
 		BF9A7F4023E2DA560069273D /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = BF9A7F4223E2DA560069273D /* Localizable.strings */; };
 		BF9A7F4E23E45FC60069273D /* LoadingButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF9A7F4D23E45FC60069273D /* LoadingButton.swift */; };
-		BF9A7F5023E4647D0069273D /* NoConnectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF9A7F4F23E4647D0069273D /* NoConnectionView.swift */; };
+		BF9A7F5023E4647D0069273D /* UIMotionEffect.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF9A7F4F23E4647D0069273D /* UIMotionEffect.swift */; };
 		BFA6A88B2394E6D700CBB011 /* LiveImageProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFA6A88A2394E6D700CBB011 /* LiveImageProvider.swift */; };
 		BFCB4FB9240900B4004D7F3E /* ModelInterface.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFCB4FB8240900B4004D7F3E /* ModelInterface.swift */; };
 		BFCB4FBB240900E3004D7F3E /* Model.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFCB4FBA240900E3004D7F3E /* Model.swift */; };
@@ -68,6 +69,7 @@
 		88212AEA244B23A10029F6EA /* NumberView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NumberView.swift; sourceTree = "<group>"; };
 		88212AEC244B23E70029F6EA /* AuthModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthModel.swift; sourceTree = "<group>"; };
 		88212AF2244B25E30029F6EA /* PinStorage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PinStorage.swift; sourceTree = "<group>"; };
+		8848A66F24596F0A00673347 /* NoCameraAccessView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NoCameraAccessView.swift; sourceTree = "<group>"; };
 		88C5B4E62451DB37004475C0 /* AppCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppCoordinator.swift; sourceTree = "<group>"; };
 		88C5B4E82451DB6B004475C0 /* ControllerFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ControllerFactory.swift; sourceTree = "<group>"; };
 		88F04DCA24391B8400F96427 /* BioMetricAuthenticator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BioMetricAuthenticator.swift; sourceTree = "<group>"; };
@@ -107,7 +109,7 @@
 		BF9A7F4B23E2DCE90069273D /* en */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = en; path = en.lproj/Main.storyboard; sourceTree = "<group>"; };
 		BF9A7F4C23E2E0F30069273D /* ru */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ru; path = ru.lproj/Localizable.strings; sourceTree = "<group>"; };
 		BF9A7F4D23E45FC60069273D /* LoadingButton.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LoadingButton.swift; sourceTree = "<group>"; };
-		BF9A7F4F23E4647D0069273D /* NoConnectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NoConnectionView.swift; sourceTree = "<group>"; };
+		BF9A7F4F23E4647D0069273D /* UIMotionEffect.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIMotionEffect.swift; sourceTree = "<group>"; };
 		BFA6A88A2394E6D700CBB011 /* LiveImageProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LiveImageProvider.swift; sourceTree = "<group>"; };
 		BFCB4FB8240900B4004D7F3E /* ModelInterface.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModelInterface.swift; sourceTree = "<group>"; };
 		BFCB4FBA240900E3004D7F3E /* Model.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Model.swift; sourceTree = "<group>"; };
@@ -237,7 +239,8 @@
 				BF998EAD2372F06E00325BD9 /* Joystick */,
 				BF998EA32372EEC500325BD9 /* ArcSlider */,
 				BF998EB82372F4A400325BD9 /* PanelView.swift */,
-				BF9A7F4F23E4647D0069273D /* NoConnectionView.swift */,
+				BF9A7F4F23E4647D0069273D /* UIMotionEffect.swift */,
+				8848A66F24596F0A00673347 /* NoCameraAccessView.swift */,
 				BF9A7F4D23E45FC60069273D /* LoadingButton.swift */,
 			);
 			path = Views;
@@ -428,6 +431,7 @@
 				BF998EBF2372F5D900325BD9 /* Date+stamp.swift in Sources */,
 				88212AF3244B25E30029F6EA /* PinStorage.swift in Sources */,
 				BFCEECD223CF0EEC007EE8FF /* PopupContainer.swift in Sources */,
+				8848A67024596F0A00673347 /* NoCameraAccessView.swift in Sources */,
 				88212AED244B23E70029F6EA /* AuthModel.swift in Sources */,
 				BFCB4FC6240903BE004D7F3E /* MockModel.swift in Sources */,
 				88212AE9244B23840029F6EA /* DotView.swift in Sources */,
@@ -452,7 +456,7 @@
 				BFCB4FC224090280004D7F3E /* LiveImageProvideByDisplayLink.swift in Sources */,
 				BFCB4FB9240900B4004D7F3E /* ModelInterface.swift in Sources */,
 				BF998EA72372EEE700325BD9 /* Arc.swift in Sources */,
-				BF9A7F5023E4647D0069273D /* NoConnectionView.swift in Sources */,
+				BF9A7F5023E4647D0069273D /* UIMotionEffect.swift in Sources */,
 				BF998EB12372F08700325BD9 /* TLAnalogJoystick.swift in Sources */,
 				BF08A64F2355DD2F00CEADD1 /* SettingsViewController.swift in Sources */,
 				BF08A6562359AFB400CEADD1 /* CircleView.swift in Sources */,

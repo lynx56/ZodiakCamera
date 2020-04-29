@@ -42,7 +42,7 @@ class LiveImageProvideByDisplayLink: LiveImageProvider {
             let image = UIImage(data: data)?.resizeWithScaleAspectFitMode(to: UIScreen.main.bounds.size)
             stateHandler(.active(image))
         } catch {
-            stateHandler(.error(error))
+            stateHandler(.error(.temprorary))
         }
     }
 }
