@@ -35,10 +35,16 @@ internal enum L10n {
     /// Try again
     internal static let tryAgain = L10n.tr("Localizable", "Error.TryAgain")
     internal enum NoAccess {
-      /// Please check host in the settings or connection to camera
+      /// Make sure your settings are correct and camera is turned on
       internal static let description = L10n.tr("Localizable", "Error.NoAccess.Description")
       /// No access to camera
       internal static let title = L10n.tr("Localizable", "Error.NoAccess.Title")
+    }
+    internal enum NoInternetConnection {
+      /// Make sure wifi or cellular data is turned on and then try again
+      internal static let description = L10n.tr("Localizable", "Error.NoInternetConnection.Description")
+      /// No internet connection
+      internal static let title = L10n.tr("Localizable", "Error.NoInternetConnection.Title")
     }
   }
 

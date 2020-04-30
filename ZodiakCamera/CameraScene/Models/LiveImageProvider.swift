@@ -23,5 +23,6 @@ enum LiveImageProviderState {
 
 enum LiveImageProviderStateError: Error {
     case invalidHost
+    case noInternetConnection
     case temprorary
 }

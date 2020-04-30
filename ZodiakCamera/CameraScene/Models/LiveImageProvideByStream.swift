@@ -32,8 +32,25 @@ class LiveImageProvideByStream: NSObject, URLSessionDataDelegate, LiveImageProvi
     }
     
     func urlSession(_ session: URLSession, task: URLSessionTask, didCompleteWithError error: Error?) {
-        guard let error = error else { return }
-        stateHandler(.error(.temprorary))
+        guard let errorCode = (error as NSError?)?.code  else { print("xexe"); return }
+        switch NSURLError(rawValue: errorCode) {
+        case .cannotConnectToHost,
+             .badURL,
+             .cannotFindHost,
+             .redirectToNonExistentLocation,
+             .resourceUnavailable,
+             .unsupportedURL,
+             .zeroByteResource,
+             .appTransport:
+            stateHandler(.error(.invalidHost))
+            print("error: invalid host")
+        case .notConnectedToInternet:
+            stateHandler(.error(.noInternetConnection))
+            print("error: no connection")
+        default:
+            stateHandler(.error(.temprorary))
+            print("error: temprorary")
+        }
     }
     
     func urlSession(_ session: URLSession, dataTask: URLSessionDataTask, didReceive data: Data) {
@@ -77,6 +94,7 @@ class LiveImageProvideByStream: NSObject, URLSessionDataDelegate, LiveImageProvi
         case cannotDecodeRawData = -1015
         case cannotDecodeContentData = -1016
         case cannotParseResponse = -1017
+        case appTransport = -1022
         // SSL errors
         case secureConnectionFailed = -1200
         case serverCertificateHasBadDate = -1201

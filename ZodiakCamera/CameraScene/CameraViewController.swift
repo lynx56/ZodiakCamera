@@ -105,6 +105,7 @@ class CameraViewController: UIViewController {
         enum Error {
             case noConnection
             case unknown
+            case internetNotAvailable
         }
     }
     
@@ -128,6 +129,14 @@ class CameraViewController: UIViewController {
                                                           description: L10n.Error.NoAccess.description,
                                                           iconName: Images.cameraWarning.name))
                 }
+            case .internetNotAvailable:
+                DispatchQueue.main.async {
+                    self.view.insertSubview(self.noConnection, aboveSubview: self.ipCameraView, constraints: .pin)
+                    self.joystickView.isHidden = true
+                    self.noConnection.render(state: .init(title: L10n.Error.NoInternetConnection.title,
+                                                          description: L10n.Error.NoInternetConnection.description,
+                                                          iconName: Images.cameraWarning.name))
+                }
             case .unknown:
                 break;
             }
@@ -143,13 +152,15 @@ class CameraViewController: UIViewController {
             switch error {
             case .invalidHost:
                 update(.error(.noConnection))
-            case .temprorary: break;
+            case .temprorary: update(.error(.unknown))
+            case .noInternetConnection:
+                update(.error(.internetNotAvailable))
             }
         }
     }
     
     private var showedSlider: ArcSlider?
-    private var panelImageErrors = 0
+ 
     func handlePanelViewEvent(_ event: PanelView.Event) {
         switch event {
         case .itemSelected(let item):
@@ -192,16 +203,11 @@ class CameraViewController: UIViewController {
             model.changeSettings(change, resultHandler: { result in
                 switch result {
                 case .failure:
-                    self.panelImageErrors += 1
-                    if self.panelImageErrors > 3 {
-                        self.update(.error(.noConnection))
-                    }
-                    
+                    self.update(.error(.unknown))
                 case .success(let settings): self.panelData = .init(brightness: settings.brightness,
                                                                     saturation: settings.saturation,
                                                                     contrast: settings.contrast,
                                                                     ir: settings.ir)
-                self.panelImageErrors = 0
                 }
             })
         }
@@ -220,19 +226,13 @@ class CameraViewController: UIViewController {
         }
     }
     
-    private var joystickErrors = 0
-    
     private func handleJoystickEvent(_ event: JoystickView.Event) {
         model.userManipulate(command: CameraViewController.converter(event)) { result in
             switch result {
             case .success:
-                self.joystickErrors = 0
                 return
             case .failure:
-                self.joystickErrors += 1
-                if self.joystickErrors > 3 {
-                    self.update(.error(.noConnection))
-                }
+                self.update(.error(.unknown))
             }
         }
     }
