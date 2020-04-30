@@ -135,7 +135,7 @@ class CameraViewController: UIViewController {
                     self.joystickView.isHidden = true
                     self.noConnection.render(state: .init(title: L10n.Error.NoInternetConnection.title,
                                                           description: L10n.Error.NoInternetConnection.description,
-                                                          iconName: Images.cameraWarning.name))
+                                                          iconName: Images.wifiWarning.name))
                 }
             case .unknown:
                 break;

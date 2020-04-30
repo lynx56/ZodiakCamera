@@ -10,7 +10,7 @@ import UIKit
 
 struct MockModel: CameraViewControllerModel {
     func start() {
-        imageProviderHandler(.error(.invalidHost))
+        imageProviderHandler(.error(.noInternetConnection))
     }
     
     func pause() {}

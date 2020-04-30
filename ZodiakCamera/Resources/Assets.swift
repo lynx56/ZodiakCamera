@@ -35,6 +35,7 @@ internal enum Images {
   internal static let stick = ImageAsset(name: "stick")
   internal static let substrate = ImageAsset(name: "substrate")
   internal static let touchId = ImageAsset(name: "touchId")
+  internal static let wifiWarning = ImageAsset(name: "wifiWarning")
 }
 // swiftlint:enable identifier_name line_length nesting type_body_length type_name
 
