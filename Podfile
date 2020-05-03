@@ -8,4 +8,5 @@ pod 'Eureka'
 pod 'CocoaAsyncSocket'
 pod 'KeychainSwift'
 pod 'SwiftGen', '~> 6.0'
+pod 'Instructions', '~> 1.4.0'
 end

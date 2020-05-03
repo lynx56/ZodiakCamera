@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import Instructions
 
 protocol CameraViewControllerRouter {
     func openSettings()
@@ -93,9 +94,23 @@ class CameraViewController: UIViewController {
         model.start()
     }
     
+    private lazy var coachMarksController: CoachMarksController = {
+       let ctr = CoachMarksController()
+        ctr.dataSource = self
+        ctr.overlay.allowTap = true
+        ctr.overlay.color = UIColor.black.withAlphaComponent(0.4)
+        return ctr
+    }()
+    
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        self.coachMarksController.start(in: .window(over: self))
+    }
+    
     override func viewDidDisappear(_ animated: Bool) {
         super.viewDidDisappear(animated)
         model.pause()
+        self.coachMarksController.stop(immediately: true)
     }
     
     enum State {
@@ -265,3 +280,20 @@ struct PanelData {
     var ir: Bool
 }
 
+
+extension CameraViewController: CoachMarksControllerDataSource, CoachMarksControllerDelegate {
+    func coachMarksController(_ coachMarksController: CoachMarksController, coachMarkViewsAt index: Int, madeFrom coachMark: CoachMark) -> (bodyView: CoachMarkBodyView, arrowView: CoachMarkArrowView?) {
+        let coachViews = coachMarksController.helper.makeDefaultCoachViews(hintText: "Setup your camera")
+        return (bodyView: coachViews.bodyView, arrowView: coachViews.arrowView)
+    }
+    
+    func coachMarksController(_ coachMarksController: CoachMarksController, coachMarkAt index: Int) -> CoachMark {
+        return coachMarksController.helper.makeCoachMark(for: settings) { frame -> UIBezierPath in
+            return UIBezierPath(ovalIn: frame.insetBy(dx: -4, dy: -4))
+        }
+    }
+    
+    func numberOfCoachMarks(for coachMarksController: CoachMarksController) -> Int {
+        return 1
+    }
+}
