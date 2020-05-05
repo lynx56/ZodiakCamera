@@ -281,19 +281,145 @@ struct PanelData {
 }
 
 
-extension CameraViewController: CoachMarksControllerDataSource, CoachMarksControllerDelegate {
+// MARK: CoachMarksControllerDataSource
+extension CameraViewController: CoachMarksControllerDataSource {
     func coachMarksController(_ coachMarksController: CoachMarksController, coachMarkViewsAt index: Int, madeFrom coachMark: CoachMark) -> (bodyView: CoachMarkBodyView, arrowView: CoachMarkArrowView?) {
-        let coachViews = coachMarksController.helper.makeDefaultCoachViews(hintText: "Setup your camera")
-        return (bodyView: coachViews.bodyView, arrowView: coachViews.arrowView)
+        let customView = MarkView(frame: .zero, offset: settings.bounds.midX/2 - 2)
+        customView.model = .init(title: "Settings", subtitle: "Setup your camera here", direction: .up)
+        return (bodyView: customView, arrowView: nil)
     }
     
     func coachMarksController(_ coachMarksController: CoachMarksController, coachMarkAt index: Int) -> CoachMark {
-        return coachMarksController.helper.makeCoachMark(for: settings) { frame -> UIBezierPath in
-            return UIBezierPath(ovalIn: frame.insetBy(dx: -4, dy: -4))
+        var mark = coachMarksController.helper.makeCoachMark(for: settings) { frame -> UIBezierPath in
+            return UIBezierPath(ovalIn: frame.insetBy(dx: -6, dy: -6))
         }
+        
+        mark.gapBetweenCoachMarkAndCutoutPath = -6
+        return mark
     }
     
     func numberOfCoachMarks(for coachMarksController: CoachMarksController) -> Int {
         return 1
+    }
+}
+
+
+class MarkView: UIView, CoachMarkBodyView {
+    var nextControl: UIControl? {
+        return nil
+    }
+    
+    var highlightArrowDelegate: CoachMarkBodyHighlightArrowDelegate? = nil
+    
+    struct Model {
+        var title: String
+        var subtitle: String
+        var direction: Direction
+        
+        enum Direction {
+            case up
+            case down
+        }
+    }
+    
+    var model: Model? {
+        didSet {
+            titleLabel.text = model?.title
+            subtitleLabel.text = model?.subtitle
+        }
+    }
+    
+    override init(frame: CGRect) {
+        super.init(frame: frame)
+        setup()
+    }
+    
+    init(frame: CGRect, offset: CGFloat) {
+        super.init(frame: frame)
+        setup(offset: offset)
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
+    private var titleLabel = UILabel()
+    private var subtitleLabel = UILabel()
+    private var arrow = ArrowView()
+        
+    private func setup(offset: CGFloat = 0) {
+        self.translatesAutoresizingMaskIntoConstraints = false
+         titleLabel.font = .systemFont(ofSize: 13, weight: .bold)
+         titleLabel.textColor = .white
+         titleLabel.textAlignment = .right
+         titleLabel.numberOfLines = 0
+         titleLabel.setContentCompressionResistancePriority(.required, for: .vertical)
+         
+         subtitleLabel.font = .systemFont(ofSize: 10)
+         subtitleLabel.textColor = .white
+         subtitleLabel.textAlignment = .right
+         subtitleLabel.numberOfLines = 0
+         subtitleLabel.setContentHuggingPriority(.required, for: .vertical)
+         
+         let vStack = UIStackView(arrangedSubviews: [titleLabel, subtitleLabel])
+         vStack.axis = .vertical
+         vStack.alignment = .trailing
+         
+         arrow.setContentCompressionResistancePriority(.required, for: .vertical)
+         arrow.setContentHuggingPriority(.required, for: .vertical)
+         
+         let space = UIView()
+         let arrowStack = UIStackView(arrangedSubviews: [arrow, space])
+         arrowStack.axis = .vertical
+         arrowStack.distribution = .fillEqually
+         
+         let hStack = UIStackView(arrangedSubviews: [vStack, arrowStack])
+         hStack.axis = .horizontal
+         hStack.alignment = .center
+         
+         addSubview(hStack, constraints: .pinWithOffsets(top: 0, bottom: 0, left: 0, right: offset))
+     }
+}
+
+extension MarkView {
+    class ArrowView: UIView, CoachMarkArrowView {
+        var isHighlighted: Bool = false
+        
+        override func draw(_ frame: CGRect) {
+            print(frame)
+             //// Bezier 2 Drawing
+              let bezier2Path = UIBezierPath()
+              bezier2Path.move(to: CGPoint(x: frame.minX + 0.57143 * frame.width, y: frame.minY + 0.11121 * frame.height))
+              bezier2Path.addCurve(to: CGPoint(x: frame.minX + 0.57143 * frame.width, y: frame.minY + 0.81799 * frame.height), controlPoint1: CGPoint(x: frame.minX + 0.57143 * frame.width, y: frame.minY + 0.11111 * frame.height), controlPoint2: CGPoint(x: frame.minX + 0.57143 * frame.width, y: frame.minY + 0.67290 * frame.height))
+              bezier2Path.addCurve(to: CGPoint(x: frame.minX + 0.67329 * frame.width, y: frame.minY + 0.83769 * frame.height), controlPoint1: CGPoint(x: frame.minX + 0.61262 * frame.width, y: frame.minY + 0.82176 * frame.height), controlPoint2: CGPoint(x: frame.minX + 0.64803 * frame.width, y: frame.minY + 0.82870 * frame.height))
+              bezier2Path.addCurve(to: CGPoint(x: frame.minX + 0.71429 * frame.width, y: frame.minY + 0.87037 * frame.height), controlPoint1: CGPoint(x: frame.minX + 0.69908 * frame.width, y: frame.minY + 0.84686 * frame.height), controlPoint2: CGPoint(x: frame.minX + 0.71429 * frame.width, y: frame.minY + 0.85815 * frame.height))
+              bezier2Path.addCurve(to: CGPoint(x: frame.minX + 0.66280 * frame.width, y: frame.minY + 0.90650 * frame.height), controlPoint1: CGPoint(x: frame.minX + 0.71429 * frame.width, y: frame.minY + 0.88416 * frame.height), controlPoint2: CGPoint(x: frame.minX + 0.69490 * frame.width, y: frame.minY + 0.89678 * frame.height))
+              bezier2Path.addCurve(to: CGPoint(x: frame.minX + 0.50000 * frame.width, y: frame.minY + 0.92593 * frame.height), controlPoint1: CGPoint(x: frame.minX + 0.62350 * frame.width, y: frame.minY + 0.91839 * frame.height), controlPoint2: CGPoint(x: frame.minX + 0.56514 * frame.width, y: frame.minY + 0.92593 * frame.height))
+              bezier2Path.addCurve(to: CGPoint(x: frame.minX + 0.28571 * frame.width, y: frame.minY + 0.87037 * frame.height), controlPoint1: CGPoint(x: frame.minX + 0.38165 * frame.width, y: frame.minY + 0.92593 * frame.height), controlPoint2: CGPoint(x: frame.minX + 0.28571 * frame.width, y: frame.minY + 0.90105 * frame.height))
+              bezier2Path.addCurve(to: CGPoint(x: frame.minX + 0.35897 * frame.width, y: frame.minY + 0.82854 * frame.height), controlPoint1: CGPoint(x: frame.minX + 0.28571 * frame.width, y: frame.minY + 0.85369 * frame.height), controlPoint2: CGPoint(x: frame.minX + 0.31407 * frame.width, y: frame.minY + 0.83873 * frame.height))
+              bezier2Path.addCurve(to: CGPoint(x: frame.minX + 0.42856 * frame.width, y: frame.minY + 0.81798 * frame.height), controlPoint1: CGPoint(x: frame.minX + 0.37917 * frame.width, y: frame.minY + 0.82396 * frame.height), controlPoint2: CGPoint(x: frame.minX + 0.40273 * frame.width, y: frame.minY + 0.82034 * frame.height))
+              bezier2Path.addCurve(to: CGPoint(x: frame.minX + 0.42857 * frame.width, y: frame.minY + 0.11111 * frame.height), controlPoint1: CGPoint(x: frame.minX + 0.42857 * frame.width, y: frame.minY + 0.67290 * frame.height), controlPoint2: CGPoint(x: frame.minX + 0.42857 * frame.width, y: frame.minY + 0.11111 * frame.height))
+              bezier2Path.addLine(to: CGPoint(x: frame.minX + 0.57143 * frame.width, y: frame.minY + 0.11111 * frame.height))
+              bezier2Path.addLine(to: CGPoint(x: frame.minX + 0.57143 * frame.width, y: frame.minY + 0.11121 * frame.height))
+              bezier2Path.close()
+              UIColor.white.setFill()
+              bezier2Path.fill()
+
+        }
+        
+        override init(frame: CGRect) {
+            super.init(frame: frame)
+            backgroundColor = .clear
+            layoutIfNeeded()
+            setNeedsDisplay()
+        }
+        
+        required init?(coder: NSCoder) {
+            fatalError("init(coder:) has not been implemented")
+        }
+        
+        override var intrinsicContentSize: CGSize {
+            return .init(width: 15, height: 50)
+        }
     }
 }
