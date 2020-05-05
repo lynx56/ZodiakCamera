@@ -284,22 +284,48 @@ struct PanelData {
 // MARK: CoachMarksControllerDataSource
 extension CameraViewController: CoachMarksControllerDataSource {
     func coachMarksController(_ coachMarksController: CoachMarksController, coachMarkViewsAt index: Int, madeFrom coachMark: CoachMark) -> (bodyView: CoachMarkBodyView, arrowView: CoachMarkArrowView?) {
-        let customView = MarkView(frame: .zero, offset: settings.bounds.midX/2 - 2)
-        customView.model = .init(title: "Settings", subtitle: "Setup your camera here", direction: .up)
-        return (bodyView: customView, arrowView: nil)
+        switch index {
+        case 0:
+            let customView = MarkView(frame: .zero, offset: settings.bounds.midX/2 - 2)
+            customView.model = .init(title: "Settings", subtitle: "Setup your camera here", direction: .up)
+            return (bodyView: customView, arrowView: nil)
+        case 1:
+            let customView = MarkView(frame: .zero, offset: 0)
+            customView.model = .init(title: "Video parameters", subtitle: "You can change video parameters here", direction: .down)
+            return (bodyView: customView, arrowView: nil)
+        default:
+            assertionFailure("Checkmark at index: \(index) not exists")
+            return coachMarksController.helper.makeDefaultCoachViews()
+        }
+        
     }
     
     func coachMarksController(_ coachMarksController: CoachMarksController, coachMarkAt index: Int) -> CoachMark {
-        var mark = coachMarksController.helper.makeCoachMark(for: settings) { frame -> UIBezierPath in
-            return UIBezierPath(ovalIn: frame.insetBy(dx: -6, dy: -6))
+        var mark: CoachMark
+        switch index {
+        case 0:
+            mark = coachMarksController.helper.makeCoachMark(for: settings) { frame -> UIBezierPath in
+                return UIBezierPath(ovalIn: frame.insetBy(dx: -6, dy: -6))
+            }
+            
+            mark.gapBetweenCoachMarkAndCutoutPath = -6
+        case 1:
+            mark = coachMarksController.helper.makeCoachMark(for: self.panelView) { frame -> UIBezierPath in
+                let offsettedFrame = frame.inset(by: .init(top: 0, left: 10, bottom: 20, right: 10))
+                return UIBezierPath(roundedRect: offsettedFrame, cornerRadius: 20)
+            }
+            mark.gapBetweenCoachMarkAndCutoutPath = -6
+        default:
+            assertionFailure("Checkmark at index: \(index) not exists")
+            mark = coachMarksController.helper.makeCoachMark()
+            break
         }
         
-        mark.gapBetweenCoachMarkAndCutoutPath = -6
         return mark
     }
     
     func numberOfCoachMarks(for coachMarksController: CoachMarksController) -> Int {
-        return 1
+        return 2
     }
 }
 
@@ -326,6 +352,16 @@ class MarkView: UIView, CoachMarkBodyView {
         didSet {
             titleLabel.text = model?.title
             subtitleLabel.text = model?.subtitle
+            switch model?.direction {
+            case .up: arrow.transform = .identity
+            case .down:
+                arrow.transform = .init(scaleX: 1, y: -1)
+                if let firstSubview = arrowStack.arrangedSubviews.first{
+                    arrowStack.removeArrangedSubview(firstSubview)
+                    arrowStack.addArrangedSubview(firstSubview)
+                }
+            default: break
+            }
         }
     }
     
@@ -346,7 +382,7 @@ class MarkView: UIView, CoachMarkBodyView {
     private var titleLabel = UILabel()
     private var subtitleLabel = UILabel()
     private var arrow = ArrowView()
-        
+    private var arrowStack = UIStackView()
     private func setup(offset: CGFloat = 0) {
         self.translatesAutoresizingMaskIntoConstraints = false
          titleLabel.font = .systemFont(ofSize: 13, weight: .bold)
@@ -365,19 +401,20 @@ class MarkView: UIView, CoachMarkBodyView {
          vStack.axis = .vertical
          vStack.alignment = .trailing
          
-         arrow.setContentCompressionResistancePriority(.required, for: .vertical)
-         arrow.setContentHuggingPriority(.required, for: .vertical)
+         //arrow.setContentCompressionResistancePriority(.required, for: .vertical)
+        // arrow.setContentHuggingPriority(.required, for: .vertical)
          
          let space = UIView()
-         let arrowStack = UIStackView(arrangedSubviews: [arrow, space])
+         arrowStack = UIStackView(arrangedSubviews: [arrow, space])
          arrowStack.axis = .vertical
+         space.setContentCompressionResistancePriority(.defaultLow, for: .vertical)
          arrowStack.distribution = .fillEqually
-         
+        
          let hStack = UIStackView(arrangedSubviews: [vStack, arrowStack])
          hStack.axis = .horizontal
          hStack.alignment = .center
-         
-         addSubview(hStack, constraints: .pinWithOffsets(top: 0, bottom: 0, left: 0, right: offset))
+        
+        addSubview(hStack, constraints: .pinWithOffsets(top: 0, bottom: 0, left: 0, right: offset))
      }
 }
 
