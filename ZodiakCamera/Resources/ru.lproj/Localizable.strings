@@ -12,6 +12,8 @@
 "Settings.Host" = "Хост";
 "Settings.Address" = "Адрес";
 "Settings.Port" = "Порт";
+"Settings.Other" = "Другое";
+"Settings.Resolution" = "Разрешение камеры";
 "Settings.Save" = "Сохранить";
 "Settings.Saved" = "Сохранено";
 "Settings.TouchId" = "Защитить вход паролем или TouchId";

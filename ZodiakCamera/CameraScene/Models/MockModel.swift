@@ -9,6 +9,15 @@
 import UIKit
 
 struct MockModel: CameraViewControllerModel {
+    var isTourShowed: Bool {
+        get {
+            return UserDefaults.standard.bool(forKey: "MockModel.isTourShowed")
+        }
+        set {
+            UserDefaults.standard.set(newValue, forKey: "MockModel.isTourShowed")
+        }
+    }
+    
     func start() {
         imageProviderHandler(.error(.noInternetConnection))
     }

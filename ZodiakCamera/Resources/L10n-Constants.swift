@@ -59,12 +59,16 @@ internal enum L10n {
     internal static let host = L10n.tr("Localizable", "Settings.Host")
     /// Login
     internal static let login = L10n.tr("Localizable", "Settings.Login")
+    /// Other
+    internal static let other = L10n.tr("Localizable", "Settings.Other")
     /// Password
     internal static let password = L10n.tr("Localizable", "Settings.Password")
     /// Passcode protection
     internal static let pinProtection = L10n.tr("Localizable", "Settings.PinProtection")
     /// Port
     internal static let port = L10n.tr("Localizable", "Settings.Port")
+    /// Camera Resolution
+    internal static let resolution = L10n.tr("Localizable", "Settings.Resolution")
     /// Field must contains ip or url address
     internal static let ruleInvalidHost = L10n.tr("Localizable", "Settings.RuleInvalidHost")
     /// Field required

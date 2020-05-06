@@ -20,6 +20,7 @@ class PanelView: UIView {
             case contrast(Int)
             case saturation(Int)
             case ir(Bool)
+            case resolution(CameraResolution)
         }
     }
     
@@ -59,7 +60,13 @@ class PanelView: UIView {
                                 self.eventHandler(.changePanelData(.ir($0)))
                                 self.setNeedsLayout()
         })
-        items = [.control(brightness), .control(contrast), .control(saturation), .toggle(ir)]
+        
+        let resolution = TextItem(currentValue: { (provider().resolution.text, provider().resolution.rawValue) },
+                                  newValueHandler: { (text, value) in
+                                    self.eventHandler(.changePanelData(.resolution(CameraResolution(rawValue: value)!)))
+                                    self.setNeedsLayout()
+        })
+        items = [.control(brightness), .control(contrast), .control(saturation), .text(resolution), .toggle(ir)]
         setup()
     }
     
@@ -129,15 +136,24 @@ class PanelView: UIView {
         var newValueHandler: (Bool)->Void
     }
     
+    struct TextItem {
+        var currentValue: ()->(String, Int)
+        var newValueHandler: (String, Int)->Void
+    }
+    
     enum Item {
         case control(ControlItem)
         case toggle(ToggleItem)
+        case text(TextItem)
         func image() -> UIImage? {
             switch self {
             case .control(let control):
                 return control.image
             case .toggle(let toggle):
                 return toggle.currentValue() == false ? toggle.image : toggle.imageSelected
+            case .text(let textItem):
+                return textItem.currentValue().0.image(attributes: [NSAttributedString.Key.foregroundColor : UIColor.white,
+                                                                    NSAttributedString.Key.font : UIFont.systemFont(ofSize: 45, weight: .bold)])
             }
         }
     }
@@ -166,5 +182,19 @@ class PanelView: UIView {
         required init?(coder aDecoder: NSCoder) {
             fatalError("init(coder:) has not been implemented")
         }
+    }
+}
+
+
+extension String {
+    func image(size: CGSize? = nil,
+               attributes: [NSAttributedString.Key : Any]? = nil) -> UIImage? {
+        let size = size ?? (self as NSString).size(withAttributes: attributes)
+        
+        UIGraphicsBeginImageContextWithOptions(size, false, 0)
+        NSString(string: self).draw(in: .init(origin: .zero, size: size), withAttributes: attributes)
+        let image = UIGraphicsGetImageFromCurrentImageContext()
+        UIGraphicsEndImageContext()
+        return image
     }
 }

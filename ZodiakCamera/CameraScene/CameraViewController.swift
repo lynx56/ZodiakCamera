@@ -19,7 +19,7 @@ class CameraViewController: UIViewController {
     private let settings = UIButton(type: .custom)
     private let router: CameraViewControllerRouter
     private let ipCameraView = UIImageView()
-    private var panelData: PanelData = PanelData(brightness: .initial, saturation: .initial, contrast: .initial, ir: false)
+    private var panelData: PanelData = PanelData(brightness: .initial, saturation: .initial, contrast: .initial, ir: false, resolution: ._640x480)
     private var model: CameraViewControllerModel
     
     init(model: CameraViewControllerModel,
@@ -97,6 +97,7 @@ class CameraViewController: UIViewController {
     private lazy var coachMarksController: CoachMarksController = {
        let ctr = CoachMarksController()
         ctr.dataSource = self
+        ctr.delegate = self
         ctr.overlay.allowTap = true
         ctr.overlay.color = UIColor.black.withAlphaComponent(0.4)
         return ctr
@@ -104,13 +105,14 @@ class CameraViewController: UIViewController {
     
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-        self.coachMarksController.start(in: .window(over: self))
+        if !model.isTourShowed {
+            coachMarksController.start(in: .window(over: self))
+        }
     }
     
     override func viewDidDisappear(_ animated: Bool) {
         super.viewDidDisappear(animated)
         model.pause()
-        self.coachMarksController.stop(immediately: true)
     }
     
     enum State {
@@ -211,6 +213,10 @@ class CameraViewController: UIViewController {
                 update(.editing)
             case .toggle(let toggle):
                 toggle.newValueHandler(!toggle.currentValue())
+            case .text(let textItem):
+                let current = textItem.currentValue().1
+                let next = current >= 2 ? 0 : current + 1
+                textItem.newValueHandler(CameraResolution(rawValue: next)!.text, next)
             }
         case .changePanelData(let changes):
             let change = CameraViewController.convertPanelChanges(changes)
@@ -222,7 +228,8 @@ class CameraViewController: UIViewController {
                 case .success(let settings): self.panelData = .init(brightness: settings.brightness,
                                                                     saturation: settings.saturation,
                                                                     contrast: settings.contrast,
-                                                                    ir: settings.ir)
+                                                                    ir: settings.ir,
+                                                                    resolution: CameraResolution(rawValue: settings.resolution)!)
                 }
             })
         }
@@ -238,6 +245,8 @@ class CameraViewController: UIViewController {
             return .saturation(value)
         case .ir(let value):
             return .ir(value)
+        case .resolution(let resolution):
+            return .resolution(resolution)
         }
     }
     
@@ -278,11 +287,12 @@ struct PanelData {
     var saturation: LimitValue
     var contrast: LimitValue
     var ir: Bool
+    var resolution: CameraResolution
 }
 
 
-// MARK: CoachMarksControllerDataSource
-extension CameraViewController: CoachMarksControllerDataSource {
+// MARK: CoachMarksControllerDataSource, CoachMarksControllerDelegate
+extension CameraViewController: CoachMarksControllerDataSource, CoachMarksControllerDelegate {
     func coachMarksController(_ coachMarksController: CoachMarksController, coachMarkViewsAt index: Int, madeFrom coachMark: CoachMark) -> (bodyView: CoachMarkBodyView, arrowView: CoachMarkArrowView?) {
         switch index {
         case 0:
@@ -327,6 +337,13 @@ extension CameraViewController: CoachMarksControllerDataSource {
     func numberOfCoachMarks(for coachMarksController: CoachMarksController) -> Int {
         return 2
     }
+    
+    func coachMarksController(_ coachMarksController: CoachMarksController,
+                              didEndShowingBySkipping skipped: Bool) {
+        model.isTourShowed = true
+        self.coachMarksController.stop(immediately: false)
+    }
+    
 }
 
 
@@ -423,31 +440,28 @@ extension MarkView {
         var isHighlighted: Bool = false
         
         override func draw(_ frame: CGRect) {
-            print(frame)
-             //// Bezier 2 Drawing
-              let bezier2Path = UIBezierPath()
-              bezier2Path.move(to: CGPoint(x: frame.minX + 0.57143 * frame.width, y: frame.minY + 0.11121 * frame.height))
-              bezier2Path.addCurve(to: CGPoint(x: frame.minX + 0.57143 * frame.width, y: frame.minY + 0.81799 * frame.height), controlPoint1: CGPoint(x: frame.minX + 0.57143 * frame.width, y: frame.minY + 0.11111 * frame.height), controlPoint2: CGPoint(x: frame.minX + 0.57143 * frame.width, y: frame.minY + 0.67290 * frame.height))
-              bezier2Path.addCurve(to: CGPoint(x: frame.minX + 0.67329 * frame.width, y: frame.minY + 0.83769 * frame.height), controlPoint1: CGPoint(x: frame.minX + 0.61262 * frame.width, y: frame.minY + 0.82176 * frame.height), controlPoint2: CGPoint(x: frame.minX + 0.64803 * frame.width, y: frame.minY + 0.82870 * frame.height))
-              bezier2Path.addCurve(to: CGPoint(x: frame.minX + 0.71429 * frame.width, y: frame.minY + 0.87037 * frame.height), controlPoint1: CGPoint(x: frame.minX + 0.69908 * frame.width, y: frame.minY + 0.84686 * frame.height), controlPoint2: CGPoint(x: frame.minX + 0.71429 * frame.width, y: frame.minY + 0.85815 * frame.height))
-              bezier2Path.addCurve(to: CGPoint(x: frame.minX + 0.66280 * frame.width, y: frame.minY + 0.90650 * frame.height), controlPoint1: CGPoint(x: frame.minX + 0.71429 * frame.width, y: frame.minY + 0.88416 * frame.height), controlPoint2: CGPoint(x: frame.minX + 0.69490 * frame.width, y: frame.minY + 0.89678 * frame.height))
-              bezier2Path.addCurve(to: CGPoint(x: frame.minX + 0.50000 * frame.width, y: frame.minY + 0.92593 * frame.height), controlPoint1: CGPoint(x: frame.minX + 0.62350 * frame.width, y: frame.minY + 0.91839 * frame.height), controlPoint2: CGPoint(x: frame.minX + 0.56514 * frame.width, y: frame.minY + 0.92593 * frame.height))
-              bezier2Path.addCurve(to: CGPoint(x: frame.minX + 0.28571 * frame.width, y: frame.minY + 0.87037 * frame.height), controlPoint1: CGPoint(x: frame.minX + 0.38165 * frame.width, y: frame.minY + 0.92593 * frame.height), controlPoint2: CGPoint(x: frame.minX + 0.28571 * frame.width, y: frame.minY + 0.90105 * frame.height))
-              bezier2Path.addCurve(to: CGPoint(x: frame.minX + 0.35897 * frame.width, y: frame.minY + 0.82854 * frame.height), controlPoint1: CGPoint(x: frame.minX + 0.28571 * frame.width, y: frame.minY + 0.85369 * frame.height), controlPoint2: CGPoint(x: frame.minX + 0.31407 * frame.width, y: frame.minY + 0.83873 * frame.height))
-              bezier2Path.addCurve(to: CGPoint(x: frame.minX + 0.42856 * frame.width, y: frame.minY + 0.81798 * frame.height), controlPoint1: CGPoint(x: frame.minX + 0.37917 * frame.width, y: frame.minY + 0.82396 * frame.height), controlPoint2: CGPoint(x: frame.minX + 0.40273 * frame.width, y: frame.minY + 0.82034 * frame.height))
-              bezier2Path.addCurve(to: CGPoint(x: frame.minX + 0.42857 * frame.width, y: frame.minY + 0.11111 * frame.height), controlPoint1: CGPoint(x: frame.minX + 0.42857 * frame.width, y: frame.minY + 0.67290 * frame.height), controlPoint2: CGPoint(x: frame.minX + 0.42857 * frame.width, y: frame.minY + 0.11111 * frame.height))
-              bezier2Path.addLine(to: CGPoint(x: frame.minX + 0.57143 * frame.width, y: frame.minY + 0.11111 * frame.height))
-              bezier2Path.addLine(to: CGPoint(x: frame.minX + 0.57143 * frame.width, y: frame.minY + 0.11121 * frame.height))
-              bezier2Path.close()
-              UIColor.white.setFill()
-              bezier2Path.fill()
-
+            let arrowPath = UIBezierPath()
+            arrowPath.move(to: CGPoint(x: frame.minX + 0.57143 * frame.width, y: frame.minY + 0.11121 * frame.height))
+            arrowPath.addCurve(to: CGPoint(x: frame.minX + 0.57143 * frame.width, y: frame.minY + 0.81799 * frame.height), controlPoint1: CGPoint(x: frame.minX + 0.57143 * frame.width, y: frame.minY + 0.11111 * frame.height), controlPoint2: CGPoint(x: frame.minX + 0.57143 * frame.width, y: frame.minY + 0.67290 * frame.height))
+            arrowPath.addCurve(to: CGPoint(x: frame.minX + 0.67329 * frame.width, y: frame.minY + 0.83769 * frame.height), controlPoint1: CGPoint(x: frame.minX + 0.61262 * frame.width, y: frame.minY + 0.82176 * frame.height), controlPoint2: CGPoint(x: frame.minX + 0.64803 * frame.width, y: frame.minY + 0.82870 * frame.height))
+            arrowPath.addCurve(to: CGPoint(x: frame.minX + 0.71429 * frame.width, y: frame.minY + 0.87037 * frame.height), controlPoint1: CGPoint(x: frame.minX + 0.69908 * frame.width, y: frame.minY + 0.84686 * frame.height), controlPoint2: CGPoint(x: frame.minX + 0.71429 * frame.width, y: frame.minY + 0.85815 * frame.height))
+            arrowPath.addCurve(to: CGPoint(x: frame.minX + 0.66280 * frame.width, y: frame.minY + 0.90650 * frame.height), controlPoint1: CGPoint(x: frame.minX + 0.71429 * frame.width, y: frame.minY + 0.88416 * frame.height), controlPoint2: CGPoint(x: frame.minX + 0.69490 * frame.width, y: frame.minY + 0.89678 * frame.height))
+            arrowPath.addCurve(to: CGPoint(x: frame.minX + 0.50000 * frame.width, y: frame.minY + 0.92593 * frame.height), controlPoint1: CGPoint(x: frame.minX + 0.62350 * frame.width, y: frame.minY + 0.91839 * frame.height), controlPoint2: CGPoint(x: frame.minX + 0.56514 * frame.width, y: frame.minY + 0.92593 * frame.height))
+            arrowPath.addCurve(to: CGPoint(x: frame.minX + 0.28571 * frame.width, y: frame.minY + 0.87037 * frame.height), controlPoint1: CGPoint(x: frame.minX + 0.38165 * frame.width, y: frame.minY + 0.92593 * frame.height), controlPoint2: CGPoint(x: frame.minX + 0.28571 * frame.width, y: frame.minY + 0.90105 * frame.height))
+            arrowPath.addCurve(to: CGPoint(x: frame.minX + 0.35897 * frame.width, y: frame.minY + 0.82854 * frame.height), controlPoint1: CGPoint(x: frame.minX + 0.28571 * frame.width, y: frame.minY + 0.85369 * frame.height), controlPoint2: CGPoint(x: frame.minX + 0.31407 * frame.width, y: frame.minY + 0.83873 * frame.height))
+            arrowPath.addCurve(to: CGPoint(x: frame.minX + 0.42856 * frame.width, y: frame.minY + 0.81798 * frame.height), controlPoint1: CGPoint(x: frame.minX + 0.37917 * frame.width, y: frame.minY + 0.82396 * frame.height), controlPoint2: CGPoint(x: frame.minX + 0.40273 * frame.width, y: frame.minY + 0.82034 * frame.height))
+            arrowPath.addCurve(to: CGPoint(x: frame.minX + 0.42857 * frame.width, y: frame.minY + 0.11111 * frame.height), controlPoint1: CGPoint(x: frame.minX + 0.42857 * frame.width, y: frame.minY + 0.67290 * frame.height), controlPoint2: CGPoint(x: frame.minX + 0.42857 * frame.width, y: frame.minY + 0.11111 * frame.height))
+            arrowPath.addLine(to: CGPoint(x: frame.minX + 0.57143 * frame.width, y: frame.minY + 0.11111 * frame.height))
+            arrowPath.addLine(to: CGPoint(x: frame.minX + 0.57143 * frame.width, y: frame.minY + 0.11121 * frame.height))
+            arrowPath.close()
+            
+            UIColor.white.setFill()
+            arrowPath.fill()
         }
         
         override init(frame: CGRect) {
             super.init(frame: frame)
             backgroundColor = .clear
-            layoutIfNeeded()
             setNeedsDisplay()
         }
         

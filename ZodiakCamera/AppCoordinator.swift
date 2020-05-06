@@ -20,13 +20,15 @@ final class AppCoordinator: Coordinator {
     private let settingsProvider: CameraSettingsProvider = KeychainSwiftWrapper(keychain: KeychainSwift())
     private let bioMetricAuthenticator: BioMetricAuthenticator = DefaultBioMetricAuthenticator()
     private let pinStorage: PinStorage = KeychainSwift()
+    private let viewSettingsProvider: ViewSettingsProvider = UserDefaults.standard
     private let controllerFactory: ControllerFactory!
     
     init(window: UIWindow) {
         self.window = window
         controllerFactory = DefaultControllerFactory(pinStorage: pinStorage,
                                                      biometricAuthentificator: bioMetricAuthenticator,
-                                                     cameraSettingsProvider: settingsProvider)
+                                                     cameraSettingsProvider: settingsProvider,
+                                                     viewSettingsProvider: viewSettingsProvider)
     }
     
     func start() {

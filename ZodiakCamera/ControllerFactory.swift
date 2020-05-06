@@ -22,13 +22,16 @@ class DefaultControllerFactory: ControllerFactory {
     private let pinStorage: PinStorage
     private let biometricAuthentificator: BioMetricAuthenticator
     private let cameraSettingsProvider: CameraSettingsProvider
+    private let viewSettingsProvider: ViewSettingsProvider
   
     init(pinStorage: PinStorage,
          biometricAuthentificator: BioMetricAuthenticator,
-         cameraSettingsProvider: CameraSettingsProvider) {
+         cameraSettingsProvider: CameraSettingsProvider,
+         viewSettingsProvider: ViewSettingsProvider) {
         self.pinStorage = pinStorage
         self.biometricAuthentificator = biometricAuthentificator
         self.cameraSettingsProvider = cameraSettingsProvider
+        self.viewSettingsProvider = viewSettingsProvider
     }
     
     func makeAuthController() -> UIViewController & Successful {
@@ -43,11 +46,12 @@ class DefaultControllerFactory: ControllerFactory {
     }
     
     func makeCameraController(router: CameraViewControllerRouter) -> UIViewController {
-        #if targetEnvironment(simulator)
-        let model = MockModel()
-        #else
-        let model = Model(cameraSettingsProvider: cameraSettingsProvider, mode: .stream)
-        #endif
+      //  #if targetEnvironment(simulator)
+     //   let model = MockModel()
+     //   #else
+        let model = Model(cameraSettingsProvider: cameraSettingsProvider, mode: .stream,
+                          viewSettingsProvider: viewSettingsProvider)
+      //  #endif
         let cameraVc = CameraViewController(model: model, router: router)
         return PopupContainer(root: cameraVc)
     }

@@ -15,6 +15,7 @@ protocol CameraViewControllerModel {
     func start()
     func pause()
     var contentMode: UIView.ContentMode { get }
+    var isTourShowed: Bool { get set }
 }
 
 enum UserManipulation {
@@ -33,9 +34,24 @@ enum UserManipulation {
     case start
 }
 
+public enum CameraResolution: Int {
+    case _640x480 = 0
+    case _320x240 = 1
+    case _1280x720 = 2
+    
+    var text: String {
+        switch self {
+        case ._1280x720: return "720p"
+        case ._640x480: return "VGA"
+        case ._320x240: return "QVGA"
+        }
+    }
+}
+
 enum SettingsChange {
     case brightness(Int)
     case contrast(Int)
     case saturation(Int)
     case ir(Bool)
+    case resolution(CameraResolution)
 }

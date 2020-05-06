@@ -93,6 +93,11 @@ class SettingsViewController: FormViewController {
             }.onChange{
                 settings.host = $0.value ?? URL(string: "192.168.1.1")!
             }
+            +++ Section(L10n.Settings.other)
+            <<< SegmentedRow<RowResolution> { row in
+                row.options = [.init(index: 0, title: "640x480"), .init(index:1, title: "320x240"), .init(index:2, title: "1280x720")]
+                row.title = L10n.Settings.resolution
+            }.onChange { settings.resolution = CameraResolution(rawValue: $0.value?.index ?? 0)! }
             <<< IntRow() { row in
                 row.title = L10n.Settings.port
                 row.placeholder = "81"
@@ -113,11 +118,17 @@ class SettingsViewController: FormViewController {
     }
 }
 
+struct RowResolution: Equatable {
+    var index: Int
+    var title: String
+}
+
 struct CameraSettings {
     var login: String
     var password: String
     var host: URL
     var port: Int
+    var resolution: CameraResolution
 }
 
 protocol CameraSettingsProvider {
@@ -135,13 +146,15 @@ class KeychainSwiftWrapper: CameraSettingsProvider {
         static let password = "ZodiakCamera.CameraSettings.Password"
         static let host = "ZodiakCamera.CameraSettings.Host"
         static let port = "ZodiakCamera.CameraSettings.Port"
+        static let resolution = "ZodiakCamera.CameraSettings.Resolution"
     }
     
     var settings: CameraSettings {
         return .init(login: keychain.get(Keys.login) ?? "",
                      password: keychain.get(Keys.password) ?? "",
                      host: URL(string: keychain.get(Keys.host) ?? "") ?? URL(string: "192.168.1.1")!,
-                     port: Int(keychain.get(Keys.port) ?? "") ?? 81)
+                     port: Int(keychain.get(Keys.port) ?? "") ?? 81,
+                     resolution: CameraResolution(rawValue: Int(keychain.get(Keys.resolution) ?? "") ?? 0)!)
     }
     
     init(keychain: KeychainSwift) {
@@ -153,6 +166,7 @@ class KeychainSwiftWrapper: CameraSettingsProvider {
         keychain.set(settings.password, forKey: Keys.password)
         keychain.set(settings.host.absoluteString, forKey: Keys.host)
         keychain.set(String(settings.port), forKey: Keys.port)
+        keychain.set(String(settings.resolution.rawValue), forKey: Keys.resolution)
         updated()
     }
 }

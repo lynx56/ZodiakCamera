@@ -9,7 +9,13 @@
 import UIKit
 
 class Model: CameraViewControllerModel {
+    var isTourShowed: Bool {
+        get { viewSettingsProvider.isTourShowed }
+        set { viewSettingsProvider.isTourShowed = newValue }
+    }
+    
     private var cameraSettingsProvider: CameraSettingsProvider
+    private var viewSettingsProvider: ViewSettingsProvider
     private let mode: Mode
     private var zodiak: Api
     enum Mode {
@@ -25,10 +31,13 @@ class Model: CameraViewControllerModel {
         }
     }
       
-    init(cameraSettingsProvider: CameraSettingsProvider, mode: Mode) {
+    init(cameraSettingsProvider: CameraSettingsProvider,
+         mode: Mode,
+         viewSettingsProvider: ViewSettingsProvider) {
         self.cameraSettingsProvider = cameraSettingsProvider
         self.mode = mode
          self.zodiak = Api(cameraSettingsProvider: cameraSettingsProvider)
+        self.viewSettingsProvider = viewSettingsProvider
         self.cameraSettingsProvider.updated = { [weak self] in
             guard let self = self else { return }
             self.zodiak = Api(cameraSettingsProvider: self.cameraSettingsProvider)
@@ -116,6 +125,28 @@ class Model: CameraViewControllerModel {
             return ("8", String(value))
         case .ir(let value):
             return ("14", value == true ? "1" : "0")
+        case .resolution(let resolution):
+            switch resolution {
+            case ._1280x720: return ("0", "2")
+            case ._320x240: return ("0", "1")
+            case ._640x480: return ("0", "0")
+            }
+        }
+    }
+}
+
+
+protocol ViewSettingsProvider {
+    var isTourShowed: Bool { get set }
+}
+
+extension UserDefaults: ViewSettingsProvider {
+    var isTourShowed: Bool {
+        get {
+            return self.bool(forKey: "CameraViewController.isTourShowed")
+        }
+        set {
+            self.set(newValue, forKey: "CameraViewController.isTourShowed")
         }
     }
 }

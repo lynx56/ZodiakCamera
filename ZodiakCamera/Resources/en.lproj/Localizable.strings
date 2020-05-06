@@ -12,6 +12,8 @@
 "Settings.Host" = "Host";
 "Settings.Address" = "Address";
 "Settings.Port" = "Port";
+"Settings.Other" = "Other";
+"Settings.Resolution" = "Camera Resolution";
 "Settings.Save" = "Save";
 "Settings.Saved" = "Saved";
 "Settings.TouchId" = "Passcode or TouchId protection";
