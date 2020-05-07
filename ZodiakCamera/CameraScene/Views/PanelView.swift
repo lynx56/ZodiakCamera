@@ -61,12 +61,18 @@ class PanelView: UIView {
                                 self.setNeedsLayout()
         })
         
-        let resolution = TextItem(currentValue: { (provider().resolution.text, provider().resolution.rawValue) },
-                                  newValueHandler: { (text, value) in
-                                    self.eventHandler(.changePanelData(.resolution(CameraResolution(rawValue: value)!)))
-                                    self.setNeedsLayout()
-        })
-        items = [.control(brightness), .control(contrast), .control(saturation), .text(resolution), .toggle(ir)]
+        let sliderResolution = ControlItem(image: Images.monitor.image,
+                                           imageMin: Images.monitor.image,
+                                           imageMax: Images.monitor.image,
+                                           maxValue: 2,
+                                           minValue: 0,
+                                           currentValue:  { 1 },
+                                           newValueHandler: { print($0) })
+        items = [.control(brightness),
+                 .control(contrast),
+                 .control(saturation),
+                 .control(sliderResolution),
+                 .toggle(ir)]
         setup()
     }
     
@@ -111,7 +117,6 @@ class PanelView: UIView {
     }
     
     override func layoutSubviews() {
-        super.layoutSubviews()
         stackView.subviews.forEach {
             if let panelIconView = $0 as? PanelIconView {
                 panelIconView.image = items[panelIconView.tag].image()
@@ -162,7 +167,9 @@ class PanelView: UIView {
         private let imageView = UIImageView()
         var image: UIImage? {
             didSet {
-                imageView.image = image
+                DispatchQueue.main.async {
+                    self.imageView.image = self.image
+                }
             }
         }
       

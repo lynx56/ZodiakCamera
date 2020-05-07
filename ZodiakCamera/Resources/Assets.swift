@@ -27,6 +27,7 @@ internal enum Images {
   internal static let faceId = ImageAsset(name: "faceId")
   internal static let irOff = ImageAsset(name: "irOff")
   internal static let irOn = ImageAsset(name: "irOn")
+  internal static let monitor = ImageAsset(name: "monitor")
   internal static let restart = ImageAsset(name: "restart")
   internal static let saturationMax = ImageAsset(name: "saturationMax")
   internal static let saturationMin = ImageAsset(name: "saturationMin")
