@@ -1,24 +1,25 @@
 //
-//  ArcSlider.swift
+//  File.swift
 //  ZodiakCamera
 //
-//  Created by lynx on 18/10/2019.
-//  Copyright © 2019 gulnaz. All rights reserved.
+//  Created by Holyberry on 08.05.2020.
+//  Copyright © 2020 gulnaz. All rights reserved.
 //
 
 import UIKit
 
-class ArcSlider: UIControl {
+class SegmentedArcSlider: UIControl {
     private let circleView = CircleView()
-    private let startImageView = UIImageView()
-    private let endImageView = UIImageView()
-    private(set) var currentValue = 0 {
+    private var segmentView = [Segment: UIView]()
+    
+    private(set) var current: Segment? {
         didSet {
-            circleView.text = "\(currentValue)"
-            valueChanged(currentValue)
+            guard let current = current else { return }
+            valueChanged(current)
         }
     }
-    var valueChanged: (Int) -> Void = { _ in }
+    
+    var valueChanged: (Segment) -> Void = { _ in }
     enum Constants {
         static let imageSize = CGSize(width: 15, height: 15)
         static let scaleImageOffset = CGFloat(4)
@@ -26,24 +27,23 @@ class ArcSlider: UIControl {
         static let circleSize = CGSize(width: 24, height: 24)
     }
     
+    struct Segment: Hashable {
+        var title: String?
+        var value: Int
+    }
+    
     struct ViewModel {
         let innerRadiusOffset: CGFloat
         let color: UIColor
         let tintColor: UIColor
-        let startImage: UIImage
-        let endImage: UIImage
-        let minValue: Int
-        let maxValue: Int
-        let currentValue: Int
+        let segments: [Segment]
+        let currentIndex: Int?
         
         static var initial = ViewModel(innerRadiusOffset: 20,
                                        color: .white,
                                        tintColor: .black,
-                                       startImage: .empty(sized: .zero),
-                                       endImage: .empty(sized: .zero),
-                                       minValue: 0,
-                                       maxValue: 255,
-                                       currentValue: 128)
+                                       segments: [],
+                                       currentIndex: nil)
     }
     
     
@@ -74,16 +74,17 @@ class ArcSlider: UIControl {
     }
     private var endPoint: CGPoint {
         return .init(x: self.bounds.maxX,
-                            y: self.bounds.maxY)
+                        y: self.bounds.maxY)
     }
     private var topPoint: CGPoint {
         return .init(x: (self.bounds.maxX - self.bounds.minX)/2,
                      y: self.bounds.minY)
     }
     private var decorate: ArcLayer!
+    private var pointsLayer: PointsLayer!
     func setup() {
+        current = model.segments[model.currentIndex ?? 0]
         self.tintColor = model.tintColor
-        self.currentValue = model.currentValue
         circleView.settings =  .init(color: .black, font: .systemFont(ofSize: 8))
         mainArc = Arc(startPoint: startPoint,
                       endPoint: endPoint,
@@ -95,14 +96,25 @@ class ArcSlider: UIControl {
         decorate = ArcLayer(arc: mainArc,
                             scale: scaleArc,
                             color: model.tintColor,
-                            backgroundColor: model.color)
+                            backgroundColor: model.color,
+                            isDashed: false)
         
+        let partLength = scaleArc.length()/CGFloat(model.segments.count - 1)
+        var points: [CGPoint] = []
+        for (index, segment) in model.segments.enumerated() {
+            let point = scaleArc.point(forAngle: scaleArc.angle(forLength: partLength*CGFloat(index)))
+            points.append(point)
+            
+            let roundedView = RoundedView()
+            roundedView.cornerRadius = 5
+            roundedView.text = segment.title ?? ""
+            segmentView[segment] = roundedView
+            addSubview(roundedView)
+        }
+        
+        pointsLayer = PointsLayer(points: points, color: model.tintColor)
         self.layer.addSublayer(decorate)
-        startImageView.image = model.startImage
-        endImageView.image = model.endImage
-        
-        addSubview(startImageView)
-        addSubview(endImageView)
+        self.layer.addSublayer(pointsLayer)
         
         self.clipsToBounds = true
         circleView.backgroundColor = .white
@@ -124,63 +136,68 @@ class ArcSlider: UIControl {
         decorate.arc = mainArc
         decorate.scale = scaleArc
         
-        let scaleStartPoint = scaleArc.point(forAngle: scaleArc.startAngle)
-        let scaleEndPoint = scaleArc.point(forAngle: scaleArc.endAngle)
+        let partLength = scaleArc.length()/CGFloat(model.segments.count - 1)
+       
+        var points: [CGPoint] = []
+        for (index, segment) in model.segments.enumerated() {
+            let point = scaleArc.point(forAngle: scaleArc.angle(forLength: partLength*CGFloat(index)))
+            points.append(point)
+            
+            guard let view = segmentView[segment] else { continue }
+            view.center = point.applying(.init(translationX: 0, y: 20))
+            view.bounds.size = view.intrinsicContentSize
+        }
         
-        startImageView.transform = .identity
-        endImageView.transform = .identity
-        startImageView.frame = .init(origin:  .init(x: scaleStartPoint.x - Constants.imageSize.width - Constants.scaleImageOffset,
-                                                    y: scaleStartPoint.y + Constants.scaleImageOffset),
-                                     size: Constants.imageSize)
-        endImageView.frame = .init(origin: .init(x: scaleEndPoint.x + Constants.scaleImageOffset, y: scaleEndPoint.y + Constants.scaleImageOffset),
-                                   size: Constants.imageSize)
+        pointsLayer.points = points
         
-        startImageView.transform = .init(rotationAngle: scaleArc.startAngle + .pi/2)
-        endImageView.transform = .init(rotationAngle: scaleArc.endAngle + .pi/2)
-        
-        let rangeValues = model.maxValue-model.minValue
+        let rangeValues = model.segments.count
         guard rangeValues != 0 else {
             cachedBounds = .zero
             return
         }
         
-        let traversedLength = CGFloat(currentValue)/CGFloat(rangeValues) * scaleArc.length()
-        let currentPoint = scaleArc.point(forAngle: scaleArc.angle(forLength: traversedLength))
+        let currentPoint = points[current!.value]
         circleView.center = currentPoint
         circleView.bounds.size = Constants.circleSize
         circleView.setNeedsLayout()
         cachedBounds = self.bounds
     }
-    
+
     private var circleMoving = false
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
         guard let touch = touches.first else { return }
         if circleView.bounds.contains(touch.location(in: circleView)) {
             circleMoving = true
             UIView.animate(withDuration: 0.1) {
-                self.circleView.transform = .init(scaleX: 1.8, y: 1.8)
+                self.circleView.transform = .init(scaleX: 1.2, y: 1.2)
             }
         }
     }
     
-    override func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent?) {
-        guard circleMoving, let touch = touches.first else { return }
+    private func pointOnScale(forTouch touch: UITouch) -> CGPoint {
         let point = touch.location(in: self)
         let angle = scaleArc.angle(forPoint: point)
         let traversedLength = scaleArc.length(angle: angle)
-        let currentPoint = scaleArc.point(forAngle: scaleArc.angle(forLength: traversedLength))
-        circleView.center = currentPoint
-        currentValue = Int(traversedLength/scaleArc.length() * CGFloat(model.maxValue-model.minValue))
-       
+        return scaleArc.point(forAngle: scaleArc.angle(forLength: traversedLength))
+    }
+
+    override func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent?) {
+        guard circleMoving, let touch = touches.first else { return }
+        circleView.center = pointOnScale(forTouch: touch)
         sendActions(for: .valueChanged)
     }
-    
+
     override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
+        guard let touch = touches.first else { return }
+        
+        let currentPoint = pointOnScale(forTouch: touch)
+        let closestMeaningPoint = self.pointsLayer.points.enumerated().min(by: { $0.element.distance(to: currentPoint) < $1.element.distance(to: currentPoint) })!
+        
         circleMoving = false
-        if circleView.transform != .identity {
-            UIView.animate(withDuration: 0.1) {
-                self.circleView.transform = .identity
-            }
+        UIView.animate(withDuration: 0.1) {
+            self.circleView.center = closestMeaningPoint.element
+            self.current = self.model.segments[closestMeaningPoint.offset]
+            self.circleView.transform = .identity
         }
     }
 }

@@ -176,7 +176,7 @@ class CameraViewController: UIViewController {
         }
     }
     
-    private var showedSlider: ArcSlider?
+    private var showedSlider: UIControl?
  
     func handlePanelViewEvent(_ event: PanelView.Event) {
         switch event {
@@ -213,10 +213,32 @@ class CameraViewController: UIViewController {
                 update(.editing)
             case .toggle(let toggle):
                 toggle.newValueHandler(!toggle.currentValue())
-            case .text(let textItem):
-                let current = textItem.currentValue().1
-                let next = current >= 2 ? 0 : current + 1
-                textItem.newValueHandler(CameraResolution(rawValue: next)!.text, next)
+            case .segment(let segment):
+                showedSlider?.removeFromSuperview()
+                let segments = CameraResolution.allCases.map { SegmentedArcSlider.Segment(title: $0.text, value: $0.rawValue) }
+                let slider = SegmentedArcSlider(frame: .zero,
+                                                model: .init(innerRadiusOffset: 30,
+                                                             color: UIColor.black.withAlphaComponent(0.2),
+                                                             tintColor: .white,
+                                                             segments: segments,
+                                                             currentIndex: segment.currentValue().1))
+                slider.valueChanged = { segment.newValueHandler(CameraResolution(rawValue: $0.value)!.text, $0.value) }
+                slider.isEnabled = true
+                view.addSubview(slider, constraints: [
+                    constraint(\.leftAnchor, constant: -15),
+                    constraint(\.rightAnchor, constant: 15),
+                ])
+                slider.constrainToView(panelView, constraints: [
+                    constraint(\.bottomAnchor, \.topAnchor)
+                ])
+                slider.constrain(to: uconstraint(\.heightAnchor, constant: 120))
+                slider.layoutIfNeeded()
+                
+                UIView.animate(withDuration: 0.2) {
+                    slider.alpha = 1
+                }
+                self.showedSlider = slider
+                update(.editing)
             }
         case .changePanelData(let changes):
             let change = CameraViewController.convertPanelChanges(changes)

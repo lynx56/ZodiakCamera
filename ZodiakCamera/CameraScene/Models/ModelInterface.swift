@@ -34,7 +34,7 @@ enum UserManipulation {
     case start
 }
 
-public enum CameraResolution: Int {
+public enum CameraResolution: Int, CaseIterable {
     case _640x480 = 0
     case _320x240 = 1
     case _1280x720 = 2

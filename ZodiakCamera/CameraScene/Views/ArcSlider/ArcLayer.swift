@@ -24,7 +24,7 @@ class ArcLayer: CALayer {
         }
     }
     
-    init(arc: Arc, scale: Arc, color: UIColor, backgroundColor: UIColor) {
+    init(arc: Arc, scale: Arc, color: UIColor, backgroundColor: UIColor, isDashed: Bool = true) {
         shapelayer = CAShapeLayer()
         shapelayer.fillColor = backgroundColor.cgColor
         shapelayer.path = arc.path.cgPath
@@ -34,7 +34,9 @@ class ArcLayer: CALayer {
         scalelayer.fillColor = nil
         scalelayer.path = scale.path.cgPath
         scalelayer.lineJoin = .round
-        scalelayer.lineDashPattern = [2, 3] as [NSNumber]
+        if isDashed {
+            scalelayer.lineDashPattern = [2, 3] as [NSNumber]
+        }
         self.arc = arc
         self.scale = scale
         super.init()
@@ -49,5 +51,42 @@ class ArcLayer: CALayer {
     override func layoutSublayers() {
         shapelayer.path = arc.path.cgPath
         scalelayer.path = scale.path.cgPath
+    }
+}
+
+class PointsLayer: CALayer {
+    private let shapelayer: CAShapeLayer
+    var points: [CGPoint] = [] {
+        didSet {
+            setNeedsLayout()
+        }
+    }
+    
+    init(points: [CGPoint], color: UIColor) {
+        shapelayer = CAShapeLayer()
+        shapelayer.fillColor = color.cgColor
+        super.init()
+             
+        let bezierPath = UIBezierPath()
+        points.forEach {
+            bezierPath.move(to: $0)
+            bezierPath.addArc(withCenter: $0, radius: 5, startAngle: 0, endAngle: 2 * .pi, clockwise: true)
+        }
+        
+        shapelayer.path = bezierPath.cgPath
+        addSublayer(shapelayer)
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
+    override func layoutSublayers() {
+        let bezierPath = UIBezierPath()
+        points.forEach {
+            bezierPath.move(to: $0)
+            bezierPath.addArc(withCenter: $0, radius: 5, startAngle: 0, endAngle: 2 * .pi, clockwise: true)
+        }
+        shapelayer.path = bezierPath.cgPath
     }
 }

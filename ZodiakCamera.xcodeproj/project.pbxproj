@@ -14,6 +14,7 @@
 		88212AED244B23E70029F6EA /* AuthModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 88212AEC244B23E70029F6EA /* AuthModel.swift */; };
 		88212AF3244B25E30029F6EA /* PinStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 88212AF2244B25E30029F6EA /* PinStorage.swift */; };
 		8848A67024596F0A00673347 /* NoCameraAccessView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8848A66F24596F0A00673347 /* NoCameraAccessView.swift */; };
+		884A26BC2465DFB9006FE7CC /* SegmentedArcSlider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 884A26BB2465DFB9006FE7CC /* SegmentedArcSlider.swift */; };
 		88C5B4E72451DB37004475C0 /* AppCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 88C5B4E62451DB37004475C0 /* AppCoordinator.swift */; };
 		88C5B4E92451DB6B004475C0 /* ControllerFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 88C5B4E82451DB6B004475C0 /* ControllerFactory.swift */; };
 		88F04DCB24391B8400F96427 /* BioMetricAuthenticator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 88F04DCA24391B8400F96427 /* BioMetricAuthenticator.swift */; };
@@ -70,6 +71,7 @@
 		88212AEC244B23E70029F6EA /* AuthModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthModel.swift; sourceTree = "<group>"; };
 		88212AF2244B25E30029F6EA /* PinStorage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PinStorage.swift; sourceTree = "<group>"; };
 		8848A66F24596F0A00673347 /* NoCameraAccessView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NoCameraAccessView.swift; sourceTree = "<group>"; };
+		884A26BB2465DFB9006FE7CC /* SegmentedArcSlider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SegmentedArcSlider.swift; sourceTree = "<group>"; };
 		88C5B4E62451DB37004475C0 /* AppCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppCoordinator.swift; sourceTree = "<group>"; };
 		88C5B4E82451DB6B004475C0 /* ControllerFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ControllerFactory.swift; sourceTree = "<group>"; };
 		88F04DCA24391B8400F96427 /* BioMetricAuthenticator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BioMetricAuthenticator.swift; sourceTree = "<group>"; };
@@ -229,6 +231,7 @@
 				BF998EA62372EEE700325BD9 /* Arc.swift */,
 				BF998EA82372EEEE00325BD9 /* ArcSlider.swift */,
 				BF998EAA2372EF7A00325BD9 /* ArcLayer.swift */,
+				884A26BB2465DFB9006FE7CC /* SegmentedArcSlider.swift */,
 			);
 			path = ArcSlider;
 			sourceTree = "<group>";
@@ -447,6 +450,7 @@
 				BF57E73523686F2700F6D43B /* AutolayoutDSL.swift in Sources */,
 				BF998EA92372EEEE00325BD9 /* ArcSlider.swift in Sources */,
 				88212AEB244B23A10029F6EA /* NumberView.swift in Sources */,
+				884A26BC2465DFB9006FE7CC /* SegmentedArcSlider.swift in Sources */,
 				BFFBB34B23749DD1008C1D47 /* UIImage+resize.swift in Sources */,
 				BF998EBD2372F51200325BD9 /* Settings+Model.swift in Sources */,
 				BF998EA52372EEDD00325BD9 /* Extensions.swift in Sources */,

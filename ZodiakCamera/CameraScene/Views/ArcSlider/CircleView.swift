@@ -8,19 +8,12 @@
 
 import UIKit
 
-class CircleView: UIView {
-    struct Settings {
-        let color: UIColor
-        let font: UIFont
-        
-        static let initial = Settings(color: .white, font: .systemFont(ofSize: 12))
+class RoundedView: UIView {
+    var color: UIColor = .white {
+        didSet {
+            label.textColor = color
+        }
     }
-    
-    private lazy var label: UILabel = {
-        let label = UILabel()
-        addSubview(label)
-        return label
-    }()
     
     var text: String = "" {
         didSet {
@@ -29,18 +22,59 @@ class CircleView: UIView {
         }
     }
     
+    var font: UIFont = .systemFont(ofSize: 12) {
+        didSet {
+            label.font = font
+            setNeedsDisplay()
+        }
+    }
+    
+    var cornerRadius: CGFloat = 0 {
+          didSet {
+              layer.cornerRadius = cornerRadius
+              setNeedsDisplay()
+          }
+      }
+    
+    private lazy var label: UILabel = {
+        let label = UILabel()
+        label.textColor = color
+        label.font = font
+        addSubview(label)
+        return label
+    }()
+    
+    override func layoutSubviews() {
+        clipsToBounds = true
+        layer.cornerRadius = cornerRadius
+        label.center = .init(x: bounds.midX, y: bounds.midY)
+        label.sizeToFit()
+    }
+    
+    override var intrinsicContentSize: CGSize {
+        return label.intrinsicContentSize.applying(.init(scaleX: 1.2, y: 1.2))
+    }
+}
+
+class CircleView: RoundedView {
+    struct Settings {
+        let color: UIColor
+        let font: UIFont
+        
+        static let initial = Settings(color: .white, font: .systemFont(ofSize: 12))
+    }
+    
     var settings: Settings = .initial {
         didSet {
             clipsToBounds = true
-            label.textColor = settings.color
-            label.font = settings.font
+            color = settings.color
+            font = settings.font
             setNeedsDisplay()
         }
     }
     
     override func layoutSubviews() {
-        layer.cornerRadius = bounds.width/2
-        label.center = .init(x: bounds.midX, y: bounds.midY)
-        label.sizeToFit()
+        cornerRadius = bounds.width/2
+        super.layoutSubviews()
     }
 }

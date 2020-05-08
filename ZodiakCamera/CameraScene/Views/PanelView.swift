@@ -61,17 +61,15 @@ class PanelView: UIView {
                                 self.setNeedsLayout()
         })
         
-        let sliderResolution = ControlItem(image: Images.monitor.image,
-                                           imageMin: Images.monitor.image,
-                                           imageMax: Images.monitor.image,
-                                           maxValue: 2,
-                                           minValue: 0,
-                                           currentValue:  { 1 },
-                                           newValueHandler: { print($0) })
+        let sliderResolution = SegmentItem(image: Images.monitor.image,
+                                           currentValue: { (provider().resolution.text, provider().resolution.rawValue) },
+                                           newValueHandler: { text, index  in
+                                            self.eventHandler(.changePanelData(.resolution(CameraResolution(rawValue: index)!)))
+                                            self.setNeedsLayout() })
         items = [.control(brightness),
                  .control(contrast),
                  .control(saturation),
-                 .control(sliderResolution),
+                 .segment(sliderResolution),
                  .toggle(ir)]
         setup()
     }
@@ -141,7 +139,8 @@ class PanelView: UIView {
         var newValueHandler: (Bool)->Void
     }
     
-    struct TextItem {
+    struct SegmentItem {
+        var image: UIImage?
         var currentValue: ()->(String, Int)
         var newValueHandler: (String, Int)->Void
     }
@@ -149,16 +148,15 @@ class PanelView: UIView {
     enum Item {
         case control(ControlItem)
         case toggle(ToggleItem)
-        case text(TextItem)
+        case segment(SegmentItem)
         func image() -> UIImage? {
             switch self {
             case .control(let control):
                 return control.image
             case .toggle(let toggle):
                 return toggle.currentValue() == false ? toggle.image : toggle.imageSelected
-            case .text(let textItem):
-                return textItem.currentValue().0.image(attributes: [NSAttributedString.Key.foregroundColor : UIColor.white,
-                                                                    NSAttributedString.Key.font : UIFont.systemFont(ofSize: 45, weight: .bold)])
+            case .segment(let segment):
+                return segment.image
             }
         }
     }

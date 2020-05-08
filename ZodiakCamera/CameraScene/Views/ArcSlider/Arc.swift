@@ -52,7 +52,7 @@ struct Arc {
                                  clockwise: isClockwise)
     }
     
-    func angle(for point: CGPoint) -> CGFloat {
+    func angle(forPoint point: CGPoint) -> CGFloat {
         var angle = center.angle(to: point)
         
         if startAngle < 0, endAngle < 0, angle > 0 {
@@ -63,7 +63,7 @@ struct Arc {
         return normalizedAngle
     }
     
-    func point(for angle: CGFloat) -> CGPoint {
+    func point(forAngle angle: CGFloat) -> CGPoint {
         var mutatingAngle = angle
         if startAngle < 0, endAngle < 0, angle > 0 {
             mutatingAngle *= -1
@@ -76,7 +76,7 @@ struct Arc {
         return CGPoint(x: x, y: y)
     }
     
-    func angle(for traversedLength: CGFloat) -> CGFloat {
+    func angle(forLength traversedLength: CGFloat) -> CGFloat {
         return traversedLength/radius + startAngle
     }
     
@@ -90,10 +90,6 @@ struct Arc {
 }
 
 extension Arc.Center {
-    func distance(to point: CGPoint) -> CGFloat {
-        return CGFloat(sqrt((self.x - point.x)*(self.x - point.x) + (self.y - point.y)*(self.y - point.y)))
-    }
-    
     func angle(to point: CGPoint) -> CGFloat {
         return CGFloat(atan2f(Float(point.y - self.y), Float(point.x - self.x)))
     }
@@ -120,5 +116,11 @@ extension Arc.Center {
         let centerY = -vector2.dx/det*b1 + vector1.dx/det*b2
         
         self = .init(x: centerX, y: centerY)
+    }
+}
+
+extension CGPoint {
+    func distance(to point: CGPoint) -> CGFloat {
+        return CGFloat(sqrt((self.x - point.x)*(self.x - point.x) + (self.y - point.y)*(self.y - point.y)))
     }
 }
