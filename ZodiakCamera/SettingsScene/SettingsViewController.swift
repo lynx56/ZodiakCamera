@@ -58,15 +58,8 @@ class SettingsViewController: FormViewController {
                 row.add(rule: RuleRequired(msg: L10n.Settings.ruleRequired))
                 row.cellUpdate({if !$1.isValid { $0.titleLabel?.textColor = .systemRed }})
             }.onChange { settings.password = $0.value ?? "" }
-            <<< SwitchRow() { row in row.tag = "Auth" }
-                .onChange { [weak self] row in
-                guard let self = self else { return }
-                if row.value != self.biometryAuthentification().enabled {
-                    self.router.openAuthentificator(wantEnable: row.value!, completion: {
-                        self.form.rowBy(tag: "Auth")?.updateCell()
-                    })
-                }
-            }.cellUpdate({ (cell, row) in
+            <<< SwitchRow() { row in
+                row.tag = "Auth"
                 let biometryAuthentification = self.biometryAuthentification()
                 switch biometryAuthentification.type {
                 case .faceId:
@@ -77,8 +70,14 @@ class SettingsViewController: FormViewController {
                     row.title = L10n.Settings.pinProtection
                 }
                 row.value = biometryAuthentification.enabled
-                row.reload()
-            })
+            }.onChange { [weak self] row in
+                guard let self = self else { return }
+                if row.value != self.biometryAuthentification().enabled {
+                    self.router.openAuthentificator(wantEnable: row.value!, completion: {
+                        self.form.rowBy(tag: "Auth")?.updateCell()
+                    })
+                }
+            }
             +++ Section(L10n.Settings.address)
             <<< URLRow() { row in
                 row.title = L10n.Settings.host

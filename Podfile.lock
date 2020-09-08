@@ -1,12 +1,10 @@
 PODS:
-  - CocoaAsyncSocket (7.6.4)
   - Eureka (5.2.1)
   - Instructions (1.4.0)
   - KeychainSwift (19.0.0)
   - SwiftGen (6.1.0)
 
 DEPENDENCIES:
-  - CocoaAsyncSocket
   - Eureka
   - Instructions
   - KeychainSwift
@@ -14,19 +12,17 @@ DEPENDENCIES:
 
 SPEC REPOS:
   trunk:
-    - CocoaAsyncSocket
     - Eureka
     - Instructions
     - KeychainSwift
     - SwiftGen
 
 SPEC CHECKSUMS:
-  CocoaAsyncSocket: 694058e7c0ed05a9e217d1b3c7ded962f4180845
   Eureka: c883105488e05bc65539f583246ecf9657cabbfe
   Instructions: 8986424854e99640665a82cfe56852c52a0c5bdf
   KeychainSwift: a06190cf933ad46b1e0abc3d77d29c06331715c7
   SwiftGen: f872ca75cbd17bf7103c17f13dcfa0d9a15667b0
 
-PODFILE CHECKSUM: 3ec4347885e76a5adb950475136a9adc3431834b
+PODFILE CHECKSUM: 1615c811abcee9b3afa6f56db9e44181080576bd
 
-COCOAPODS: 1.9.1
+COCOAPODS: 1.9.3

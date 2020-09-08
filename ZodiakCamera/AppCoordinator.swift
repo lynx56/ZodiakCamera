@@ -64,7 +64,7 @@ extension AppCoordinator: CameraViewControllerRouter {
         settingsController = SettingsViewController(settingsProvider: settingsProvider,
                                                         biometryAuthentification: { (type: self.bioMetricAuthenticator.availableType, enable: self.pinStorage.authEnabled) },
                                                         router: self)
-        window.topViewController?.present(settingsController, animated: true, completion: nil)
+        window.topViewController?.presentCard(settingsController, animated: true, completion: nil)
     }
 }
 
@@ -79,14 +79,14 @@ extension AppCoordinator: SettingsViewControllerRouter {
                 }
                 
             }
-            window.topViewController?.present(controller, animated: true, completion: nil)
+            window.topViewController?.presentCard(controller, animated: true, completion: nil)
         } else {
             let controller = controllerFactory.makeRegisterController()
             controller.delegate = { success in
                 controller.showSuccessPopup(controller, withTitle: "Ok")
             }
             
-            window.topViewController?.present(controller, animated: true, completion: completion)
+            window.topViewController?.presentCard(controller, animated: true, completion: completion)
         }
     }
 }
